@@ -1,0 +1,56 @@
+<h1 id="ljxd---a-project-零镜-心动-首次合作项目">ljxd - A project (零镜-心动 首次合作项目)</h1>
+<h1 id="服务端结构说明文档">服务端结构说明文档</h1>
+<h2 id="逻辑服务器--aegagrus游戏逻辑服务器目录">[逻辑服务器]--aegagrus游戏逻辑服务器目录</h2>
+<pre><code>* base      游戏基础类目录（后期将迁移至core目录）
+* core      架构核心目录，用于定义系统接口和抽象类
+* command       通信协议定义接口
+* config        游戏配置信息(后期将迁移至core或server目录)
+* server        服务器相关部分设置等
+* cache     配置表缓存操作
+* dao           数据库操作类, 继承于MySQLDB
+* logic     服务器静态逻辑 - 用于定义和实现静态方法
+* vo            服务器涉及的值对象（VO）  修改命名规则为Vo****.php    配置信息命名规则修改为Cfg****.php
+* task      游戏定时任务 - 目前需要Java服务器定时调度支持
+* util      工具及通用方法</code></pre>
+<h2 id="废弃目录">废弃目录：</h2>
+<pre><code>- constant  游戏静态目录
+- service   游戏服务目录
+- trigger   游戏返回内容触发器</code></pre>
+<h2 id="中心服务器--center中心服务器">[中心服务器]--center中心服务器</h2>
+<pre><code>- 主要负责管理逻辑服务器节点</code></pre>
+<h2 id="工具箱--toolkit游戏逻辑服务器工具箱">[工具箱]--toolkit游戏逻辑服务器工具箱</h2>
+<pre><code>- phpRedisAddmin    简单的游戏redis的ui查看工具
+- unit              单元测试用例
+- clearRedis文件： 清除redis数据工具</code></pre>
+<h2 id="常量定义及说明">常量定义及说明：</h2>
+<pre><code>server目录说明：
+* Consts文件：     用于定义游戏常量，如最大角色等级等信息
+* Res文件：    用于操作游戏内部产出消耗资源的操作类
+* ResIoStat文件：  资源操作途径的定义
+* Language文件：   服务端多国语言包支持
+* Commands文件：   服务端通信协议接口解析
+* ReplyCodes文件：定义服务端通信协议码</code></pre>
+<h2 id="命名规则">命名规则</h2>
+<ol style="list-style-type: decimal">
+<li>变量命名规则：首个单词小写,之后单词首字母大写. 示例：maxRoleLevel</li>
+<li>尽可能用简单的单词描述变量, <strong>禁止</strong>定义和使用类似于<strong><span class="math inline"><em>a</em> * *、**</span>aaa</strong>的变量</li>
+<li>当变量长度过长时, 建议缩写精简单词 示例：rolePrivateGeneralAttributeData =&gt; rolePGAD（并在附近增加注释:rolePrivateGeneralAttributeData）</li>
+<li>ID命名规则：配置表相关的唯一ID（cfg****Id） 其他类型ID(****Id)</li>
+<li>类或接口命名规则：单词首字母大写</li>
+<li>Cache,Cfg值对象,redis key,变量的命名规则.示例:CfgItemCache -&gt; CfgItem -&gt; cfg:item -&gt; $cfgItem</li>
+</ol>
+<h2 id="逻辑服务器增加command接口">逻辑服务器增加Command接口</h2>
+<ol style="list-style-type: decimal">
+<li>在game/command目录下定义一个接口类,实现接口Command</li>
+<li>在Commands解析工具的$commands变量中注册新建的命令</li>
+</ol>
+<h2 id="数据库">数据库</h2>
+<ol style="list-style-type: decimal">
+<li>数据库表字段,尽可能避免使用json或其他特殊字符串表示多重含义. 方便数据库sql语句查询</li>
+</ol>
+<h2 id="开发规范">开发规范</h2>
+<ol style="list-style-type: decimal">
+<li>尽可能避免在逻辑代码foreach等循环操作Redis</li>
+<li>尽可能避免foreach嵌套循环</li>
+</ol>
+<p>©lj-kernel develop group</p>
