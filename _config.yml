@@ -5,7 +5,9 @@ url: 'https://github.com/TinyZzh'
 baseurl: "/"
 rooturl: ""
 # google_analytics: 'UA-XXXXXX-X'
-# disqus_shortname: 'your-disqus-name'
+disqus_shortname: 'tinyzzh815'
+
+timezone: '+0800' #"Asia/Shanghai"
 
 author:
   name: 'TinyZ'
@@ -23,17 +25,22 @@ defaults:
 
 # Build settings
 destination: _site
-# 分页
 paginate: 5
 #permalink: /:year/:title/
-markdown: rdiscount
-highlighter: rouge
+#markdown: kramdown  #  [rdiscount, karkdown]
+markdown: kramdown  #  [rdiscount, karkdown]
+#highlighter: rouge #  [rouge, pygments]
 
 kramdown:
-  # use Github Flavored Markdown
   input: GFM
-  # do not replace newlines by <br>s
-  hard_wrap: false
+  extensions:
+    - autolink
+    - footnotes
+    - smart
+  enable_coderay: true
+  syntax_highlighter: rouge
+  coderay:
+    coderay_line_numbers:  nil
 
 gems: ['jekyll-paginate']
 exclude: ['README.md', 'Gemfile', 'Gemfile.lock', 'screenshot.png', 'Bootstrap.bat', 'Build.bat']
