@@ -1,0 +1,39 @@
+# Site settings
+title: TinyZ's Blog
+description: '专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。'
+url: 'https://github.com/TinyZzh'
+baseurl: "/"
+rooturl: ""
+# google_analytics: 'UA-XXXXXX-X'
+# disqus_shortname: 'your-disqus-name'
+
+author:
+  name: 'TinyZ'
+  email: tinyzzh815@gmail.com
+  github_username:  TinyZzh
+  linkedin_username:  灼华-周-79326a116
+
+defaults:
+  -
+    scope:
+      path: ''
+      type: 'posts'
+    values:
+        layout: 'post'
+
+# Build settings
+destination: _site
+# 分页
+paginate: 5
+#permalink: /:year/:title/
+markdown: rdiscount
+highlighter: rouge
+
+kramdown:
+  # use Github Flavored Markdown
+  input: GFM
+  # do not replace newlines by <br>s
+  hard_wrap: false
+
+gems: ['jekyll-paginate']
+exclude: ['README.md', 'Gemfile', 'Gemfile.lock', 'screenshot.png', 'Bootstrap.bat', 'Build.bat']
