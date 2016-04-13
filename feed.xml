@@ -5,15 +5,130 @@
     <description>专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。</description>
     <link>https://github.com/TinyZzh//</link>
     <atom:link href="https://github.com/TinyZzh//feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>2016-04-12</pubDate>
-    <lastBuildDate>2016-04-12</lastBuildDate>
+    <pubDate>2016-04-13</pubDate>
+    <lastBuildDate>2016-04-13</lastBuildDate>
     <generator>Jekyll v3.1.2</generator>
     
       <item>
+        <title>搭建自己的GitHub Pages</title>
+        <description>&lt;p&gt;本文基于Win 10操作系统和Jekyll 3.1.2完成。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;基本需求&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/&quot;&gt;GitHub&lt;/a&gt;账号及一个命名为{GitHub昵称}.github.io的仓库&lt;/li&gt;
+  &lt;li&gt;Jekyll软件 &lt;a href=&quot;https://jekyllrb.com/&quot;&gt;Jekyll官网&lt;/a&gt;, &lt;a href=&quot;http://jekyllcn.com/&quot;&gt;Jekyll中文站&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;github&quot;&gt;1.创建GitHub账号及用户名开头的仓库&lt;/h2&gt;
+&lt;p&gt;:）.本步骤默认已经完成。&lt;/p&gt;
+
+&lt;h2 id=&quot;jekyll&quot;&gt;2. 安装Jekyll&lt;/h2&gt;
+&lt;p&gt;Jekyll是一个将纯文本转换为静态博客网站的轻量级快速建站工作。也是GitHub Page官方推荐使用的静态网站生成工具(大量应用于GitHub内)。
+下面开始安装过程。Jekyll是有Ruby开发, 所以依赖于Ruby环境。所以我们的第一步就是安装Ruby环境&lt;/p&gt;
+
+&lt;h3 id=&quot;ruby&quot;&gt;2.1安装Ruby环境&lt;/h3&gt;
+
+&lt;p&gt;下载Ruby环境和开发者工具包。下载地址：&lt;a href=&quot;http://rubyinstaller.org/downloads/&quot;&gt;Ruby Windows平台&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;Ruby环境安装包：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/2016-04/s1.png&quot; alt=&quot;Ruby环境安装包&quot; style=&quot;float:none&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Ruby DevKit安装包：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/2016-04/s2.png&quot; alt=&quot;Ruby DevKit安装包&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;安装完成后打开命令行(或Win + R, 输入cmd回车)输入ruby -version ：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/2016-04/s3.jpg&quot; alt=&quot;检查&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;jekyll-1&quot;&gt;2.2 安装Jekyll&lt;/h3&gt;
+&lt;p&gt;在命令行中使用如下命令安装Jekyll:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jekyll&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;img src=&quot;/images/2016-04/s4.jpg&quot; alt=&quot;Jekyll安装成功&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/2016-04/s5.jpg&quot; alt=&quot;检查Jekyll安装成功&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;笔者出现安装失败的情况。Google之后一说百说的推荐了淘宝Gem仓库，但是博主无法成功更换使用淘宝的Gem（HTTPS）。(淘宝的Gem目前已不支持Http连接)。
+经过一番研究解决,博主命令如下:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sources&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;remove&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:/&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rubygems&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;org&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:/&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rubygems&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;org&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;怀疑可能是Windows Installer安装的Ruby对Https支持不是很好。更换为http源就解决问题了。&lt;/p&gt;
+
+&lt;h3 id=&quot;markdown&quot;&gt;2.3 markdown文档解析&lt;/h3&gt;
+&lt;p&gt;Jekyll默认的md文档解析器是kramdown，缺省的代码高亮插件是rouge。详细的缺省配置见:&lt;a href=&quot;https://jekyllrb.com/docs/configuration/&quot;&gt;Jekyll缺省配置&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;未安装的可以使用以下命令安装.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kramdown&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rouge&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;2.4 代码高亮&lt;/h3&gt;
+&lt;p&gt;无代码高亮需求的小伙伴无视本节内容即可。Jekyll相关的代码高亮插件有很多。本站使用CodeRay + rouge实现代码高亮。示例配置如下:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nl&quot;&gt;markdown:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kramdown&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;#&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rdiscount&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;karkdown&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;highlighter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rouge&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;#&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rouge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pygments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;kramdown&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GFM&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;extensions&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;autolink&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;footnotes&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;smart&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;enable_coderay&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;syntax_highlighter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rouge&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;coderay&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;coderay_line_numbers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;nil&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;jekyll-2&quot;&gt;2.4 创建Jekyll模板&lt;/h3&gt;
+&lt;p&gt;创建一个简单的缺省页面示例。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jekyll&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;myblog&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jekyll&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;build&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jekyll&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;在浏览器访问&lt;code class=&quot;highlighter-rouge&quot;&gt;127.0.0.1:4000&lt;/code&gt;预览文字及内容&lt;/p&gt;
+
+&lt;p&gt;本站使用的是Jekyll-uno模板，遵循MIT开源协议(博主通过Google搜索出来的)。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;参考资料&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://pages.github.com/&quot;&gt;GitHub Pages官方引导&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://jekyll-windows.juthilo.com/&quot;&gt;一步一步引导在Windows系统安装Jekyll&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://coderay.rubychan.de/&quot;&gt;CodeRay插件&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jneen/rouge&quot;&gt;rouge插件&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+</description>
+        <pubDate>2016-04-13</pubDate>
+        <link>https://github.com/TinyZzh//github/2016/04/13/Build_GitHub_Pages.html</link>
+        <guid isPermaLink="true">https://github.com/TinyZzh//github/2016/04/13/Build_GitHub_Pages.html</guid>
+        
+        <category>GitHub</category>
+        
+        <category>Blog</category>
+        
+        
+        <category>GitHub</category>
+        
+      </item>
+    
+      <item>
         <title>Netty4.x中文教程系列(七) UDP协议</title>
-        <description>&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;/p&gt;
-&lt;p&gt;　　将近快一年时间没有更新Netty的博客。一方面原因是因为项目进度的问题。另外一方面是博主有一段时间去熟悉Unity3D引擎。&lt;/p&gt;
+        <description>&lt;p&gt;　　将近快一年时间没有更新Netty的博客。一方面原因是因为项目进度的问题。另外一方面是博主有一段时间去熟悉Unity3D引擎。&lt;/p&gt;
 &lt;p&gt;　　本章节主要记录博主自己Netty的UDP协议使用。&lt;/p&gt;
+
 &lt;h2&gt;　　1.　　构建UDP服务端&lt;/h2&gt;
 &lt;p&gt;　　首先我们应该清楚UDP协议是一种无连接状态的协议。所以Netty框架区别于一般的有链接协议服务端启动程序（ServerBootstrap）。&lt;/p&gt;
 &lt;p&gt;　　Netty开发基于UDP协议的服务端需要使用Bootstrap&lt;/p&gt;
@@ -207,6 +322,7 @@
         <title>Netty4.x中文教程系列(六) 从头开始Bootstrap</title>
         <description>&lt;p&gt;　　在中国程序界。我们都是学着Hello World !慢慢成长起来的。逐渐从一无所知到熟悉精通的。&lt;/p&gt;
 &lt;p&gt;　　第二章就从Hello World 开始讲述Netty的中文教程。&lt;/p&gt;
+
 &lt;p&gt;　　首先创建一个Java项目。引入一个Netty 框架的包。这个步骤我在本系列教程的后面就不在重复了。&lt;/p&gt;
 &lt;p&gt;　　先上一张我示例的项目工程图给大家看一下:&lt;/p&gt;
 &lt;p&gt;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/blog/359548/201312/26171451-184e0b3b4ce745de81d773c097243960.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
@@ -509,6 +625,7 @@
         <description>&lt;p&gt;　　在中国程序界。我们都是学着Hello World !慢慢成长起来的。逐渐从一无所知到熟悉精通的。&lt;/p&gt;
 &lt;p&gt;　　第二章就从Hello World 开始讲述Netty的中文教程。&lt;/p&gt;
 &lt;p&gt;　　首先创建一个Java项目。引入一个Netty 框架的包。这个步骤我在本系列教程的后面就不在重复了。&lt;/p&gt;
+
 &lt;p&gt;　　先上一张我示例的项目工程图给大家看一下:&lt;/p&gt;
 &lt;p&gt;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/blog/359548/201312/26171451-184e0b3b4ce745de81d773c097243960.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 &lt;h2&gt;1.下载并为项目添加Netty框架&lt;/h2&gt;

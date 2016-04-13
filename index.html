@@ -70,44 +70,12 @@
 
         <div class="navigation-wrapper">
           <div>
-            
-            
-            <nav class="cover-navigation cover-navigation--primary">
-              <ul class="navigation">
-                <a href="/about/" title="About" class="label">About</a>
-              </ul>
-            </nav>
-            <!--<a class="page-link" href="//about/">About</a>-->
-            
-            
-            
-            <nav class="cover-navigation cover-navigation--primary">
-              <ul class="navigation">
-                <a href="/categories/" title="Categories" class="label">Categories</a>
-              </ul>
-            </nav>
-            <!--<a class="page-link" href="//categories/">Categories</a>-->
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            <nav class="cover-navigation cover-navigation--primary">
-              <ul class="navigation">
-                <a href="/tags/" title="Tags" class="label">Tags</a>
-              </ul>
-            </nav>
-            <!--<a class="page-link" href="//tags/">Tags</a>-->
-            
-            
-            
-            
+            <ul>
+              <li><a href="/about/" title="About Me">简介 | About</a></li>
+              <li><a href="/categories/" title="Categories">分类 | Categories</a></li>
+              <li><a href="/tags/" title="Tags">标签 | Tags</a></li>
+              <li><a href="/archives/" title="Tags">归档 | Archives</a></li>
+            </ul>
           </div>
 
           <nav class="cover-navigation cover-navigation--primary">
@@ -118,7 +86,6 @@
 
           <nav class="cover-navigation navigation--social">
             <ul class="navigation">
-          
             
 
             
@@ -180,188 +147,20 @@
   <ol class="post-list">
     
       <li>
+        <h2 class="post-list__post-title post-title"><a href="/github/2016/04/13/Build_GitHub_Pages.html" title="搭建自己的GitHub Pages">搭建自己的GitHub Pages</a></h2>
+        <p class="excerpt">本文基于Win 10操作系统和Jekyll 3.1.2完成。
+
+&hellip;</p>
+        <div class="post-list__meta"><time datetime="2016-04-13" class="post-list__meta--date date">2016-04-13</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#GitHub">GitHub</a> <a href="/tags/#Blog">Blog</a> </span></div>
+        <hr class="post-list__divider">
+      </li>
+    
+      <li>
         <h2 class="post-list__post-title post-title"><a href="/netty/2015/06/10/Netty4.x_7.html" title="Netty4.x中文教程系列(七) UDP协议">Netty4.x中文教程系列(七) UDP协议</a></h2>
-        <p class="excerpt">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-　　将近快一年时间没有更新Netty的博客。一方面原因是因为项目进度的问题。另外一方面是博主有一段时间去熟悉Unity3D引擎。
+        <p class="excerpt">　　将近快一年时间没有更新Netty的博客。一方面原因是因为项目进度的问题。另外一方面是博主有一段时间去熟悉Unity3D引擎。
 　　本章节主要记录博主自己Netty的UDP协议使用。
-<h2>　　1.　　构建UDP服务端</h2>
-　　首先我们应该清楚UDP协议是一种无连接状态的协议。所以Netty框架区别于一般的有链接协议服务端启动程序（ServerBootstrap）。
-　　Netty开发基于UDP协议的服务端需要使用Bootstrap
-　　
-<div class="cnblogs_code" onclick="cnblogs_code_show('848a7592-339a-4f5e-a73e-1a2031503b75')"><img id="code_img_closed_848a7592-339a-4f5e-a73e-1a2031503b75" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_848a7592-339a-4f5e-a73e-1a2031503b75" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('848a7592-339a-4f5e-a73e-1a2031503b75',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
-    <div id="cnblogs_code_open_848a7592-339a-4f5e-a73e-1a2031503b75" class="cnblogs_code_hide">
-<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">package</span><span style="color: #000000;"> dev.tinyz.game;
-</span><span style="color: #008080;"> 2</span>
-<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.bootstrap.Bootstrap;
-</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.buffer.Unpooled;
-</span><span style="color: #008080;"> 5</span> <span style="color: #0000ff;">import</span> io.netty.channel.*<span style="color: #000000;">;
-</span><span style="color: #008080;"> 6</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.channel.nio.NioEventLoopGroup;
-</span><span style="color: #008080;"> 7</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.channel.socket.DatagramPacket;
-</span><span style="color: #008080;"> 8</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.channel.socket.nio.NioDatagramChannel;
-</span><span style="color: #008080;"> 9</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.handler.codec.MessageToMessageDecoder;
-</span><span style="color: #008080;">10</span>
-<span style="color: #008080;">11</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.net.InetSocketAddress;
-</span><span style="color: #008080;">12</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.nio.charset.Charset;
-</span><span style="color: #008080;">13</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.util.List;
-</span><span style="color: #008080;">14</span>
-<span style="color: #008080;">15</span> <span style="color: #008000;">/**</span>
-<span style="color: #008080;">16</span> <span style="color: #008000;"> * </span><span style="color: #808080;">@author</span><span style="color: #008000;"> TinyZ on 2015/6/8.
-</span><span style="color: #008080;">17</span>  <span style="color: #008000;">*/</span>
-<span style="color: #008080;">18</span> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> GameMain {
-</span><span style="color: #008080;">19</span>
-<span style="color: #008080;">20</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> main(String[] args) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> InterruptedException {
-</span><span style="color: #008080;">21</span>
-<span style="color: #008080;">22</span>         <span style="color: #0000ff;">final</span> NioEventLoopGroup nioEventLoopGroup = <span style="color: #0000ff;">new</span><span style="color: #000000;"> NioEventLoopGroup();
-</span><span style="color: #008080;">23</span>
-<span style="color: #008080;">24</span>         Bootstrap bootstrap = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Bootstrap();
-</span><span style="color: #008080;">25</span>         bootstrap.channel(NioDatagramChannel.<span style="color: #0000ff;">class</span><span style="color: #000000;">);
-</span><span style="color: #008080;">26</span> <span style="color: #000000;">        bootstrap.group(nioEventLoopGroup);
-</span><span style="color: #008080;">27</span>         bootstrap.handler(<span style="color: #0000ff;">new</span> ChannelInitializer&lt;NioDatagramChannel&gt;<span style="color: #000000;">() {
-</span><span style="color: #008080;">28</span>
-<span style="color: #008080;">29</span> <span style="color: #000000;">            @Override
-</span><span style="color: #008080;">30</span>             <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> channelActive(ChannelHandlerContext ctx) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> Exception {
-</span><span style="color: #008080;">31</span>                 <span style="color: #0000ff;">super</span><span style="color: #000000;">.channelActive(ctx);
-</span><span style="color: #008080;">32</span> <span style="color: #000000;">            }
-</span><span style="color: #008080;">33</span>
-<span style="color: #008080;">34</span> <span style="color: #000000;">            @Override
-</span><span style="color: #008080;">35</span>             <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">void</span> initChannel(NioDatagramChannel ch) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> Exception {
-</span><span style="color: #008080;">36</span>                 ChannelPipeline cp =<span style="color: #000000;"> ch.pipeline();
-</span><span style="color: #008080;">37</span>                 cp.addLast("framer", <span style="color: #0000ff;">new</span> MessageToMessageDecoder&lt;DatagramPacket&gt;<span style="color: #000000;">() {
-</span><span style="color: #008080;">38</span> <span style="color: #000000;">                    @Override
-</span><span style="color: #008080;">39</span>                     <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">void</span> decode(ChannelHandlerContext ctx, DatagramPacket msg, List&lt;Object&gt; out) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> Exception {
-</span><span style="color: #008080;">40</span>                         out.add(msg.content().toString(Charset.forName("UTF-8"<span style="color: #000000;">)));
-</span><span style="color: #008080;">41</span> <span style="color: #000000;">                    }
-</span><span style="color: #008080;">42</span>                 }).addLast("handler", <span style="color: #0000ff;">new</span><span style="color: #000000;"> UdpHandler());
-</span><span style="color: #008080;">43</span> <span style="color: #000000;">            }
-</span><span style="color: #008080;">44</span> <span style="color: #000000;">        });
-</span><span style="color: #008080;">45</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> 监听端口</span>
-<span style="color: #008080;">46</span>         ChannelFuture sync = bootstrap.bind(9009<span style="color: #000000;">).sync();
-</span><span style="color: #008080;">47</span>         Channel udpChannel =<span style="color: #000000;"> sync.channel();
-</span><span style="color: #008080;">48</span>
-<span style="color: #008080;">49</span> <span style="color: #008000;">//</span><span style="color: #008000;">        String data = "我是大好人啊";
-</span><span style="color: #008080;">50</span> <span style="color: #008000;">//</span><span style="color: #008000;">        udpChannel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(data.getBytes(Charset.forName("UTF-8"))), new InetSocketAddress("192.168.2.29", 9008)));</span>
-<span style="color: #008080;">51</span>
-<span style="color: #008080;">52</span>         Runtime.getRuntime().addShutdownHook(<span style="color: #0000ff;">new</span> Thread(<span style="color: #0000ff;">new</span><span style="color: #000000;"> Runnable() {
-</span><span style="color: #008080;">53</span> <span style="color: #000000;">            @Override
-</span><span style="color: #008080;">54</span>             <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> run() {
-</span><span style="color: #008080;">55</span> <span style="color: #000000;">                nioEventLoopGroup.shutdownGracefully();
-</span><span style="color: #008080;">56</span> <span style="color: #000000;">            }
-</span><span style="color: #008080;">57</span> <span style="color: #000000;">        }));
-</span><span style="color: #008080;">58</span> <span style="color: #000000;">    }
-</span><span style="color: #008080;">59</span> }</pre>
-    </div>
-    <span class="cnblogs_code_collapse">View Code</span></div>
-　　于Tcp协议的客户端启动程序基本一样。唯一区别就在于，UDP服务器使用的是bind方法，来监听端口
-　　在Netty的Bootstrap类中的注释，发现有如下注释内容：
-　　<img src="http://images0.cnblogs.com/blog2015/359548/201506/102039066766793.png" alt="" />
-　　大意就是：bind()用于UDP， TCP连接使用connect()。
-　　上面的源码监听的是端口9009，那么所有使用UDP协议的数据，发送到端口9009，就会被我们的Netty接收到了。
-　　为了输出方便，博主在上面的代码中增加一个MessageToMessageDecoder将接收到的Datagram，排除其他信息，仅将字符串传递下去。并在UDPHandler中打印出来。
-<h2>　　2.　　构建UDP客户端</h2>
-　　UDP协议来说，其实没有客户端和服务端的区别啦。只是为了贴近TCP协议做的一点文字描述上面的区分。
-　　简单来讲，上面的那段逻辑其实就可以作为UDP客户端来使用。注释掉的那行逻辑其实就是发送&ldquo;我是大好人啊&rdquo;这个字符串到ip地址为192.168.2.29的服务端的9008端口。代码如下：
-　　
-<div class="cnblogs_code" onclick="cnblogs_code_show('4210e2fa-cc56-4728-8980-dfb43e870f6f')"><img id="code_img_closed_4210e2fa-cc56-4728-8980-dfb43e870f6f" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_4210e2fa-cc56-4728-8980-dfb43e870f6f" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('4210e2fa-cc56-4728-8980-dfb43e870f6f',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
-    <div id="cnblogs_code_open_4210e2fa-cc56-4728-8980-dfb43e870f6f" class="cnblogs_code_hide">
-<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">package</span><span style="color: #000000;"> dev.tinyz.game;
-</span><span style="color: #008080;"> 2</span>
-<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.bootstrap.Bootstrap;
-</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.buffer.Unpooled;
-</span><span style="color: #008080;"> 5</span> <span style="color: #0000ff;">import</span> io.netty.channel.*<span style="color: #000000;">;
-</span><span style="color: #008080;"> 6</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.channel.nio.NioEventLoopGroup;
-</span><span style="color: #008080;"> 7</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.channel.socket.DatagramPacket;
-</span><span style="color: #008080;"> 8</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.channel.socket.nio.NioDatagramChannel;
-</span><span style="color: #008080;"> 9</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.handler.codec.MessageToMessageDecoder;
-</span><span style="color: #008080;">10</span>
-<span style="color: #008080;">11</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.net.InetSocketAddress;
-</span><span style="color: #008080;">12</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.nio.charset.Charset;
-</span><span style="color: #008080;">13</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.util.List;
-</span><span style="color: #008080;">14</span>
-<span style="color: #008080;">15</span> <span style="color: #008000;">/**</span>
-<span style="color: #008080;">16</span> <span style="color: #008000;"> * </span><span style="color: #808080;">@author</span><span style="color: #008000;"> TinyZ on 2015/6/8.
-</span><span style="color: #008080;">17</span>  <span style="color: #008000;">*/</span>
-<span style="color: #008080;">18</span> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> GameMain {
-</span><span style="color: #008080;">19</span>
-<span style="color: #008080;">20</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> main(String[] args) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> InterruptedException {
-</span><span style="color: #008080;">21</span>
-<span style="color: #008080;">22</span>         <span style="color: #0000ff;">final</span> NioEventLoopGroup nioEventLoopGroup = <span style="color: #0000ff;">new</span><span style="color: #000000;"> NioEventLoopGroup();
-</span><span style="color: #008080;">23</span>
-<span style="color: #008080;">24</span>         Bootstrap bootstrap = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Bootstrap();
-</span><span style="color: #008080;">25</span>         bootstrap.channel(NioDatagramChannel.<span style="color: #0000ff;">class</span><span style="color: #000000;">);
-</span><span style="color: #008080;">26</span> <span style="color: #000000;">        bootstrap.group(nioEventLoopGroup);
-</span><span style="color: #008080;">27</span>         bootstrap.handler(<span style="color: #0000ff;">new</span> ChannelInitializer&lt;NioDatagramChannel&gt;<span style="color: #000000;">() {
-</span><span style="color: #008080;">28</span>
-<span style="color: #008080;">29</span> <span style="color: #000000;">            @Override
-</span><span style="color: #008080;">30</span>             <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> channelActive(ChannelHandlerContext ctx) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> Exception {
-</span><span style="color: #008080;">31</span>                 <span style="color: #0000ff;">super</span><span style="color: #000000;">.channelActive(ctx);
-</span><span style="color: #008080;">32</span> <span style="color: #000000;">            }
-</span><span style="color: #008080;">33</span>
-<span style="color: #008080;">34</span> <span style="color: #000000;">            @Override
-</span><span style="color: #008080;">35</span>             <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">void</span> initChannel(NioDatagramChannel ch) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> Exception {
-</span><span style="color: #008080;">36</span>                 ChannelPipeline cp =<span style="color: #000000;"> ch.pipeline();
-</span><span style="color: #008080;">37</span>                 cp.addLast("framer", <span style="color: #0000ff;">new</span> MessageToMessageDecoder&lt;DatagramPacket&gt;<span style="color: #000000;">() {
-</span><span style="color: #008080;">38</span> <span style="color: #000000;">                    @Override
-</span><span style="color: #008080;">39</span>                     <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">void</span> decode(ChannelHandlerContext ctx, DatagramPacket msg, List&lt;Object&gt; out) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> Exception {
-</span><span style="color: #008080;">40</span>                         out.add(msg.content().toString(Charset.forName("UTF-8"<span style="color: #000000;">)));
-</span><span style="color: #008080;">41</span> <span style="color: #000000;">                    }
-</span><span style="color: #008080;">42</span>                 }).addLast("handler", <span style="color: #0000ff;">new</span><span style="color: #000000;"> UdpHandler());
-</span><span style="color: #008080;">43</span> <span style="color: #000000;">            }
-</span><span style="color: #008080;">44</span> <span style="color: #000000;">        });
-</span><span style="color: #008080;">45</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> 监听端口</span>
-<span style="color: #008080;">46</span>         ChannelFuture sync = bootstrap.bind(0<span style="color: #000000;">).sync();
-</span><span style="color: #008080;">47</span>         Channel udpChannel =<span style="color: #000000;"> sync.channel();
-</span><span style="color: #008080;">48</span>
-<span style="color: #008080;">49</span>         String data = "我是大好人啊"<span style="color: #000000;">;
-</span><span style="color: #008080;">50</span>         udpChannel.writeAndFlush(<span style="color: #0000ff;">new</span> DatagramPacket(Unpooled.copiedBuffer(data.getBytes(Charset.forName("UTF-8"))), <span style="color: #0000ff;">new</span> InetSocketAddress("192.168.2.29", 9008<span style="color: #000000;">)));
-</span><span style="color: #008080;">51</span>
-<span style="color: #008080;">52</span>         Runtime.getRuntime().addShutdownHook(<span style="color: #0000ff;">new</span> Thread(<span style="color: #0000ff;">new</span><span style="color: #000000;"> Runnable() {
-</span><span style="color: #008080;">53</span> <span style="color: #000000;">            @Override
-</span><span style="color: #008080;">54</span>             <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> run() {
-</span><span style="color: #008080;">55</span> <span style="color: #000000;">                nioEventLoopGroup.shutdownGracefully();
-</span><span style="color: #008080;">56</span> <span style="color: #000000;">            }
-</span><span style="color: #008080;">57</span> <span style="color: #000000;">        }));
-</span><span style="color: #008080;">58</span> <span style="color: #000000;">    }
-</span><span style="color: #008080;">59</span> }</pre>
-    </div>
-    <span class="cnblogs_code_collapse">View Code</span></div>
-　　和上面的&ldquo;服务端&rdquo;代码最大的差别就是，<strong>监听的端口号修改成0.</strong>为
-　　使用Netty的Channel发送DatagramPacket。写好目标地址，然后运行起来就可以自己测试一下了。
-<h2>　　3.　　JAVA原生UDP</h2>
-　　有朋友这个时候就会问：为什么不是有JAVA原生的UDP呢？
-　　其实很简单。说白了Netty使用的也是Java底层的代码。只是做了一层封装，以便于使用。服务端使用Netty框架构建高性能，高扩展的UDP服务器。
-　　客户端则使用JAVA或者任意其他的语言的API（遵循UDP协议即可）。
-　　下面上一段博主使用的的JAVA
-　　
-<div class="cnblogs_code" onclick="cnblogs_code_show('bc878d64-6d80-47f2-a713-211c09b9962d')"><img id="code_img_closed_bc878d64-6d80-47f2-a713-211c09b9962d" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_bc878d64-6d80-47f2-a713-211c09b9962d" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('bc878d64-6d80-47f2-a713-211c09b9962d',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
-    <div id="cnblogs_code_open_bc878d64-6d80-47f2-a713-211c09b9962d" class="cnblogs_code_hide">
-<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">package</span><span style="color: #000000;"> dev.tinyz.game;
-</span><span style="color: #008080;"> 2</span>
-<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.io.IOException;
-</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.net.DatagramPacket;
-</span><span style="color: #008080;"> 5</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.net.DatagramSocket;
-</span><span style="color: #008080;"> 6</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.net.InetSocketAddress;
-</span><span style="color: #008080;"> 7</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.nio.charset.Charset;
-</span><span style="color: #008080;"> 8</span>
-<span style="color: #008080;"> 9</span> <span style="color: #008000;">/**</span>
-<span style="color: #008080;">10</span> <span style="color: #008000;"> * </span><span style="color: #808080;">@author</span><span style="color: #008000;"> TinyZ on 2015/6/10.
-</span><span style="color: #008080;">11</span>  <span style="color: #008000;">*/</span>
-<span style="color: #008080;">12</span> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> UdpTest {
-</span><span style="color: #008080;">13</span>
-<span style="color: #008080;">14</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> main(String[] args) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> IOException {
-</span><span style="color: #008080;">15</span>         <span style="color: #0000ff;">final</span> String data = "博主邮箱:zou90512@126.com"<span style="color: #000000;">;
-</span><span style="color: #008080;">16</span>         <span style="color: #0000ff;">byte</span>[] bytes = data.getBytes(Charset.forName("UTF-8"<span style="color: #000000;">));
-</span><span style="color: #008080;">17</span>         InetSocketAddress targetHost = <span style="color: #0000ff;">new</span> InetSocketAddress("192.168.2.29", 9009<span style="color: #000000;">);
-</span><span style="color: #008080;">18</span>
-<span style="color: #008080;">19</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> 发送udp内容</span>
-<span style="color: #008080;">20</span>         DatagramSocket socket = <span style="color: #0000ff;">new</span><span style="color: #000000;"> DatagramSocket();
-</span><span style="color: #008080;">21</span>         socket.send(<span style="color: #0000ff;">new</span> DatagramPacket(bytes, 0<span style="color: #000000;">, bytes.length, targetHost));
-</span><span style="color: #008080;">22</span> <span style="color: #000000;">    }
-</span><span style="color: #008080;">23</span> }</pre>
-    </div>
-    <span class="cnblogs_code_collapse">View Code</span></div>
-　　..
-　　ps.UDP协议最大特点就是效率高，速度快。用于某些场合可以极大改善系统的性能。
-&nbsp;&hellip;</p>
+
+&hellip;</p>
         <div class="post-list__meta"><time datetime="2015-06-10" class="post-list__meta--date date">2015-06-10</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
         <hr class="post-list__divider">
       </li>
@@ -370,29 +169,6 @@
         <h2 class="post-list__post-title post-title"><a href="/netty/2014/08/12/Netty4.x_6.html" title="Netty4.x中文教程系列(六) 从头开始Bootstrap">Netty4.x中文教程系列(六) 从头开始Bootstrap</a></h2>
         <p class="excerpt">　　在中国程序界。我们都是学着Hello World !慢慢成长起来的。逐渐从一无所知到熟悉精通的。
 　　第二章就从Hello World 开始讲述Netty的中文教程。
-　　首先创建一个Java项目。引入一个Netty 框架的包。这个步骤我在本系列教程的后面就不在重复了。
-　　先上一张我示例的项目工程图给大家看一下:
-<img style="display: block; margin-left: auto; margin-right: auto;" src="http://images.cnitblog.com/blog/359548/201312/26171451-184e0b3b4ce745de81d773c097243960.png" alt="" />
-<h2>1.下载并为项目添加Netty框架</h2>
-　　Netty的包大家可以从Netty官网:<a href="http://netty.io/downloads.html" target="_blank">http://netty.io/downloads.html</a>&nbsp;下载
-　　<img style="display: block; margin-left: auto; margin-right: auto;" src="http://images.cnitblog.com/blog/359548/201312/26171717-5926ec582cab4167b6aca539d8c8adff.jpg" alt="" />
-如图所示: Netty提供了三个主要版本的框架包给大家下载。
-3.9版本Final 说明这个版本是3.x版本中最新的版本。final意味着功能不再继续添加更新。仅为修改bug等提供继续的更新。
-5.x版本由于是开始。不能排除是否稳定运行等问题。加上5.x在4.x的版本上略微修改的。在5.x稳定之前。不推荐大家学习使用。
-本教程是基于Netty4.x版本的。
-　　笔者也是从3.6版本，经过了相当痛苦的一段时间才算是真正的过度到4.x版本。
-<img style="display: block; margin-left: auto; margin-right: auto;" src="http://images.cnitblog.com/blog/359548/201312/26172210-783e94446ac0417fab5493bb6dcdf526.jpg" alt="" />
-　　下载之后解压缩。大家可以看到这样一个目录结构。非常的清晰。
-　　第一个文件夹jar是jar包的文件夹。第二个javadoc是API文档。第三个license文件夹是开源的授权文件(可以直接无视)。
-　　javadoc文件夹下面是一个jar包。可以直接解压缩出来。解压缩之后的文件夹就是api文档(以网页的形势展现)。
-　　jar文件夹里面有很多的jar包和一个all-in-one文件夹。都是Netty框架的组成部分。all-in-one里面有两个文件一个是jar包，另一个是对应的source源代码包。这样做的目的是为了给程序员有选择的添加自己所需要的包。
-　　假如读者是初学者的话。推荐直接套用all-in-one里面的jar包。假如你熟悉Netty的话可以根据自己的项目需求添加不同的jar包。
-<h2 style="text-align: center;">2.创建Server 服务端</h2>
-　　Netty创建全部都是实现自<a title="class in io.netty.bootstrap" href="http://netty.io/5.0/api/io/netty/bootstrap/AbstractBootstrap.html" target="classFrame">AbstractBootstrap</a>。客户端的是Bootstrap，服务端的则是ServerBootstrap。
-　　
-<h3><span>2.1创建一个 HelloServer </span></h3>
-<div class="cnblogs_code">
-<pre><span style="color: #0000ff;">package</span><span style="color: #000000;"> org.example.hello;
 
 &hellip;</p>
         <div class="post-list__meta"><time datetime="2014-08-12" class="post-list__meta--date date">2014-08-12</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
@@ -404,28 +180,6 @@
         <p class="excerpt">　　在中国程序界。我们都是学着Hello World !慢慢成长起来的。逐渐从一无所知到熟悉精通的。
 　　第二章就从Hello World 开始讲述Netty的中文教程。
 　　首先创建一个Java项目。引入一个Netty 框架的包。这个步骤我在本系列教程的后面就不在重复了。
-　　先上一张我示例的项目工程图给大家看一下:
-<img style="display: block; margin-left: auto; margin-right: auto;" src="http://images.cnitblog.com/blog/359548/201312/26171451-184e0b3b4ce745de81d773c097243960.png" alt="" />
-<h2>1.下载并为项目添加Netty框架</h2>
-　　Netty的包大家可以从Netty官网:<a href="http://netty.io/downloads.html" target="_blank">http://netty.io/downloads.html</a>&nbsp;下载
-　　<img style="display: block; margin-left: auto; margin-right: auto;" src="http://images.cnitblog.com/blog/359548/201312/26171717-5926ec582cab4167b6aca539d8c8adff.jpg" alt="" />
-如图所示: Netty提供了三个主要版本的框架包给大家下载。
-3.9版本Final 说明这个版本是3.x版本中最新的版本。final意味着功能不再继续添加更新。仅为修改bug等提供继续的更新。
-5.x版本由于是开始。不能排除是否稳定运行等问题。加上5.x在4.x的版本上略微修改的。在5.x稳定之前。不推荐大家学习使用。
-本教程是基于Netty4.x版本的。
-　　笔者也是从3.6版本，经过了相当痛苦的一段时间才算是真正的过度到4.x版本。
-<img style="display: block; margin-left: auto; margin-right: auto;" src="http://images.cnitblog.com/blog/359548/201312/26172210-783e94446ac0417fab5493bb6dcdf526.jpg" alt="" />
-　　下载之后解压缩。大家可以看到这样一个目录结构。非常的清晰。
-　　第一个文件夹jar是jar包的文件夹。第二个javadoc是API文档。第三个license文件夹是开源的授权文件(可以直接无视)。
-　　javadoc文件夹下面是一个jar包。可以直接解压缩出来。解压缩之后的文件夹就是api文档(以网页的形势展现)。
-　　jar文件夹里面有很多的jar包和一个all-in-one文件夹。都是Netty框架的组成部分。all-in-one里面有两个文件一个是jar包，另一个是对应的source源代码包。这样做的目的是为了给程序员有选择的添加自己所需要的包。
-　　假如读者是初学者的话。推荐直接套用all-in-one里面的jar包。假如你熟悉Netty的话可以根据自己的项目需求添加不同的jar包。
-<h2 style="text-align: center;">2.创建Server 服务端</h2>
-　　Netty创建全部都是实现自<a title="class in io.netty.bootstrap" href="http://netty.io/5.0/api/io/netty/bootstrap/AbstractBootstrap.html" target="classFrame">AbstractBootstrap</a>。客户端的是Bootstrap，服务端的则是ServerBootstrap。
-　　
-<h3><span>2.1创建一个 HelloServer </span></h3>
-<div class="cnblogs_code">
-<pre><span style="color: #0000ff;">package</span><span style="color: #000000;"> org.example.hello;
 
 &hellip;</p>
         <div class="post-list__meta"><time datetime="2014-04-09" class="post-list__meta--date date">2014-04-09</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
@@ -462,43 +216,6 @@
 
 &hellip;</p>
         <div class="post-list__meta"><time datetime="2014-01-15" class="post-list__meta--date date">2014-01-15</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
-        <hr class="post-list__divider">
-      </li>
-    
-      <li>
-        <h2 class="post-list__post-title post-title"><a href="/netty/2014/01/06/Netty4.x_3.html" title="Netty4.x中文教程系列(三) Hello World ！详解">Netty4.x中文教程系列(三) Hello World ！详解</a></h2>
-        <p class="excerpt"><h1 align="center">Netty 中文教程 （二） Hello World ！详解</h1>
-&nbsp;&nbsp;&nbsp; 上一篇文章，笔者提供了一个Hello World 的Netty示例。
-&nbsp;&nbsp;&nbsp; 时间过去了这么久，准备解释一下示例代码。
-<h2>1.HelloServer 详解</h2>
-&nbsp;&nbsp;&nbsp; HelloServer首先定义了一个静态终态的变量---服务端绑定端口7878。至于为什么是这个7878端口，纯粹是笔者个人喜好。大家可以按照自己的习惯选择端口。当然了。常用的几个端口(例如:80,8080,843(Flash及Silverlight策略文件请求端口等等)，3306(Mysql数据库占用端口))最好就不要占用了，避免一些奇怪的问题。
-&nbsp;&nbsp;&nbsp; HelloServer类里面的代码并不多。只有一个main函数，加上内部短短的几行代码。
-&nbsp;&nbsp;&nbsp; Main函数开始的位置定义了两个工作线程，一个命名为WorkerGroup，另一个命名为BossGroup。都是实例化NioEventLoopGroup。这一点和3.x版本中基本思路是一致的。Worker线程用于管理线程为Boss线程服务。
-讲到这里需要解释一下EventLoopGroup，它是4.x版本提出来的一个新概念。类似于3.x版本中的线程。用于管理Channel连接的。在main函数的结尾就用到了EventLoopGroup提供的便捷的方法，shutdownGraceFully()，翻译为中文就是优雅的全部关闭。感觉是不是很有意思。作者居然会如此可爱的命名了这样一个函数。查看相应的源代码。我们可以在DefaultEventExecutorGroup的父类MultithreadEventExecutorGroup中看到它的实现代码。关闭了全部EventExecutor数组child里面子元素。相比于3.x版本这是一个比较重大的改动。开发者可以很轻松的全部关闭，而不需要担心出现内存泄露。
-&nbsp;&nbsp;&nbsp; 在try里面实例化一个ServerBootstrap b。设置group。设置channel为NioServerSocketChannel。
-设置childHandler，在这里使用实例化一个HelloServerInitializer类来实现，继承ChannelInitializer&lt;SocketChannel&gt;。内部的代码我们可以在前文的注视中大致了解一下，主要作用是设置相关的字节解码编码器，和代码处理逻辑。Handler是Netty包里面占很大一个比例。可见其的作用和用途。Handler涉及很多领域。HTTP，UDP，Socket，WebSocket等等。详细的部分在本章的第三节解释。
-设置好Handler绑定端口7878，并调用函数sync()，监听端口(等待客户端连接和发送消息)。并监听端口关闭(为了防止线程停止)。
-&nbsp;&nbsp;&nbsp; 最后finally我们要优雅的全部关闭服务端。^_^
-&nbsp;
-<h2>2.HelloClient详解</h2>
-&nbsp;&nbsp;&nbsp; 相比于服务端的代码。客户端要精简一些。
-&nbsp;&nbsp;&nbsp; 客户端仅仅只需要一个worker的EventLoopGroup。其次是类似于ServerBootstrap的HandlerInitializer。
-&nbsp;&nbsp;&nbsp; 唯一不同的可能就是客户端的connect方法。服务端的绑定并监听端口，客户端是连接指定的地址。Sync().channel()是为了返回这个连接服务端的channel，并用于后面代码的调用。
-BufferedReader 这个是用于控制台输入的。不做详细的解释了就。大家都懂的。
-当用户输入一行内容并回车之后。循环的读取每一行内容。然后使用writeAndFlush向服务端发送消息。
-<h2>3.HandlerInitializer详解</h2>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Handler在Netty中是一个比较重要的概念。有着相当重要的作用。相比于Netty的底层。我们接触更多的应该是他的Handler。在这里我将它剥离出来单独解释。
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ServerHandlerInitializer继承与ChannelInitializer&lt;SocketChannel&gt;需要我们实现一个initChannel()方法。我们定义的handler就是写在这里面。
-&nbsp;&nbsp;&nbsp; 在最开始的地方定义了一个DelimiterBasedFrameDecoder。按直接翻译就是基于分隔符的帧解码器。再一次感觉框架的作者的命名，好直接好简单。详细的内容我们在后面的文章中在为大家详细的解释。目前大家知道他是以分隔符为分割标准的解码器就好了。
-&nbsp;&nbsp;&nbsp; 也许有人会问分隔符是什么？我只能 !*_* :&ldquo;纳尼 ！！&rdquo;。分隔符其实就是&ldquo;\n&rdquo;我们在学习C语言的时候最常用的的也许就是这个分隔符了吧。
-&nbsp;&nbsp;&nbsp; 下面的则是StringDecoder 和StringEncoder。字符串解码器和字符串编码器。
-&nbsp;&nbsp;&nbsp; 最后面则是我们自己的逻辑。服务/客户端逻辑是在消息解码之后处理的。然后服务/客户端返回相关消息则是需要对消息进行相对应的编码。最终才是以二进制数据流的形势发送给服务/客户端的。
-&nbsp;&nbsp;&nbsp; 内容暂时就写到这里。O(&cap;_&cap;)O哈哈~。后面的东西慢慢为大家完善。
-&nbsp;&nbsp;&nbsp; 假如有甚么不正确的地方，敬请谅解。求大神指正。
-&nbsp;
-<p style="padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 60px; font-family: 微软雅黑; font-size: 12px; border: #e0e0e0 1px dashed;"><strong>作者</strong>：TinyZ<br />出处：<a href="http://www.cnblogs.com/zou90512/" target="_blank">http://www.cnblogs.com/zou90512/</a><br />关于作者：努力学习，天天向上。不断探索学习，提升自身价值。记录经验分享。<br />本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文链接<br />如有问题，可以通过&nbsp;<span style="color: #0000ff;">zou90512@126.com&nbsp;</span>联系我，非常感谢。<br />笔者网店: <a href="http://aoleitaisen.taobao.com" target="_blank">http://aoleitaisen.taobao.com</a>. 欢迎广大读者围观
-&nbsp;&hellip;</p>
-        <div class="post-list__meta"><time datetime="2014-01-06" class="post-list__meta--date date">2014-01-06</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
         <hr class="post-list__divider">
       </li>
     
