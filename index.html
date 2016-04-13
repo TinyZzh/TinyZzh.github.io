@@ -148,7 +148,7 @@
     
       <li>
         <h2 class="post-list__post-title post-title"><a href="/github/2016/04/13/Build_GitHub_Pages.html" title="搭建自己的GitHub Pages">搭建自己的GitHub Pages</a></h2>
-        <p class="excerpt">本文基于Win 10操作系统和Jekyll 3.1.2完成。
+        <p class="excerpt">本文记录博主使用Win 10操作系统和Jekyll 3.1.2搭建GitHub Pages的过程。希望能帮助到相同有需要的朋友。
 
 &hellip;</p>
         <div class="post-list__meta"><time datetime="2016-04-13" class="post-list__meta--date date">2016-04-13</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#GitHub">GitHub</a> <a href="/tags/#Blog">Blog</a> </span></div>
@@ -167,8 +167,9 @@
     
       <li>
         <h2 class="post-list__post-title post-title"><a href="/netty/2014/08/12/Netty4.x_6.html" title="Netty4.x中文教程系列(六) 从头开始Bootstrap">Netty4.x中文教程系列(六) 从头开始Bootstrap</a></h2>
-        <p class="excerpt">　　在中国程序界。我们都是学着Hello World !慢慢成长起来的。逐渐从一无所知到熟悉精通的。
-　　第二章就从Hello World 开始讲述Netty的中文教程。
+        <p class="excerpt">&nbsp;&nbsp;&nbsp;&nbsp;其实自从中文教程系列（五）一直不知道自己到底想些什么。加上忙着工作上出现了一些问题。本来想就这么放弃维护了。没想到有朋友和我说百度搜索推荐了我的文章。瞬间有点小激动啊。决定自己要把这个教程系列完善下去。这里诚挚的想支持我的盆友们道歉。真的是让你们失望了。我居然有想放弃的这种丧心病狂的念头。以后绝对不会了。
+&nbsp;&nbsp;&nbsp;&nbsp;其实伴随着对Netty的逐步深入学习。感觉自己对netty的了解仍然有所欠缺。加上笔者语文课是美术老师教的。所以。。说多了都是泪啊。~~o(&gt;_&lt;)o ~~
+&nbsp;
 
 &hellip;</p>
         <div class="post-list__meta"><time datetime="2014-08-12" class="post-list__meta--date date">2014-08-12</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
@@ -177,9 +178,8 @@
     
       <li>
         <h2 class="post-list__post-title post-title"><a href="/netty/2014/04/09/Netty4.x_5.html" title="Netty4.x中文教程系列(五) 编解码器Codec">Netty4.x中文教程系列(五) 编解码器Codec</a></h2>
-        <p class="excerpt">　　在中国程序界。我们都是学着Hello World !慢慢成长起来的。逐渐从一无所知到熟悉精通的。
-　　第二章就从Hello World 开始讲述Netty的中文教程。
-　　首先创建一个Java项目。引入一个Netty 框架的包。这个步骤我在本系列教程的后面就不在重复了。
+        <p class="excerpt">&nbsp;&nbsp;&nbsp; 上一篇文章详细解释了ChannelHandler的相关构架设计，版本和设计逻辑变更等等。
+&nbsp;&nbsp;&nbsp; 这篇文章主要在于讲述Handler里面的Codec，也就是相关的编解码器。原本想把编解码器写在上一篇文章里面的。后来想想Netty里面的编解码器太多了。想要一次写完比较困难。于是重新开了一篇文章来专门写这个。
 
 &hellip;</p>
         <div class="post-list__meta"><time datetime="2014-04-09" class="post-list__meta--date date">2014-04-09</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
@@ -188,31 +188,8 @@
     
       <li>
         <h2 class="post-list__post-title post-title"><a href="/netty/2014/01/15/Netty4.x_4.html" title="Netty4.x中文教程系列(四) ChannelHandler">Netty4.x中文教程系列(四) ChannelHandler</a></h2>
-        <p class="excerpt">　　在中国程序界。我们都是学着Hello World !慢慢成长起来的。逐渐从一无所知到熟悉精通的。
-　　第二章就从Hello World 开始讲述Netty的中文教程。
-　　首先创建一个Java项目。引入一个Netty 框架的包。这个步骤我在本系列教程的后面就不在重复了。
-　　先上一张我示例的项目工程图给大家看一下:
-<img style="display: block; margin-left: auto; margin-right: auto;" src="http://images.cnitblog.com/blog/359548/201312/26171451-184e0b3b4ce745de81d773c097243960.png" alt="" />
-<h2>1.下载并为项目添加Netty框架</h2>
-　　Netty的包大家可以从Netty官网:<a href="http://netty.io/downloads.html" target="_blank">http://netty.io/downloads.html</a>&nbsp;下载
-　　<img style="display: block; margin-left: auto; margin-right: auto;" src="http://images.cnitblog.com/blog/359548/201312/26171717-5926ec582cab4167b6aca539d8c8adff.jpg" alt="" />
-如图所示: Netty提供了三个主要版本的框架包给大家下载。
-3.9版本Final 说明这个版本是3.x版本中最新的版本。final意味着功能不再继续添加更新。仅为修改bug等提供继续的更新。
-5.x版本由于是开始。不能排除是否稳定运行等问题。加上5.x在4.x的版本上略微修改的。在5.x稳定之前。不推荐大家学习使用。
-本教程是基于Netty4.x版本的。
-　　笔者也是从3.6版本，经过了相当痛苦的一段时间才算是真正的过度到4.x版本。
-<img style="display: block; margin-left: auto; margin-right: auto;" src="http://images.cnitblog.com/blog/359548/201312/26172210-783e94446ac0417fab5493bb6dcdf526.jpg" alt="" />
-　　下载之后解压缩。大家可以看到这样一个目录结构。非常的清晰。
-　　第一个文件夹jar是jar包的文件夹。第二个javadoc是API文档。第三个license文件夹是开源的授权文件(可以直接无视)。
-　　javadoc文件夹下面是一个jar包。可以直接解压缩出来。解压缩之后的文件夹就是api文档(以网页的形势展现)。
-　　jar文件夹里面有很多的jar包和一个all-in-one文件夹。都是Netty框架的组成部分。all-in-one里面有两个文件一个是jar包，另一个是对应的source源代码包。这样做的目的是为了给程序员有选择的添加自己所需要的包。
-　　假如读者是初学者的话。推荐直接套用all-in-one里面的jar包。假如你熟悉Netty的话可以根据自己的项目需求添加不同的jar包。
-<h2 style="text-align: center;">2.创建Server 服务端</h2>
-　　Netty创建全部都是实现自<a title="class in io.netty.bootstrap" href="http://netty.io/5.0/api/io/netty/bootstrap/AbstractBootstrap.html" target="classFrame">AbstractBootstrap</a>。客户端的是Bootstrap，服务端的则是ServerBootstrap。
-　　
-<h3><span>2.1创建一个 HelloServer </span></h3>
-<div class="cnblogs_code">
-<pre><span style="color: #0000ff;">package</span><span style="color: #000000;"> org.example.hello;
+        <p class="excerpt">&nbsp;&nbsp;&nbsp; 上一篇文章详细解释了Hello World示例的代码。里面涉及了一些Netty框架的基础。
+&nbsp;&nbsp;&nbsp; 这篇文章用以解释ChannelHandler。笔者本身在以前写过文章<a href="http://www.cnblogs.com/zou90512/p/3421478.html">ChannelHandler改动及影响</a> 和 <a href="http://www.cnblogs.com/zou90512/p/3407192.html">ChannelInitializer 学习</a> 对Netty的.ChannelHandler做过阐述。里面主要描述了4.x版本相对于3.x版本的改动以及影响。并引用了一些文章。为大家详细的解释了ChannelHandler里面涉及架构。
 
 &hellip;</p>
         <div class="post-list__meta"><time datetime="2014-01-15" class="post-list__meta--date date">2014-01-15</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>

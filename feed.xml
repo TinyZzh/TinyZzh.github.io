@@ -11,7 +11,7 @@
     
       <item>
         <title>搭建自己的GitHub Pages</title>
-        <description>&lt;p&gt;本文基于Win 10操作系统和Jekyll 3.1.2完成。&lt;/p&gt;
+        <description>&lt;p&gt;本文记录博主使用Win 10操作系统和Jekyll 3.1.2搭建GitHub Pages的过程。希望能帮助到相同有需要的朋友。&lt;/p&gt;
 
 &lt;h2 id=&quot;section&quot;&gt;基本需求&lt;/h2&gt;
 &lt;ul&gt;
@@ -320,295 +320,171 @@
     
       <item>
         <title>Netty4.x中文教程系列(六) 从头开始Bootstrap</title>
-        <description>&lt;p&gt;　　在中国程序界。我们都是学着Hello World !慢慢成长起来的。逐渐从一无所知到熟悉精通的。&lt;/p&gt;
-&lt;p&gt;　　第二章就从Hello World 开始讲述Netty的中文教程。&lt;/p&gt;
+        <description>&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;其实自从中文教程系列（五）一直不知道自己到底想些什么。加上忙着工作上出现了一些问题。本来想就这么放弃维护了。没想到有朋友和我说百度搜索推荐了我的文章。瞬间有点小激动啊。决定自己要把这个教程系列完善下去。这里诚挚的想支持我的盆友们道歉。真的是让你们失望了。我居然有想放弃的这种丧心病狂的念头。以后绝对不会了。&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;其实伴随着对Netty的逐步深入学习。感觉自己对netty的了解仍然有所欠缺。加上笔者语文课是美术老师教的。所以。。说多了都是泪啊。~~o(&amp;gt;_&amp;lt;)o ~~&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
 
-&lt;p&gt;　　首先创建一个Java项目。引入一个Netty 框架的包。这个步骤我在本系列教程的后面就不在重复了。&lt;/p&gt;
-&lt;p&gt;　　先上一张我示例的项目工程图给大家看一下:&lt;/p&gt;
-&lt;p&gt;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/blog/359548/201312/26171451-184e0b3b4ce745de81d773c097243960.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;h2&gt;1.下载并为项目添加Netty框架&lt;/h2&gt;
-&lt;p&gt;　　Netty的包大家可以从Netty官网:&lt;a href=&quot;http://netty.io/downloads.html&quot; target=&quot;_blank&quot;&gt;http://netty.io/downloads.html&lt;/a&gt;&amp;nbsp;下载&lt;/p&gt;
-&lt;p&gt;　　&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/blog/359548/201312/26171717-5926ec582cab4167b6aca539d8c8adff.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;如图所示: Netty提供了三个主要版本的框架包给大家下载。&lt;/p&gt;
-&lt;p&gt;3.9版本Final 说明这个版本是3.x版本中最新的版本。final意味着功能不再继续添加更新。仅为修改bug等提供继续的更新。&lt;/p&gt;
-&lt;p&gt;5.x版本由于是开始。不能排除是否稳定运行等问题。加上5.x在4.x的版本上略微修改的。在5.x稳定之前。不推荐大家学习使用。&lt;/p&gt;
-&lt;p&gt;本教程是基于Netty4.x版本的。&lt;/p&gt;
-&lt;p&gt;　　笔者也是从3.6版本，经过了相当痛苦的一段时间才算是真正的过度到4.x版本。&lt;/p&gt;
-&lt;p&gt;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/blog/359548/201312/26172210-783e94446ac0417fab5493bb6dcdf526.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;　　下载之后解压缩。大家可以看到这样一个目录结构。非常的清晰。&lt;/p&gt;
-&lt;p&gt;　　第一个文件夹jar是jar包的文件夹。第二个javadoc是API文档。第三个license文件夹是开源的授权文件(可以直接无视)。&lt;/p&gt;
-&lt;p&gt;　　javadoc文件夹下面是一个jar包。可以直接解压缩出来。解压缩之后的文件夹就是api文档(以网页的形势展现)。&lt;/p&gt;
-&lt;p&gt;　　jar文件夹里面有很多的jar包和一个all-in-one文件夹。都是Netty框架的组成部分。all-in-one里面有两个文件一个是jar包，另一个是对应的source源代码包。这样做的目的是为了给程序员有选择的添加自己所需要的包。&lt;/p&gt;
-&lt;p&gt;　　假如读者是初学者的话。推荐直接套用all-in-one里面的jar包。假如你熟悉Netty的话可以根据自己的项目需求添加不同的jar包。&lt;/p&gt;
-&lt;h2 style=&quot;text-align: center;&quot;&gt;2.创建Server 服务端&lt;/h2&gt;
-&lt;p&gt;　　Netty创建全部都是实现自&lt;a title=&quot;class in io.netty.bootstrap&quot; href=&quot;http://netty.io/5.0/api/io/netty/bootstrap/AbstractBootstrap.html&quot; target=&quot;classFrame&quot;&gt;AbstractBootstrap&lt;/a&gt;。客户端的是Bootstrap，服务端的则是ServerBootstrap。&lt;/p&gt;
-&lt;p&gt;　　&lt;/p&gt;
-&lt;h3&gt;&lt;span&gt;2.1创建一个 HelloServer &lt;/span&gt;&lt;/h3&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-
-
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.bootstrap.ServerBootstrap;
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelFuture;
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.EventLoopGroup;
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.nio.NioEventLoopGroup;
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.nio.NioServerSocketChannel;
-
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloServer {
-
-    &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;/**&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;
-     * 服务端监听的端口地址
-     &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-    &lt;span style=&quot;color: #0000ff;&quot;&gt;private&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;final&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;int&lt;/span&gt; portNumber = 7878&lt;span style=&quot;color: #000000;&quot;&gt;;
-
-    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; main(String[] args) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; InterruptedException {
-        EventLoopGroup bossGroup &lt;/span&gt;= &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; NioEventLoopGroup();
-        EventLoopGroup workerGroup &lt;/span&gt;= &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; NioEventLoopGroup();
-        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;try&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-            ServerBootstrap b &lt;/span&gt;= &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; ServerBootstrap();
-            b.group(bossGroup, workerGroup);
-            b.channel(NioServerSocketChannel.&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
-            b.childHandler(&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloServerInitializer());
-
-            &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 服务器绑定端口监听&lt;/span&gt;
-            ChannelFuture f =&lt;span style=&quot;color: #000000;&quot;&gt; b.bind(portNumber).sync();
-            &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 监听服务器关闭监听&lt;/span&gt;
-&lt;span style=&quot;color: #000000;&quot;&gt;            f.channel().closeFuture().sync();
-
-            &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 可以简写为&lt;/span&gt;
-            &lt;span style=&quot;color: #008000;&quot;&gt;/*&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; b.bind(portNumber).sync().channel().closeFuture().sync(); &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;
-        } &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;finally&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
-        }
-    }
-}&lt;/span&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&lt;span&gt;　　EventLoopGroup 是在4.x版本中提出来的一个新概念。用于channel的管理。服务端需要两个。和3.x版本一样，一个是boss线程一个是worker线程。&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;span&gt;　&lt;span style=&quot;color: #c0c0c0;&quot;&gt;　b.childHandler(&lt;/span&gt;&lt;/span&gt;&lt;span style=&quot;color: #00ffff;&quot;&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;new HelloServerInitializer());　　　　//&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;用于添加相关的Handler&lt;/span&gt;&lt;/span&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;span&gt;　　服务端简单的代码，真的没有办法在精简了感觉。就是一个绑定端口操作。&lt;/span&gt;&lt;/p&gt;
-&lt;h3&gt;&lt;span&gt;2.2创建和实现HelloServerInitializer&lt;/span&gt;&lt;/h3&gt;
-&lt;p&gt;&lt;span&gt;　　在HelloServer中的HelloServerInitializer在这里实现。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span&gt;　　首先我们需要明确我们到底是要做什么的。很简单。HelloWorld!。我们希望实现一个能够像服务端发送文字的功能。服务端假如可以最好还能返回点消息给客户端，然客户端去显示。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span&gt;　　需求简单。那我们下面就准备开始实现。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span&gt;　　DelimiterBasedFrameDecoder Netty在官方网站上提供的示例显示 有这么一个解码器可以简单的消息分割。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span&gt;　　其次 在decoder里面我们找到了String解码编码器。着都是官网提供给我们的。&lt;/span&gt;&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelInitializer;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelPipeline;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.SocketChannel;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.DelimiterBasedFrameDecoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.Delimiters;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.string.StringDecoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.string.StringEncoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt; HelloServerInitializer &lt;span style=&quot;color: #0000ff;&quot;&gt;extends&lt;/span&gt; ChannelInitializer&amp;lt;SocketChannel&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; initChannel(SocketChannel ch) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;         ChannelPipeline pipeline =&lt;span style=&quot;color: #000000;&quot;&gt; ch.pipeline();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 以(&quot;\n&quot;)为结尾分割的 解码器&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt;         pipeline.addLast(&quot;framer&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; DelimiterBasedFrameDecoder(8192&lt;span style=&quot;color: #000000;&quot;&gt;, Delimiters.lineDelimiter()));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 字符串解码 和 编码&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt;         pipeline.addLast(&quot;decoder&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; StringDecoder());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt;         pipeline.addLast(&quot;encoder&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; StringEncoder());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 自己的逻辑Handler&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt;         pipeline.addLast(&quot;handler&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloServerHandler());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;　　上面的三个解码和编码都是系统。&lt;/p&gt;
-&lt;p&gt;　　另外我们自己的Handler怎么办呢。在最后我们添加一个自己的Handler用于写自己的处理逻辑。&lt;/p&gt;
-&lt;h3&gt;2.3 增加自己的逻辑HelloServerHandler&lt;/h3&gt;
-&lt;p&gt;　　自己的Handler我们这里先去继承extends官网推荐的SimpleChannelInboundHandler&amp;lt;C&amp;gt; 。在这里C，由于我们需求里面发送的是字符串。这里的C改写为String。&lt;/p&gt;
-&lt;p&gt;　　&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.net.InetAddress;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelHandlerContext;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.SimpleChannelInboundHandler;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt; HelloServerHandler &lt;span style=&quot;color: #0000ff;&quot;&gt;extends&lt;/span&gt; SimpleChannelInboundHandler&amp;lt;String&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelRead0(ChannelHandlerContext ctx, String msg) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 收到消息直接打印输出&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt;         System.out.println(ctx.channel().remoteAddress() + &quot; Say : &quot; +&lt;span style=&quot;color: #000000;&quot;&gt; msg);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 返回客户端消息 - 我已经接收到了你的消息&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;         ctx.writeAndFlush(&quot;Received your message !\n&quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt;     &lt;span style=&quot;color: #008000;&quot;&gt;/*&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     *
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * 覆盖 channelActive 方法 在channel被启用的时候触发 (在建立连接的时候)
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     *
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * channelActive 和 channelInActive 在后面的内容中讲述，这里先不做详细的描述
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelActive(ChannelHandlerContext ctx) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;28&lt;/span&gt;         System.out.println(&quot;RamoteAddress : &quot; + ctx.channel().remoteAddress() + &quot; active !&quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;29&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;30&lt;/span&gt;         ctx.writeAndFlush( &quot;Welcome to &quot; + InetAddress.getLocalHost().getHostName() + &quot; service!\n&quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;31&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;32&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;super&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;.channelActive(ctx);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;33&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;34&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;　　在channelHandlerContent自带一个writeAndFlush方法。方法的作用是写入Buffer并刷入。&lt;/p&gt;
-&lt;p&gt;　　&lt;span style=&quot;color: #000000;&quot;&gt;注意:&lt;span style=&quot;text-decoration: underline;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;text-decoration: underline;&quot;&gt;在3.x版本中此处有很大区别。在3.x版本中write()方法是自动flush的。在4.x版本的前面几个版本也是一样的。但是在4.0.9之后修改为WriteAndFlush。普通的write方法将不会发送消息。需要手动在write之后flush()一次&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　这里channeActive的意思是当连接活跃(建立)的时候触发.输出消息源的远程地址。并返回欢迎消息。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　channelRead0 在这里的作用是类似于3.x版本的messageReceived()。可以当做是每一次收到消息是触发。&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　我们在这里的代码是返回客户端一个字符串&quot;Received your message !&quot;.&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　&lt;span style=&quot;text-decoration: underline;&quot;&gt;&lt;strong&gt;注意:字符串最后面的&quot;\n&quot;是必须的。因为我们在前面的解码器DelimiterBasedFrameDecoder是一个根据字符串结尾为&amp;ldquo;\n&amp;rdquo;来结尾的。假如没有这个字符的话。解码会出现问题。&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;下面开始正文：&lt;/p&gt;
+&lt;p&gt;纵览Netty框架的包结构，不难看出。其实Netty是有五大模块组成。&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823447646483.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;ol style=&quot;margin-left: 60pt;&quot;&gt;
+    &lt;li&gt;
+        &lt;div style=&quot;text-align: justify;&quot;&gt;&lt;span style=&quot;font-size: 10pt;&quot;&gt;Bootstrap负责启动引导 &lt;/span&gt;&lt;/div&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;div style=&quot;text-align: justify;&quot;&gt;&lt;span style=&quot;font-size: 10pt;&quot;&gt;Buffer是Netty自己封装的缓存器 &lt;/span&gt;&lt;/div&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;div style=&quot;text-align: justify;&quot;&gt;&lt;span style=&quot;font-size: 10pt;&quot;&gt;Channel负责管理和建立连接 &lt;/span&gt;&lt;/div&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;div style=&quot;text-align: justify;&quot;&gt;&lt;span style=&quot;font-size: 10pt;&quot;&gt;Handler是责任链路模式中的处理者 &lt;/span&gt;&lt;/div&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;div style=&quot;text-align: justify;&quot;&gt;&lt;span style=&quot;font-size: 10pt;&quot;&gt;Util是Netty提供和使用到的一些工具 &lt;/span&gt;&lt;/div&gt;
+    &lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;如何启动Netty服务器&lt;/h2&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Netty的启动服务器相关的类全部都在bootstrap包里面。所以本章我们从头开始，从bootstrap包里面的内容开始。从创建一个Netty服务器开始为大家逐步讲解Netty的应用。&lt;/p&gt;
+&lt;p&gt;相比于第五章的ChannelHandler里面的编解码器bootstrap里面可以说是内容少的可怜。来看一下他的包内容：&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823451397298.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;margin-left: 21pt;&quot;&gt;简简单单的三个类，一个接口。&lt;/p&gt;
+&lt;p style=&quot;margin-left: 21pt;&quot;&gt;Bootstrap是客户端的启动程序类。&lt;/p&gt;
+&lt;p style=&quot;margin-left: 21pt;&quot;&gt;ServerBootstrap是服务端的启动程序类&lt;/p&gt;
+&lt;p style=&quot;margin-left: 21pt;&quot;&gt;Bootstrap和ServerBootstrap继承AbstractBootstrap。&lt;/p&gt;
+&lt;p style=&quot;margin-left: 21pt;&quot;&gt;ChannelFactory则是AbstractBootstrap中用于创建Channel的接口&lt;/p&gt;
+&lt;p&gt;以下代码以服务端的启动程序启动为例：&lt;/p&gt;
+&lt;h3&gt;步骤一：实例化ServerBootstrap&lt;/h3&gt;
+&lt;p&gt;首先我们需要实例化一个ServerBootstrap服务端启动引导程序。如下图：&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823454209084.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;步骤二：设置它的线程组&lt;/h3&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;创建两个NioEventLoopGroup，一个是父线程（Boss线程），一个是子线程(work线程)。&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823456703628.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;设置bootstrap的线程组&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823459363941.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;设置线程组主要的目的是为了处理Channel中的事件和IO操作。&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;下图为ServerBootstrap的group方法的源码：&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823462806512.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;父线程组被传递到父类中。详细的解释在最后面。涉及的东西太多。在后面在进行解释。&lt;/p&gt;
+&lt;h3&gt;步骤三：设置Channel类型&lt;/h3&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;设置Channel类型：&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823465775070.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;下图ServerBootstrap中channel()方法的源码：&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823469203343.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;我们可以看到创建并设置了一个Channel工厂。&lt;/p&gt;
+&lt;p&gt;下图是BootstrapChannelFactory的源码。它是一个终态的静态的类。实现ChannelFactory。作用是根据初始设置的Channel类型，创建并返回一个新的Channel。&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823472954157.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;步骤四：设置责任链路&lt;/h3&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;责任链模式是Netty的核心部分。每个处理者只负责自己有关的东西。然后将处理结果根据责任链传递下去。&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823476704972.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;我们要在初始的设置一个责任链路。当一个Channel被创建之后初始化的时候将被设置。下图是ServerBootstrap在init（）方法的源码：&lt;/p&gt;
+&lt;p style=&quot;text-align: center; margin-left: 21pt;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823480304314.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;创建一个Channel，在初始化的设置管道里面的处理者。&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;h3&gt;步骤五：绑定并监听端口&lt;/h3&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;绑定并设置监听端口。&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823484206601.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;经过以上的5个步骤，我们的服务器就足以启动了。很多的设置都是Netty默认的。我们想设置自己的参数怎么办呢？Netty提供了这个方法。&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;h3&gt;步骤六：其他设置&lt;/h3&gt;
+&lt;p&gt;1. 设置Channel选项配置：&lt;/p&gt;
+&lt;p&gt;在Netty 以前的版本中都是以字符串来配置的。4.x版本发布之后统一修改为使用ChannelOption类来实现配置。&lt;/p&gt;
+&lt;p&gt;例如：&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823486866915.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Socket连接是否保存连接:&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823489361458.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;还有很多其他的参数。如下图所示：&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823492955502.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;这里不详细讲了。参考：io.netty.channel.ChannelOption&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;2. 设置子Channel的属性：&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823496863087.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;设置子Channel的属性。当值为null是，属性将被删除。&lt;/p&gt;
 &lt;p&gt;&amp;nbsp;&lt;/p&gt;
 &lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;h2&gt;2.Client客户端&lt;/h2&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　类似于服务端的代码。我们不做特别详细的解释。&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　直接上示例代码:&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.bootstrap.Bootstrap;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.Channel;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.EventLoopGroup;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.nio.NioEventLoopGroup;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.nio.NioSocketChannel;
+&lt;h3&gt;解释EventLoopGroup&lt;/h3&gt;
+&lt;p&gt;这里解释一下我们上面创建的两个完全一样的线程组的作用。&lt;/p&gt;
+&lt;p&gt;Netty的架构使用了非常复杂的主从式Reactor线程模型。简单的说就是。父线程组（代码中的parentBosser）担任（acceptor）的角色。负责接收客户端的连接请求，处理完成请求，创建一个Channel并注册到子线程组（代码中的childWorker）中的某个线程上面，然后这个线程将负责Channel的读写，编解码等操作。&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;源代码查看：&lt;/p&gt;
+&lt;p&gt;在步骤四中我们设置了责任链路。这里是Channel初始化和注册。在这里的init就是Channel的初始化。初始化完成之后。Group()则是获取在步骤一种的设置父线程组，并将这个新的Channel注册进来。&lt;/p&gt;
+&lt;p&gt;下图是AbstractBootstrap的initAndRegister方法&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823502486659.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;方法Init()实现在ServerBootstrap中。代码如下：&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823509988288.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;看到下面的代码是不是有种和熟悉的感觉？没错。就是在步骤四中设置责任链路的那段代码。这里将注册新创建的Channel到子线程组&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Ps: 完。。。O(&amp;cap;_&amp;cap;)O哈哈~。。。写的好辛苦的说。。。附上我的测试示例代码。好累。。写这么多字。希望能帮助到大家&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;div class=&quot;cnblogs_code&quot; onclick=&quot;cnblogs_code_show(&#39;356a8199-3469-4147-be11-b53ac34cefa8&#39;)&quot;&gt;&lt;img id=&quot;code_img_closed_356a8199-3469-4147-be11-b53ac34cefa8&quot; class=&quot;code_img_closed&quot; src=&quot;http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif&quot; alt=&quot;&quot; /&gt;&lt;img id=&quot;code_img_opened_356a8199-3469-4147-be11-b53ac34cefa8&quot; class=&quot;code_img_opened&quot; style=&quot;display: none;&quot; onclick=&quot;cnblogs_code_hide(&#39;356a8199-3469-4147-be11-b53ac34cefa8&#39;,event)&quot; src=&quot;http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif&quot; alt=&quot;&quot; /&gt;
+    &lt;div id=&quot;cnblogs_code_open_356a8199-3469-4147-be11-b53ac34cefa8&quot; class=&quot;cnblogs_code_hide&quot;&gt;
+&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.bootstrap.ServerBootstrap;
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt; io.netty.channel.*&lt;span style=&quot;color: #000000;&quot;&gt;;
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.nio.NioEventLoopGroup;
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.nio.NioServerSocketChannel;
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.nio.NioSocketChannel;
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.LengthFieldPrepender;
 &lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.io.BufferedReader;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.io.IOException;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.io.InputStreamReader;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloClient {
+&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;/**&lt;/span&gt;
+&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt; * 测试。。O(&amp;cap;_&amp;cap;)O哈哈~
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt; * Created by TinyZ on 2014/8/12.
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt;  &lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
+&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; MainTest {
 &lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; String host = &quot;127.0.0.1&quot;&lt;span style=&quot;color: #000000;&quot;&gt;;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;int&lt;/span&gt; port = 7878&lt;span style=&quot;color: #000000;&quot;&gt;;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt;     &lt;span style=&quot;color: #008000;&quot;&gt;/**&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * &lt;/span&gt;&lt;span style=&quot;color: #808080;&quot;&gt;@param&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; args
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * &lt;/span&gt;&lt;span style=&quot;color: #808080;&quot;&gt;@throws&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; InterruptedException
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * &lt;/span&gt;&lt;span style=&quot;color: #808080;&quot;&gt;@throws&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; IOException
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt;      &lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; main(String[] args) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; InterruptedException, IOException {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt;         EventLoopGroup group = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; NioEventLoopGroup();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;try&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt;             Bootstrap b = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Bootstrap();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            b.group(group)
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;28&lt;/span&gt;             .channel(NioSocketChannel.&lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;)
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;29&lt;/span&gt;             .handler(&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloClientInitializer());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;30&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;31&lt;/span&gt;             &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 连接服务端&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;32&lt;/span&gt;             Channel ch =&lt;span style=&quot;color: #000000;&quot;&gt; b.connect(host, port).sync().channel();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;33&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;34&lt;/span&gt;             &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 控制台输入&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;35&lt;/span&gt;             BufferedReader in = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; BufferedReader(&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; InputStreamReader(System.in));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;36&lt;/span&gt;             &lt;span style=&quot;color: #0000ff;&quot;&gt;for&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; (;;) {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;37&lt;/span&gt;                 String line =&lt;span style=&quot;color: #000000;&quot;&gt; in.readLine();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;38&lt;/span&gt;                 &lt;span style=&quot;color: #0000ff;&quot;&gt;if&lt;/span&gt; (line == &lt;span style=&quot;color: #0000ff;&quot;&gt;null&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;) {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;39&lt;/span&gt;                     &lt;span style=&quot;color: #0000ff;&quot;&gt;continue&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;40&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;41&lt;/span&gt;                 &lt;span style=&quot;color: #008000;&quot;&gt;/*&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;42&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;                 * 向服务端发送在控制台输入的文本 并用&quot;\r\n&quot;结尾
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;43&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;                 * 之所以用\r\n结尾 是因为我们在handler中添加了 DelimiterBasedFrameDecoder 帧解码。
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;44&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;                 * 这个解码器是一个根据\n符号位分隔符的解码器。所以每条消息的最后必须加上\n否则无法识别和解码
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;45&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;                 * &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;46&lt;/span&gt;                 ch.writeAndFlush(line + &quot;\r\n&quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;47&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;48&lt;/span&gt;         } &lt;span style=&quot;color: #0000ff;&quot;&gt;finally&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;49&lt;/span&gt;             &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; The connection is closed automatically on shutdown.&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;50&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            group.shutdownGracefully();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;51&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;        }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;52&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;53&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　下面的是HelloClientInitializer代码貌似是和服务端的完全一样。我没注意看。其实编码和解码是相对的。多以服务端和客户端都是解码和编码。才能通信。&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelInitializer;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelPipeline;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.SocketChannel;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.DelimiterBasedFrameDecoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.Delimiters;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.string.StringDecoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.string.StringEncoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt; HelloClientInitializer &lt;span style=&quot;color: #0000ff;&quot;&gt;extends&lt;/span&gt; ChannelInitializer&amp;lt;SocketChannel&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; initChannel(SocketChannel ch) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;         ChannelPipeline pipeline =&lt;span style=&quot;color: #000000;&quot;&gt; ch.pipeline();
+&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; main(String[] args) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
 &lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;/*&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         * 这个地方的 必须和服务端对应上。否则无法正常解码和编码
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         *
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         * 解码和编码 我将会在下一张为大家详细的讲解。再次暂时不做详细的描述
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         *
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         * &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;         pipeline.addLast(&quot;framer&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; DelimiterBasedFrameDecoder(8192&lt;span style=&quot;color: #000000;&quot;&gt;, Delimiters.lineDelimiter()));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt;         pipeline.addLast(&quot;decoder&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; StringDecoder());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt;         pipeline.addLast(&quot;encoder&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; StringEncoder());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 客户端的逻辑&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;28&lt;/span&gt;         pipeline.addLast(&quot;handler&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloClientHandler());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;29&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;30&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;　　HellClientHandler：&lt;/p&gt;
-&lt;p&gt;　　&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelHandlerContext;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.SimpleChannelInboundHandler;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt; HelloClientHandler &lt;span style=&quot;color: #0000ff;&quot;&gt;extends&lt;/span&gt; SimpleChannelInboundHandler&amp;lt;String&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelRead0(ChannelHandlerContext ctx, String msg) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt;         System.out.println(&quot;Server say : &quot; +&lt;span style=&quot;color: #000000;&quot;&gt; msg);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelActive(ChannelHandlerContext ctx) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;         System.out.println(&quot;Client active &quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;super&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;.channelActive(ctx);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
+&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;         NioEventLoopGroup parentBosser = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; NioEventLoopGroup();
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt;         NioEventLoopGroup childWorker = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; NioEventLoopGroup();
 &lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelInactive(ChannelHandlerContext ctx) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt;         System.out.println(&quot;Client close &quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;super&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;.channelInactive(ctx);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
+&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt;         ServerBootstrap bootstrap = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; ServerBootstrap();
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;        bootstrap.group(parentBosser, childWorker);
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt;         bootstrap.channel(NioServerSocketChannel.&lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;         bootstrap.childHandler(&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; ChannelInitializer&amp;lt;NioSocketChannel&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt;() {
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            @Override
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt;             &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; initChannel(NioSocketChannel ch) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt;                 ChannelPipeline cp =&lt;span style=&quot;color: #000000;&quot;&gt; ch.pipeline();
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt;                 &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 基于长度的解码器&lt;/span&gt;
+&lt;span style=&quot;color: #008080;&quot;&gt;28&lt;/span&gt;                 cp.addLast(&quot;framer&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 2, 0, 2&lt;span style=&quot;color: #000000;&quot;&gt;));
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;29&lt;/span&gt;                 cp.addLast(&quot;prepender&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; LengthFieldPrepender(4&lt;span style=&quot;color: #000000;&quot;&gt;));
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;30&lt;/span&gt;                 &lt;span style=&quot;color: #008000;&quot;&gt;//
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;31&lt;/span&gt;                 cp.addLast(&quot;handler&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; SimpleChannelInboundHandler&amp;lt;Object&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt;() {
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;32&lt;/span&gt;
+&lt;span style=&quot;color: #008080;&quot;&gt;33&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                    @Override
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;34&lt;/span&gt;                     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelRead0(ChannelHandlerContext ctx, Object msg) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;35&lt;/span&gt;
+&lt;span style=&quot;color: #008080;&quot;&gt;36&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                        System.out.println();
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;37&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                        ctx.channel().writeAndFlush(msg);
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;38&lt;/span&gt;
+&lt;span style=&quot;color: #008080;&quot;&gt;39&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                    }
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;40&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                });
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;41&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            }
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;42&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;        });
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;43&lt;/span&gt;         bootstrap.option(ChannelOption.SO_KEEPALIVE, &lt;span style=&quot;color: #0000ff;&quot;&gt;true&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;44&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;bootstrap.childAttr()&lt;/span&gt;
+&lt;span style=&quot;color: #008080;&quot;&gt;45&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;try&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;46&lt;/span&gt;             &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 绑定并监听端口&lt;/span&gt;
+&lt;span style=&quot;color: #008080;&quot;&gt;47&lt;/span&gt;             ChannelFuture future = bootstrap.bind(9002&lt;span style=&quot;color: #000000;&quot;&gt;).sync();
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;48&lt;/span&gt;             &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 等待关闭事件&lt;/span&gt;
+&lt;span style=&quot;color: #008080;&quot;&gt;49&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            future.channel().closeFuture().sync();
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;50&lt;/span&gt;         } &lt;span style=&quot;color: #0000ff;&quot;&gt;finally&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;51&lt;/span&gt;             &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 释放资源&lt;/span&gt;
+&lt;span style=&quot;color: #008080;&quot;&gt;52&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            parentBosser.shutdownGracefully();
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;53&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            childWorker.shutdownGracefully();
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;54&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;        }
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;55&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
+&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;56&lt;/span&gt; }&lt;/pre&gt;
+    &lt;/div&gt;
+    &lt;span class=&quot;cnblogs_code_collapse&quot;&gt;View Code&lt;/span&gt;&lt;/div&gt;
 &lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;本教程的示例源代码:&lt;a href=&quot;http://pan.baidu.com/s/1hABzK#dir&quot; target=&quot;_blank&quot;&gt;http://pan.baidu.com/s/1hABzK#dir&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;大家可以再我的百度云盘里面找到。&lt;/p&gt;
-&lt;p&gt;下面上几张成果图:&lt;/p&gt;
-&lt;p&gt;　　客户端在连接建立是输出了Client active 信息，并收到服务端返回的Welcome消息。&lt;/p&gt;
-&lt;p&gt;　　输入Hello World ! 回车发送消息。服务端响应返回消息已接受。&lt;/p&gt;
-&lt;p&gt;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/blog/359548/201312/27085946-6196642a22534635874adba84ac6e51a.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;1.客户端控制台截图&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201312/27090204-1d36617bee2441849eebdd52b06ef8e3.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;2.服务端控制台截图&lt;/p&gt;
 &lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p style=&quot;text-align: left;&quot;&gt;&amp;nbsp;&lt;/p&gt;
 &lt;p style=&quot;padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 60px; font-family: 微软雅黑; font-size: 12px; border: #e0e0e0 1px dashed;&quot;&gt;&lt;strong&gt;作者&lt;/strong&gt;：TinyZ&lt;br /&gt;出处：&lt;a href=&quot;http://www.cnblogs.com/zou90512/&quot; target=&quot;_blank&quot;&gt;http://www.cnblogs.com/zou90512/&lt;/a&gt;&lt;br /&gt;关于作者：努力学习，天天向上。不断探索学习，提升自身价值。记录经验分享。&lt;br /&gt;本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文链接&lt;br /&gt;如有问题，可以通过&amp;nbsp;&lt;span style=&quot;color: #0000ff;&quot;&gt;zou90512@126.com&amp;nbsp;&lt;/span&gt;联系我，非常感谢。&lt;br /&gt;笔者网店: &lt;a href=&quot;http://aoleitaisen.taobao.com&quot; target=&quot;_blank&quot;&gt;http://aoleitaisen.taobao.com&lt;/a&gt;. 欢迎广大读者围观&lt;/p&gt;
-&lt;p style=&quot;text-align: left;&quot;&gt;&amp;nbsp;&lt;/p&gt;</description>
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;</description>
         <pubDate>2014-08-12</pubDate>
         <link>https://github.com/TinyZzh//netty/2014/08/12/Netty4.x_6.html</link>
         <guid isPermaLink="true">https://github.com/TinyZzh//netty/2014/08/12/Netty4.x_6.html</guid>
@@ -622,295 +498,83 @@
     
       <item>
         <title>Netty4.x中文教程系列(五) 编解码器Codec</title>
-        <description>&lt;p&gt;　　在中国程序界。我们都是学着Hello World !慢慢成长起来的。逐渐从一无所知到熟悉精通的。&lt;/p&gt;
-&lt;p&gt;　　第二章就从Hello World 开始讲述Netty的中文教程。&lt;/p&gt;
-&lt;p&gt;　　首先创建一个Java项目。引入一个Netty 框架的包。这个步骤我在本系列教程的后面就不在重复了。&lt;/p&gt;
+        <description>&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 上一篇文章详细解释了ChannelHandler的相关构架设计，版本和设计逻辑变更等等。&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 这篇文章主要在于讲述Handler里面的Codec，也就是相关的编解码器。原本想把编解码器写在上一篇文章里面的。后来想想Netty里面的编解码器太多了。想要一次写完比较困难。于是重新开了一篇文章来专门写这个。&lt;/p&gt;
 
-&lt;p&gt;　　先上一张我示例的项目工程图给大家看一下:&lt;/p&gt;
-&lt;p&gt;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/blog/359548/201312/26171451-184e0b3b4ce745de81d773c097243960.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;h2&gt;1.下载并为项目添加Netty框架&lt;/h2&gt;
-&lt;p&gt;　　Netty的包大家可以从Netty官网:&lt;a href=&quot;http://netty.io/downloads.html&quot; target=&quot;_blank&quot;&gt;http://netty.io/downloads.html&lt;/a&gt;&amp;nbsp;下载&lt;/p&gt;
-&lt;p&gt;　　&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/blog/359548/201312/26171717-5926ec582cab4167b6aca539d8c8adff.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;如图所示: Netty提供了三个主要版本的框架包给大家下载。&lt;/p&gt;
-&lt;p&gt;3.9版本Final 说明这个版本是3.x版本中最新的版本。final意味着功能不再继续添加更新。仅为修改bug等提供继续的更新。&lt;/p&gt;
-&lt;p&gt;5.x版本由于是开始。不能排除是否稳定运行等问题。加上5.x在4.x的版本上略微修改的。在5.x稳定之前。不推荐大家学习使用。&lt;/p&gt;
-&lt;p&gt;本教程是基于Netty4.x版本的。&lt;/p&gt;
-&lt;p&gt;　　笔者也是从3.6版本，经过了相当痛苦的一段时间才算是真正的过度到4.x版本。&lt;/p&gt;
-&lt;p&gt;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/blog/359548/201312/26172210-783e94446ac0417fab5493bb6dcdf526.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;　　下载之后解压缩。大家可以看到这样一个目录结构。非常的清晰。&lt;/p&gt;
-&lt;p&gt;　　第一个文件夹jar是jar包的文件夹。第二个javadoc是API文档。第三个license文件夹是开源的授权文件(可以直接无视)。&lt;/p&gt;
-&lt;p&gt;　　javadoc文件夹下面是一个jar包。可以直接解压缩出来。解压缩之后的文件夹就是api文档(以网页的形势展现)。&lt;/p&gt;
-&lt;p&gt;　　jar文件夹里面有很多的jar包和一个all-in-one文件夹。都是Netty框架的组成部分。all-in-one里面有两个文件一个是jar包，另一个是对应的source源代码包。这样做的目的是为了给程序员有选择的添加自己所需要的包。&lt;/p&gt;
-&lt;p&gt;　　假如读者是初学者的话。推荐直接套用all-in-one里面的jar包。假如你熟悉Netty的话可以根据自己的项目需求添加不同的jar包。&lt;/p&gt;
-&lt;h2 style=&quot;text-align: center;&quot;&gt;2.创建Server 服务端&lt;/h2&gt;
-&lt;p&gt;　　Netty创建全部都是实现自&lt;a title=&quot;class in io.netty.bootstrap&quot; href=&quot;http://netty.io/5.0/api/io/netty/bootstrap/AbstractBootstrap.html&quot; target=&quot;classFrame&quot;&gt;AbstractBootstrap&lt;/a&gt;。客户端的是Bootstrap，服务端的则是ServerBootstrap。&lt;/p&gt;
-&lt;p&gt;　　&lt;/p&gt;
-&lt;h3&gt;&lt;span&gt;2.1创建一个 HelloServer &lt;/span&gt;&lt;/h3&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-
-
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.bootstrap.ServerBootstrap;
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelFuture;
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.EventLoopGroup;
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.nio.NioEventLoopGroup;
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.nio.NioServerSocketChannel;
-
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloServer {
-
-    &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;/**&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;
-     * 服务端监听的端口地址
-     &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-    &lt;span style=&quot;color: #0000ff;&quot;&gt;private&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;final&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;int&lt;/span&gt; portNumber = 7878&lt;span style=&quot;color: #000000;&quot;&gt;;
-
-    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; main(String[] args) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; InterruptedException {
-        EventLoopGroup bossGroup &lt;/span&gt;= &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; NioEventLoopGroup();
-        EventLoopGroup workerGroup &lt;/span&gt;= &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; NioEventLoopGroup();
-        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;try&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-            ServerBootstrap b &lt;/span&gt;= &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; ServerBootstrap();
-            b.group(bossGroup, workerGroup);
-            b.channel(NioServerSocketChannel.&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
-            b.childHandler(&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloServerInitializer());
-
-            &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 服务器绑定端口监听&lt;/span&gt;
-            ChannelFuture f =&lt;span style=&quot;color: #000000;&quot;&gt; b.bind(portNumber).sync();
-            &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 监听服务器关闭监听&lt;/span&gt;
-&lt;span style=&quot;color: #000000;&quot;&gt;            f.channel().closeFuture().sync();
-
-            &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 可以简写为&lt;/span&gt;
-            &lt;span style=&quot;color: #008000;&quot;&gt;/*&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; b.bind(portNumber).sync().channel().closeFuture().sync(); &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;
-        } &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;finally&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
-        }
-    }
-}&lt;/span&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&lt;span&gt;　　EventLoopGroup 是在4.x版本中提出来的一个新概念。用于channel的管理。服务端需要两个。和3.x版本一样，一个是boss线程一个是worker线程。&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;span&gt;　&lt;span style=&quot;color: #c0c0c0;&quot;&gt;　b.childHandler(&lt;/span&gt;&lt;/span&gt;&lt;span style=&quot;color: #00ffff;&quot;&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;new HelloServerInitializer());　　　　//&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;用于添加相关的Handler&lt;/span&gt;&lt;/span&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;span&gt;　　服务端简单的代码，真的没有办法在精简了感觉。就是一个绑定端口操作。&lt;/span&gt;&lt;/p&gt;
-&lt;h3&gt;&lt;span&gt;2.2创建和实现HelloServerInitializer&lt;/span&gt;&lt;/h3&gt;
-&lt;p&gt;&lt;span&gt;　　在HelloServer中的HelloServerInitializer在这里实现。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span&gt;　　首先我们需要明确我们到底是要做什么的。很简单。HelloWorld!。我们希望实现一个能够像服务端发送文字的功能。服务端假如可以最好还能返回点消息给客户端，然客户端去显示。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span&gt;　　需求简单。那我们下面就准备开始实现。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span&gt;　　DelimiterBasedFrameDecoder Netty在官方网站上提供的示例显示 有这么一个解码器可以简单的消息分割。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span&gt;　　其次 在decoder里面我们找到了String解码编码器。着都是官网提供给我们的。&lt;/span&gt;&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelInitializer;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelPipeline;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.SocketChannel;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.DelimiterBasedFrameDecoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.Delimiters;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.string.StringDecoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.string.StringEncoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt; HelloServerInitializer &lt;span style=&quot;color: #0000ff;&quot;&gt;extends&lt;/span&gt; ChannelInitializer&amp;lt;SocketChannel&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; initChannel(SocketChannel ch) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;         ChannelPipeline pipeline =&lt;span style=&quot;color: #000000;&quot;&gt; ch.pipeline();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 以(&quot;\n&quot;)为结尾分割的 解码器&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt;         pipeline.addLast(&quot;framer&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; DelimiterBasedFrameDecoder(8192&lt;span style=&quot;color: #000000;&quot;&gt;, Delimiters.lineDelimiter()));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 字符串解码 和 编码&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt;         pipeline.addLast(&quot;decoder&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; StringDecoder());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt;         pipeline.addLast(&quot;encoder&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; StringEncoder());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 自己的逻辑Handler&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt;         pipeline.addLast(&quot;handler&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloServerHandler());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;　　上面的三个解码和编码都是系统。&lt;/p&gt;
-&lt;p&gt;　　另外我们自己的Handler怎么办呢。在最后我们添加一个自己的Handler用于写自己的处理逻辑。&lt;/p&gt;
-&lt;h3&gt;2.3 增加自己的逻辑HelloServerHandler&lt;/h3&gt;
-&lt;p&gt;　　自己的Handler我们这里先去继承extends官网推荐的SimpleChannelInboundHandler&amp;lt;C&amp;gt; 。在这里C，由于我们需求里面发送的是字符串。这里的C改写为String。&lt;/p&gt;
-&lt;p&gt;　　&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.net.InetAddress;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelHandlerContext;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.SimpleChannelInboundHandler;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt; HelloServerHandler &lt;span style=&quot;color: #0000ff;&quot;&gt;extends&lt;/span&gt; SimpleChannelInboundHandler&amp;lt;String&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelRead0(ChannelHandlerContext ctx, String msg) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 收到消息直接打印输出&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt;         System.out.println(ctx.channel().remoteAddress() + &quot; Say : &quot; +&lt;span style=&quot;color: #000000;&quot;&gt; msg);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 返回客户端消息 - 我已经接收到了你的消息&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;         ctx.writeAndFlush(&quot;Received your message !\n&quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt;     &lt;span style=&quot;color: #008000;&quot;&gt;/*&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     *
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * 覆盖 channelActive 方法 在channel被启用的时候触发 (在建立连接的时候)
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     *
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * channelActive 和 channelInActive 在后面的内容中讲述，这里先不做详细的描述
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelActive(ChannelHandlerContext ctx) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;28&lt;/span&gt;         System.out.println(&quot;RamoteAddress : &quot; + ctx.channel().remoteAddress() + &quot; active !&quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;29&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;30&lt;/span&gt;         ctx.writeAndFlush( &quot;Welcome to &quot; + InetAddress.getLocalHost().getHostName() + &quot; service!\n&quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;31&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;32&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;super&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;.channelActive(ctx);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;33&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;34&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;　　在channelHandlerContent自带一个writeAndFlush方法。方法的作用是写入Buffer并刷入。&lt;/p&gt;
-&lt;p&gt;　　&lt;span style=&quot;color: #000000;&quot;&gt;注意:&lt;span style=&quot;text-decoration: underline;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;text-decoration: underline;&quot;&gt;在3.x版本中此处有很大区别。在3.x版本中write()方法是自动flush的。在4.x版本的前面几个版本也是一样的。但是在4.0.9之后修改为WriteAndFlush。普通的write方法将不会发送消息。需要手动在write之后flush()一次&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　这里channeActive的意思是当连接活跃(建立)的时候触发.输出消息源的远程地址。并返回欢迎消息。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　channelRead0 在这里的作用是类似于3.x版本的messageReceived()。可以当做是每一次收到消息是触发。&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　我们在这里的代码是返回客户端一个字符串&quot;Received your message !&quot;.&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　&lt;span style=&quot;text-decoration: underline;&quot;&gt;&lt;strong&gt;注意:字符串最后面的&quot;\n&quot;是必须的。因为我们在前面的解码器DelimiterBasedFrameDecoder是一个根据字符串结尾为&amp;ldquo;\n&amp;rdquo;来结尾的。假如没有这个字符的话。解码会出现问题。&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;h2 align=&quot;center&quot;&gt;1.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Hello World ！实例中的使用&lt;/h2&gt;
+&lt;p&gt;　　在这里先讲一下我们第一篇文章里面的实例使用到编解码器。&lt;/p&gt;
+&lt;h3&gt;1.1 DelimiterBasedFrameDecoder解码器&lt;/h3&gt;
+&lt;p&gt;　　DelimiterBasedFrameDecoder 顾名思义我们可以理解为基于分隔符的帧解码器。参数有两个，一个是最大帧长度，另外一个是定义分隔符。&lt;/p&gt;
+&lt;p&gt;在Delimiters中提供给我们两种分隔符。一种是&amp;ldquo;0x00-NUL&amp;rdquo;分隔符。另外一种就是实例中使用的&amp;ldquo;\r\n&amp;rdquo;或&amp;ldquo;\n&amp;rdquo;分隔符。&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/i/359548/201404/091422514341001.png&quot; alt=&quot;&quot; /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 在构造函数中我们可以看出，当分隔符是&amp;ldquo;\n&amp;rdquo;的时候，框架默认解码器为基于行的帧解码器（LineBasedFrameDecoder）。否则按照可读取比特长度进行帧解码。&lt;/p&gt;
+&lt;h3&gt;1.2 StringDecoder 字符串解码器 和 编码器&lt;/h3&gt;
+&lt;p&gt;　　解码器:将比特流转换为默认编码的字符串。默认编码为UTF-8。当然开发者可以通过设置字符编码参数来设置字符编码。编码器:将字符串转换为Byte[]&lt;/p&gt;
+&lt;h2 align=&quot;center&quot;&gt;2.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Netty中Handler详述&lt;/h2&gt;
+&lt;p&gt;　　在Netty的类库的handler目录可以看出它的基本结构(下图)：&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/i/359548/201404/091423044653221.png&quot; alt=&quot;&quot; /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;图2.1 handler包结构&lt;/p&gt;
+&lt;p&gt;　　整个包由6个主要部分组成，笔者将由简入繁，慢慢想读者解释每个包的含义和用法。(若有不正确之处，希望大家能给予指点)&lt;/p&gt;
+&lt;h3&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 2.1 Logging 日志&lt;/h3&gt;
+&lt;p&gt;&amp;nbsp;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/i/359548/201404/091424014189420.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;　　　　用于Netty中的日志输出。&lt;/p&gt;
+&lt;h4&gt;　　　　2.1.1 loggingHandler&lt;/h4&gt;
+&lt;p&gt;　　LoggingHandler 继承于ChannelDuplexHandler。它的注释我们可以看出：&amp;ldquo;是一个使用日志框架记录全部事件的ChannelHandler,&amp;nbsp; 缺省值是记录全部DEBUG级别以上的事件&amp;rdquo;。它的功能是记录全部事件，包含Inbound和Outbound的，之所以选择了继承ChannelDuplexHandler，是由于ChannelDuplexHandler 继承ChannelInboundHandlerAdapter 实现ChannelOutboundHandler。所以相当于Netty框架内的全部通信相关的事件都会得到处理。&lt;/p&gt;
+&lt;h4&gt;　　　　2.1.2LogLevel&lt;/h4&gt;
+&lt;p&gt;在这里作者定义了5个级别的log。TRACE，DEBUG，INFO，WARN，ERROR。&lt;/p&gt;
+&lt;h3&gt;　　2.2 Ssl&lt;/h3&gt;
+&lt;p&gt;&amp;nbsp;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/i/359548/201404/091424185281994.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;　　用于SSL协议解析和编码。&lt;/p&gt;
+&lt;h4&gt;　　　　2.2.1&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; SslHandler&lt;/h4&gt;
+&lt;p&gt;　　　　熟悉了解过Http的朋友应该是知道ssl的。SSL 的英文全称是 &amp;ldquo;Secure Sockets Layer&amp;rdquo; ，中文名为 &amp;ldquo; 安全套接层协议层 &amp;rdquo; ，它是网景（ Netscape ）公司提出的基于 WEB 应用的安全协议。 SSL 协议指定了一种在应用程序协议（如 HTTP 、 Telenet 、 NMTP 和 FTP 等）和 TCP/IP 协议之间提供数据安全性分层的机制，它为 TCP/IP 连接提供数据加密、服务器认证、消息完整性以及可选的客户机认证。现在的相当一部分网站都有SSL加密。而SslHander则是Netty提供的Ssl解码编码处理。&lt;/p&gt;
+&lt;h4&gt;　　　　2.2.2&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; NotSslRecordException 和 SslHandshakeCompletionEvent&amp;nbsp;抛出异常和处理完成触发事件。&lt;/h4&gt;
+&lt;h3&gt;　　2.3 Stream 流&lt;/h3&gt;
+&lt;p&gt;&amp;nbsp;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/i/359548/201404/091424254979031.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;　　用于文件的的传输。将Java里面的File转换为Stream流，然后进行传输。&lt;/p&gt;
+&lt;h3&gt;　　2.4 Timeout 空闲检测&lt;/h3&gt;
+&lt;p&gt;&amp;nbsp;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/i/359548/201404/091424317936441.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 用于Netty框架中空闲超时相关。&lt;/p&gt;
+&lt;p&gt;IdleState 空闲状态。Netty中的空闲时间包括，读空闲，写空闲和读写空闲3种时间。&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 顾名思义，读空闲即一段时间内没有接受到消息，写空闲即一段时间内没有发送消息。读写空闲即一段时间内读写都空闲。主要是用于检测空闲状态。并且特定条件下服务端关闭和释放一些资源。&lt;/p&gt;
+&lt;h3&gt;　　2.5 Traffic 流量统计&lt;/h3&gt;
+&lt;p&gt;&amp;nbsp;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/i/359548/201404/091424389976707.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;　　用于流量统计。&lt;/p&gt;
+&lt;p&gt;　　Netty提供了一个流量统计抽象类，一个Channel流量统计Handler和一个全局带宽流量统计Handler。&lt;/p&gt;
+&lt;h3&gt;　　2.6 Codec 编解码器&lt;/h3&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 这个是目前Netty的重点。也是最核心最复杂的部分。也是笔者认为Netty设计里面最好的一部分。&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 用于数据的编解码。&lt;/p&gt;
+&lt;p&gt;　　编解码器可以理解为订立一个规范让客户端和服务端能够理解和识别字节流所包含的意思。其实编码和解码就是这么简单的事情，没什么复杂的。&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/i/359548/201404/091424487622056.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;　　看到codec里面的这么一大堆的包类。读者是不是赶脚着很头晕？ O(&amp;cap;_&amp;cap;)O哈哈~。作者设计了非常友好的包逻辑结构。方便我们理解源码。&lt;/p&gt;
+&lt;p&gt;即Codec包中的类优先看，下面的子包都是一些Netty开发者们提供的一些实现。&lt;/p&gt;
+&lt;p&gt;有没有看到HelloWorld出现的LengthFieldBaseFrameDecoder和FixedLengthFrameDecoder。&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;这里主要讲的是Netty中最重要的两个编解码器ByteToMessageCodec和MessageToMessageCodec。之所只讲着两个的原因是其他的编解码器都是继承于这两个的。&lt;/p&gt;
+&lt;p&gt;ByteToMessageCodec：在Netty4.x版本中允许传递Java中的对象，所以这个编解码起的作用就是讲Byte流转换为对象。而MessageToMessageCodec则是将Object转换为Object。这两个的区分其实很模糊。可能需要大家亲自动手写过之后才会有比较好的感受。&lt;/p&gt;
+&lt;p&gt;包base64：继承MessageToMessageEncoder&amp;lt;ByteBuf&amp;gt;。是base64编码的一些东西。&lt;/p&gt;
+&lt;p&gt;包bytes：继承MessageToMessageEncoder&amp;lt;ByteBuf&amp;gt;。用于字节数组和Netty里面的ByteBuf互相转换&lt;/p&gt;
+&lt;p&gt;包compression：用于ByteBuf数据压缩和解压缩的。继承MessageToMessageEncoder&amp;lt;ByteBuf&amp;gt;&lt;/p&gt;
+&lt;p&gt;包http：用于HTTP请求相关的。这个包里面就比较复杂了。下面详细讲一下。&lt;/p&gt;
+&lt;ol&gt;
+    &lt;li&gt;包空间：HTTP内容，请求，响应等。&lt;/li&gt;
+    &lt;li&gt;包cors: 包名称是（跨域资源分享）Cross Origin Resource Sharing 的简写。用于客户端跨域请求。&amp;nbsp; 可以参考 &lt;a href=&quot;http://www.w3.org/TR/cors/&quot;&gt;http://www.w3.org/TR/cors/&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;包multipart：POST消息和文件上传相关的一些。只是粗略看了一下。&lt;/li&gt;
+    &lt;li&gt;包websocketx：针对近年来Html5发展起来的websocket技术的。不过貌似由于Html5标准还未正式的确定。所以这个包里面的内容比较多。编解码器版本也很多。相信以后统一标准之后会简单一些。暂时不推荐吧&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;包marshalling：&lt;/p&gt;
+&lt;p&gt;包protoBuf：用于&lt;a href=&quot;http://code.google.com/p/protobuf/&quot;&gt;Google Protocol Buffers&lt;/a&gt; 编解码&lt;/p&gt;
+&lt;p&gt;包rtsp：实时流传输协议（Real Time Streaming Protocol，RTSP）&lt;/p&gt;
+&lt;p&gt;包sctp：流控制传输协议（Stream Control Transmission Protocol，SCTP）&lt;/p&gt;
+&lt;p&gt;包serialization：用于序列化的Java对象的和ByteBuf之间的转换。&lt;/p&gt;
+&lt;p&gt;包scoks：用于Java Socket通信相关的。支持Socket4a和 Socket 5两个版本&lt;/p&gt;
+&lt;p&gt;包spdy：SPDY协议是近年来发展的一种协议。主要目的是为了减少网页加载的时间。它是HTTP协议的增强版本。它从某种程度上讲提高了HTTP协议在数据传输时的速度和性能&lt;/p&gt;
+&lt;p&gt;包string：用于java里面字符串的编解码&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/p&gt;
 &lt;p&gt;&amp;nbsp;&lt;/p&gt;
 &lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;h2&gt;2.Client客户端&lt;/h2&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　类似于服务端的代码。我们不做特别详细的解释。&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　直接上示例代码:&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.bootstrap.Bootstrap;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.Channel;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.EventLoopGroup;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.nio.NioEventLoopGroup;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.nio.NioSocketChannel;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.io.BufferedReader;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.io.IOException;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.io.InputStreamReader;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloClient {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; String host = &quot;127.0.0.1&quot;&lt;span style=&quot;color: #000000;&quot;&gt;;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;int&lt;/span&gt; port = 7878&lt;span style=&quot;color: #000000;&quot;&gt;;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt;     &lt;span style=&quot;color: #008000;&quot;&gt;/**&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * &lt;/span&gt;&lt;span style=&quot;color: #808080;&quot;&gt;@param&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; args
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * &lt;/span&gt;&lt;span style=&quot;color: #808080;&quot;&gt;@throws&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; InterruptedException
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * &lt;/span&gt;&lt;span style=&quot;color: #808080;&quot;&gt;@throws&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; IOException
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt;      &lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; main(String[] args) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; InterruptedException, IOException {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt;         EventLoopGroup group = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; NioEventLoopGroup();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;try&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt;             Bootstrap b = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Bootstrap();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            b.group(group)
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;28&lt;/span&gt;             .channel(NioSocketChannel.&lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;)
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;29&lt;/span&gt;             .handler(&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloClientInitializer());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;30&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;31&lt;/span&gt;             &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 连接服务端&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;32&lt;/span&gt;             Channel ch =&lt;span style=&quot;color: #000000;&quot;&gt; b.connect(host, port).sync().channel();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;33&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;34&lt;/span&gt;             &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 控制台输入&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;35&lt;/span&gt;             BufferedReader in = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; BufferedReader(&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; InputStreamReader(System.in));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;36&lt;/span&gt;             &lt;span style=&quot;color: #0000ff;&quot;&gt;for&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; (;;) {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;37&lt;/span&gt;                 String line =&lt;span style=&quot;color: #000000;&quot;&gt; in.readLine();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;38&lt;/span&gt;                 &lt;span style=&quot;color: #0000ff;&quot;&gt;if&lt;/span&gt; (line == &lt;span style=&quot;color: #0000ff;&quot;&gt;null&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;) {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;39&lt;/span&gt;                     &lt;span style=&quot;color: #0000ff;&quot;&gt;continue&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;40&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;41&lt;/span&gt;                 &lt;span style=&quot;color: #008000;&quot;&gt;/*&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;42&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;                 * 向服务端发送在控制台输入的文本 并用&quot;\r\n&quot;结尾
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;43&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;                 * 之所以用\r\n结尾 是因为我们在handler中添加了 DelimiterBasedFrameDecoder 帧解码。
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;44&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;                 * 这个解码器是一个根据\n符号位分隔符的解码器。所以每条消息的最后必须加上\n否则无法识别和解码
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;45&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;                 * &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;46&lt;/span&gt;                 ch.writeAndFlush(line + &quot;\r\n&quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;47&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;48&lt;/span&gt;         } &lt;span style=&quot;color: #0000ff;&quot;&gt;finally&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;49&lt;/span&gt;             &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; The connection is closed automatically on shutdown.&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;50&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            group.shutdownGracefully();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;51&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;        }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;52&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;53&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　下面的是HelloClientInitializer代码貌似是和服务端的完全一样。我没注意看。其实编码和解码是相对的。多以服务端和客户端都是解码和编码。才能通信。&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelInitializer;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelPipeline;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.SocketChannel;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.DelimiterBasedFrameDecoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.Delimiters;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.string.StringDecoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.string.StringEncoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt; HelloClientInitializer &lt;span style=&quot;color: #0000ff;&quot;&gt;extends&lt;/span&gt; ChannelInitializer&amp;lt;SocketChannel&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; initChannel(SocketChannel ch) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;         ChannelPipeline pipeline =&lt;span style=&quot;color: #000000;&quot;&gt; ch.pipeline();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;/*&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         * 这个地方的 必须和服务端对应上。否则无法正常解码和编码
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         *
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         * 解码和编码 我将会在下一张为大家详细的讲解。再次暂时不做详细的描述
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         *
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         * &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;         pipeline.addLast(&quot;framer&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; DelimiterBasedFrameDecoder(8192&lt;span style=&quot;color: #000000;&quot;&gt;, Delimiters.lineDelimiter()));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt;         pipeline.addLast(&quot;decoder&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; StringDecoder());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt;         pipeline.addLast(&quot;encoder&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; StringEncoder());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 客户端的逻辑&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;28&lt;/span&gt;         pipeline.addLast(&quot;handler&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloClientHandler());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;29&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;30&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;　　HellClientHandler：&lt;/p&gt;
-&lt;p&gt;　　&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelHandlerContext;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.SimpleChannelInboundHandler;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt; HelloClientHandler &lt;span style=&quot;color: #0000ff;&quot;&gt;extends&lt;/span&gt; SimpleChannelInboundHandler&amp;lt;String&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelRead0(ChannelHandlerContext ctx, String msg) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt;         System.out.println(&quot;Server say : &quot; +&lt;span style=&quot;color: #000000;&quot;&gt; msg);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelActive(ChannelHandlerContext ctx) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;         System.out.println(&quot;Client active &quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;super&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;.channelActive(ctx);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelInactive(ChannelHandlerContext ctx) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt;         System.out.println(&quot;Client close &quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;super&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;.channelInactive(ctx);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;本教程的示例源代码:&lt;a href=&quot;http://pan.baidu.com/s/1hABzK#dir&quot; target=&quot;_blank&quot;&gt;http://pan.baidu.com/s/1hABzK#dir&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;大家可以再我的百度云盘里面找到。&lt;/p&gt;
-&lt;p&gt;下面上几张成果图:&lt;/p&gt;
-&lt;p&gt;　　客户端在连接建立是输出了Client active 信息，并收到服务端返回的Welcome消息。&lt;/p&gt;
-&lt;p&gt;　　输入Hello World ! 回车发送消息。服务端响应返回消息已接受。&lt;/p&gt;
-&lt;p&gt;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/blog/359548/201312/27085946-6196642a22534635874adba84ac6e51a.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;1.客户端控制台截图&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201312/27090204-1d36617bee2441849eebdd52b06ef8e3.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;2.服务端控制台截图&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p style=&quot;text-align: left;&quot;&gt;&amp;nbsp;&lt;/p&gt;
 &lt;p style=&quot;padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 60px; font-family: 微软雅黑; font-size: 12px; border: #e0e0e0 1px dashed;&quot;&gt;&lt;strong&gt;作者&lt;/strong&gt;：TinyZ&lt;br /&gt;出处：&lt;a href=&quot;http://www.cnblogs.com/zou90512/&quot; target=&quot;_blank&quot;&gt;http://www.cnblogs.com/zou90512/&lt;/a&gt;&lt;br /&gt;关于作者：努力学习，天天向上。不断探索学习，提升自身价值。记录经验分享。&lt;br /&gt;本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文链接&lt;br /&gt;如有问题，可以通过&amp;nbsp;&lt;span style=&quot;color: #0000ff;&quot;&gt;zou90512@126.com&amp;nbsp;&lt;/span&gt;联系我，非常感谢。&lt;br /&gt;笔者网店: &lt;a href=&quot;http://aoleitaisen.taobao.com&quot; target=&quot;_blank&quot;&gt;http://aoleitaisen.taobao.com&lt;/a&gt;. 欢迎广大读者围观&lt;/p&gt;
-&lt;p style=&quot;text-align: left;&quot;&gt;&amp;nbsp;&lt;/p&gt;</description>
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;</description>
         <pubDate>2014-04-09</pubDate>
         <link>https://github.com/TinyZzh//netty/2014/04/09/Netty4.x_5.html</link>
         <guid isPermaLink="true">https://github.com/TinyZzh//netty/2014/04/09/Netty4.x_5.html</guid>
@@ -924,294 +588,42 @@
     
       <item>
         <title>Netty4.x中文教程系列(四) ChannelHandler</title>
-        <description>&lt;p&gt;　　在中国程序界。我们都是学着Hello World !慢慢成长起来的。逐渐从一无所知到熟悉精通的。&lt;/p&gt;
-&lt;p&gt;　　第二章就从Hello World 开始讲述Netty的中文教程。&lt;/p&gt;
-&lt;p&gt;　　首先创建一个Java项目。引入一个Netty 框架的包。这个步骤我在本系列教程的后面就不在重复了。&lt;/p&gt;
-&lt;p&gt;　　先上一张我示例的项目工程图给大家看一下:&lt;/p&gt;
-&lt;p&gt;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/blog/359548/201312/26171451-184e0b3b4ce745de81d773c097243960.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;h2&gt;1.下载并为项目添加Netty框架&lt;/h2&gt;
-&lt;p&gt;　　Netty的包大家可以从Netty官网:&lt;a href=&quot;http://netty.io/downloads.html&quot; target=&quot;_blank&quot;&gt;http://netty.io/downloads.html&lt;/a&gt;&amp;nbsp;下载&lt;/p&gt;
-&lt;p&gt;　　&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/blog/359548/201312/26171717-5926ec582cab4167b6aca539d8c8adff.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;如图所示: Netty提供了三个主要版本的框架包给大家下载。&lt;/p&gt;
-&lt;p&gt;3.9版本Final 说明这个版本是3.x版本中最新的版本。final意味着功能不再继续添加更新。仅为修改bug等提供继续的更新。&lt;/p&gt;
-&lt;p&gt;5.x版本由于是开始。不能排除是否稳定运行等问题。加上5.x在4.x的版本上略微修改的。在5.x稳定之前。不推荐大家学习使用。&lt;/p&gt;
-&lt;p&gt;本教程是基于Netty4.x版本的。&lt;/p&gt;
-&lt;p&gt;　　笔者也是从3.6版本，经过了相当痛苦的一段时间才算是真正的过度到4.x版本。&lt;/p&gt;
-&lt;p&gt;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/blog/359548/201312/26172210-783e94446ac0417fab5493bb6dcdf526.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;　　下载之后解压缩。大家可以看到这样一个目录结构。非常的清晰。&lt;/p&gt;
-&lt;p&gt;　　第一个文件夹jar是jar包的文件夹。第二个javadoc是API文档。第三个license文件夹是开源的授权文件(可以直接无视)。&lt;/p&gt;
-&lt;p&gt;　　javadoc文件夹下面是一个jar包。可以直接解压缩出来。解压缩之后的文件夹就是api文档(以网页的形势展现)。&lt;/p&gt;
-&lt;p&gt;　　jar文件夹里面有很多的jar包和一个all-in-one文件夹。都是Netty框架的组成部分。all-in-one里面有两个文件一个是jar包，另一个是对应的source源代码包。这样做的目的是为了给程序员有选择的添加自己所需要的包。&lt;/p&gt;
-&lt;p&gt;　　假如读者是初学者的话。推荐直接套用all-in-one里面的jar包。假如你熟悉Netty的话可以根据自己的项目需求添加不同的jar包。&lt;/p&gt;
-&lt;h2 style=&quot;text-align: center;&quot;&gt;2.创建Server 服务端&lt;/h2&gt;
-&lt;p&gt;　　Netty创建全部都是实现自&lt;a title=&quot;class in io.netty.bootstrap&quot; href=&quot;http://netty.io/5.0/api/io/netty/bootstrap/AbstractBootstrap.html&quot; target=&quot;classFrame&quot;&gt;AbstractBootstrap&lt;/a&gt;。客户端的是Bootstrap，服务端的则是ServerBootstrap。&lt;/p&gt;
-&lt;p&gt;　　&lt;/p&gt;
-&lt;h3&gt;&lt;span&gt;2.1创建一个 HelloServer &lt;/span&gt;&lt;/h3&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
+        <description>&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 上一篇文章详细解释了Hello World示例的代码。里面涉及了一些Netty框架的基础。&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 这篇文章用以解释ChannelHandler。笔者本身在以前写过文章&lt;a href=&quot;http://www.cnblogs.com/zou90512/p/3421478.html&quot;&gt;ChannelHandler改动及影响&lt;/a&gt; 和 &lt;a href=&quot;http://www.cnblogs.com/zou90512/p/3407192.html&quot;&gt;ChannelInitializer 学习&lt;/a&gt; 对Netty的.ChannelHandler做过阐述。里面主要描述了4.x版本相对于3.x版本的改动以及影响。并引用了一些文章。为大家详细的解释了ChannelHandler里面涉及架构。&lt;/p&gt;
 
-
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.bootstrap.ServerBootstrap;
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelFuture;
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.EventLoopGroup;
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.nio.NioEventLoopGroup;
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.nio.NioServerSocketChannel;
-
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloServer {
-
-    &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;/**&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;
-     * 服务端监听的端口地址
-     &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-    &lt;span style=&quot;color: #0000ff;&quot;&gt;private&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;final&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;int&lt;/span&gt; portNumber = 7878&lt;span style=&quot;color: #000000;&quot;&gt;;
-
-    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; main(String[] args) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; InterruptedException {
-        EventLoopGroup bossGroup &lt;/span&gt;= &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; NioEventLoopGroup();
-        EventLoopGroup workerGroup &lt;/span&gt;= &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; NioEventLoopGroup();
-        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;try&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-            ServerBootstrap b &lt;/span&gt;= &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; ServerBootstrap();
-            b.group(bossGroup, workerGroup);
-            b.channel(NioServerSocketChannel.&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
-            b.childHandler(&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloServerInitializer());
-
-            &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 服务器绑定端口监听&lt;/span&gt;
-            ChannelFuture f =&lt;span style=&quot;color: #000000;&quot;&gt; b.bind(portNumber).sync();
-            &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 监听服务器关闭监听&lt;/span&gt;
-&lt;span style=&quot;color: #000000;&quot;&gt;            f.channel().closeFuture().sync();
-
-            &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 可以简写为&lt;/span&gt;
-            &lt;span style=&quot;color: #008000;&quot;&gt;/*&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; b.bind(portNumber).sync().channel().closeFuture().sync(); &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;
-        } &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;finally&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
-        }
-    }
-}&lt;/span&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&lt;span&gt;　　EventLoopGroup 是在4.x版本中提出来的一个新概念。用于channel的管理。服务端需要两个。和3.x版本一样，一个是boss线程一个是worker线程。&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;span&gt;　&lt;span style=&quot;color: #c0c0c0;&quot;&gt;　b.childHandler(&lt;/span&gt;&lt;/span&gt;&lt;span style=&quot;color: #00ffff;&quot;&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;new HelloServerInitializer());　　　　//&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;用于添加相关的Handler&lt;/span&gt;&lt;/span&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;span&gt;　　服务端简单的代码，真的没有办法在精简了感觉。就是一个绑定端口操作。&lt;/span&gt;&lt;/p&gt;
-&lt;h3&gt;&lt;span&gt;2.2创建和实现HelloServerInitializer&lt;/span&gt;&lt;/h3&gt;
-&lt;p&gt;&lt;span&gt;　　在HelloServer中的HelloServerInitializer在这里实现。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span&gt;　　首先我们需要明确我们到底是要做什么的。很简单。HelloWorld!。我们希望实现一个能够像服务端发送文字的功能。服务端假如可以最好还能返回点消息给客户端，然客户端去显示。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span&gt;　　需求简单。那我们下面就准备开始实现。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span&gt;　　DelimiterBasedFrameDecoder Netty在官方网站上提供的示例显示 有这么一个解码器可以简单的消息分割。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span&gt;　　其次 在decoder里面我们找到了String解码编码器。着都是官网提供给我们的。&lt;/span&gt;&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelInitializer;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelPipeline;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.SocketChannel;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.DelimiterBasedFrameDecoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.Delimiters;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.string.StringDecoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.string.StringEncoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt; HelloServerInitializer &lt;span style=&quot;color: #0000ff;&quot;&gt;extends&lt;/span&gt; ChannelInitializer&amp;lt;SocketChannel&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; initChannel(SocketChannel ch) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;         ChannelPipeline pipeline =&lt;span style=&quot;color: #000000;&quot;&gt; ch.pipeline();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 以(&quot;\n&quot;)为结尾分割的 解码器&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt;         pipeline.addLast(&quot;framer&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; DelimiterBasedFrameDecoder(8192&lt;span style=&quot;color: #000000;&quot;&gt;, Delimiters.lineDelimiter()));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 字符串解码 和 编码&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt;         pipeline.addLast(&quot;decoder&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; StringDecoder());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt;         pipeline.addLast(&quot;encoder&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; StringEncoder());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 自己的逻辑Handler&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt;         pipeline.addLast(&quot;handler&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloServerHandler());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;　　上面的三个解码和编码都是系统。&lt;/p&gt;
-&lt;p&gt;　　另外我们自己的Handler怎么办呢。在最后我们添加一个自己的Handler用于写自己的处理逻辑。&lt;/p&gt;
-&lt;h3&gt;2.3 增加自己的逻辑HelloServerHandler&lt;/h3&gt;
-&lt;p&gt;　　自己的Handler我们这里先去继承extends官网推荐的SimpleChannelInboundHandler&amp;lt;C&amp;gt; 。在这里C，由于我们需求里面发送的是字符串。这里的C改写为String。&lt;/p&gt;
-&lt;p&gt;　　&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.net.InetAddress;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelHandlerContext;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.SimpleChannelInboundHandler;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt; HelloServerHandler &lt;span style=&quot;color: #0000ff;&quot;&gt;extends&lt;/span&gt; SimpleChannelInboundHandler&amp;lt;String&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelRead0(ChannelHandlerContext ctx, String msg) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 收到消息直接打印输出&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt;         System.out.println(ctx.channel().remoteAddress() + &quot; Say : &quot; +&lt;span style=&quot;color: #000000;&quot;&gt; msg);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 返回客户端消息 - 我已经接收到了你的消息&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;         ctx.writeAndFlush(&quot;Received your message !\n&quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt;     &lt;span style=&quot;color: #008000;&quot;&gt;/*&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     *
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * 覆盖 channelActive 方法 在channel被启用的时候触发 (在建立连接的时候)
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     *
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * channelActive 和 channelInActive 在后面的内容中讲述，这里先不做详细的描述
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelActive(ChannelHandlerContext ctx) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;28&lt;/span&gt;         System.out.println(&quot;RamoteAddress : &quot; + ctx.channel().remoteAddress() + &quot; active !&quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;29&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;30&lt;/span&gt;         ctx.writeAndFlush( &quot;Welcome to &quot; + InetAddress.getLocalHost().getHostName() + &quot; service!\n&quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;31&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;32&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;super&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;.channelActive(ctx);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;33&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;34&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;　　在channelHandlerContent自带一个writeAndFlush方法。方法的作用是写入Buffer并刷入。&lt;/p&gt;
-&lt;p&gt;　　&lt;span style=&quot;color: #000000;&quot;&gt;注意:&lt;span style=&quot;text-decoration: underline;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;text-decoration: underline;&quot;&gt;在3.x版本中此处有很大区别。在3.x版本中write()方法是自动flush的。在4.x版本的前面几个版本也是一样的。但是在4.0.9之后修改为WriteAndFlush。普通的write方法将不会发送消息。需要手动在write之后flush()一次&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　这里channeActive的意思是当连接活跃(建立)的时候触发.输出消息源的远程地址。并返回欢迎消息。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　channelRead0 在这里的作用是类似于3.x版本的messageReceived()。可以当做是每一次收到消息是触发。&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　我们在这里的代码是返回客户端一个字符串&quot;Received your message !&quot;.&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　&lt;span style=&quot;text-decoration: underline;&quot;&gt;&lt;strong&gt;注意:字符串最后面的&quot;\n&quot;是必须的。因为我们在前面的解码器DelimiterBasedFrameDecoder是一个根据字符串结尾为&amp;ldquo;\n&amp;rdquo;来结尾的。假如没有这个字符的话。解码会出现问题。&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;h2&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 1.在4.x版本中的ChannelHandler&lt;/h2&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; ChannelHandler接口是Handler里面的最高的接口。&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ChannelInboundHandler接口和ChannelOutboundHandler接口，继承ChannelHandler接口。&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 流程如下图:&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201401/151733070028.jpg&quot; alt=&quot;&quot; /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; ChannelInBoundHandler负责数据进入并在ChannelPipeline中按照从上至下的顺序查找调用相应的InBoundHandler。&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; ChannelOutBoundHandler负责数据出去并在ChannelPipeline中按照从下至上的顺序查找调用相应的OutBoundHandler。&lt;/p&gt;
+&lt;h2&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 2.在5.x版本中的改动&lt;/h2&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 在5.x版本中。作者再次对ChannelHandler进行了改动。&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 在更新说明里可以看到:&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 作者简化了Handler的类型层次结构。&lt;/p&gt;
+&lt;p&gt;ChannelInboundHandler和ChannelOutboundHandler接口合并到ChannelHandler里面。&lt;/p&gt;
+&lt;p&gt;ChannelInboundHandlerAdapter，ChannelOutboundHandlerAdapter以及ChannelDuplexHandlerAdapter被取消，其功能被ChannelHandlerAdapter代替。&lt;/p&gt;
+&lt;p&gt;由于上述的改动，开发者将无法区分InBoundHandler和OutBoundHandler 所以CombinedChannelDuplexHandler&amp;nbsp;的功能也被ChannelHandlerAdapter代替。&lt;/p&gt;
+&lt;p&gt;有兴趣了解的可以看一下注释。假如不看也影响不大。因为5.x看上去改动很大，实际上框架的设计思路并没有改变。&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;(注释:&lt;/p&gt;
+&lt;p&gt;5.x版本中虽然删除了InBoundHandler和OutBoundHandler，但是在设计思想上InBound和OurBound的概念还是存在的。只不过是作者使用了另外一种方式去实现罢了。&lt;/p&gt;
+&lt;p&gt;查看过4.x版本代码的朋友可能已经了解知道了。消息在管道中都是以ChannelHandlerContext的形势传递的。而InBound和OutBound主要作用是被当做ChannelPipeline管道中标识。用于Handler中相对应的调用处理，通过两个布尔值变量inBound和outBound来区分是进入还是出去。并以此来区分Handler并调用相应的方法，其实没有什么实际用途。于是作者在5.x版本中对此做出了优化。优化方案笔者感觉very nice。&lt;/p&gt;
+&lt;p&gt;由于删除了InBoundHandler和OutBoundHandler的接口。作者在DefaultChannelHandlerContext中重写了findContextInBound()和findContextOutBound()方法。并且在方法里引入了参数mask。&lt;/p&gt;
+&lt;p&gt;在类开始处定义静态终态的变量来标记4.x版本中定义的InBound和OutBound中的方法名(可以变相的认为是枚举)。在源代码中的实现是利用mask来获取对应的flag，最终实现使用mask来区分InBoundHandler亦或是OutBoundHandler。&lt;/p&gt;
+&lt;p&gt;这样的改动，优点显而易见。简化了层次结构，降低了框架的复杂度。同时功能上却没有什么变化。易于使用了解。&lt;/p&gt;
+&lt;p&gt;)&lt;/p&gt;
+&lt;p&gt;目前在不涉及框架底层的情况下。笔者将继续使用Netty 4.0.14 final版本。正如第一章介绍所说。5.x版本作者并没有进行大规模的设计变更。仅仅只是局部的小部分修改。所以在版本没有稳定之前。教程都将采用4.0.14final为框架包。&lt;/p&gt;
+&lt;h2&gt;3.认识Handler中的编解码器&lt;/h2&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 编解码器在Netty框架中占了相当大的一部分代码量。由此可见其重要性。本章内容旨在阐述编解码器的基础。下一章会详细分类的按照框架的结构详解其余编解码器。&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201401/151733164087.jpg&quot; alt=&quot;&quot; /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 在Netty的codec包内部我们可以看到很多的编解码器和一些异常捕获。&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 下一章为大家相熟Handler里面的各种编解码器。&lt;/p&gt;
 &lt;p&gt;&amp;nbsp;&lt;/p&gt;
 &lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;h2&gt;2.Client客户端&lt;/h2&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　类似于服务端的代码。我们不做特别详细的解释。&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　直接上示例代码:&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.bootstrap.Bootstrap;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.Channel;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.EventLoopGroup;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.nio.NioEventLoopGroup;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.nio.NioSocketChannel;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.io.BufferedReader;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.io.IOException;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.io.InputStreamReader;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloClient {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; String host = &quot;127.0.0.1&quot;&lt;span style=&quot;color: #000000;&quot;&gt;;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;int&lt;/span&gt; port = 7878&lt;span style=&quot;color: #000000;&quot;&gt;;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt;     &lt;span style=&quot;color: #008000;&quot;&gt;/**&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * &lt;/span&gt;&lt;span style=&quot;color: #808080;&quot;&gt;@param&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; args
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * &lt;/span&gt;&lt;span style=&quot;color: #808080;&quot;&gt;@throws&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; InterruptedException
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * &lt;/span&gt;&lt;span style=&quot;color: #808080;&quot;&gt;@throws&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; IOException
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt;      &lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; main(String[] args) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; InterruptedException, IOException {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt;         EventLoopGroup group = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; NioEventLoopGroup();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;try&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt;             Bootstrap b = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Bootstrap();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            b.group(group)
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;28&lt;/span&gt;             .channel(NioSocketChannel.&lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;)
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;29&lt;/span&gt;             .handler(&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloClientInitializer());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;30&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;31&lt;/span&gt;             &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 连接服务端&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;32&lt;/span&gt;             Channel ch =&lt;span style=&quot;color: #000000;&quot;&gt; b.connect(host, port).sync().channel();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;33&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;34&lt;/span&gt;             &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 控制台输入&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;35&lt;/span&gt;             BufferedReader in = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; BufferedReader(&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; InputStreamReader(System.in));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;36&lt;/span&gt;             &lt;span style=&quot;color: #0000ff;&quot;&gt;for&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; (;;) {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;37&lt;/span&gt;                 String line =&lt;span style=&quot;color: #000000;&quot;&gt; in.readLine();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;38&lt;/span&gt;                 &lt;span style=&quot;color: #0000ff;&quot;&gt;if&lt;/span&gt; (line == &lt;span style=&quot;color: #0000ff;&quot;&gt;null&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;) {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;39&lt;/span&gt;                     &lt;span style=&quot;color: #0000ff;&quot;&gt;continue&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;40&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;41&lt;/span&gt;                 &lt;span style=&quot;color: #008000;&quot;&gt;/*&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;42&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;                 * 向服务端发送在控制台输入的文本 并用&quot;\r\n&quot;结尾
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;43&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;                 * 之所以用\r\n结尾 是因为我们在handler中添加了 DelimiterBasedFrameDecoder 帧解码。
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;44&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;                 * 这个解码器是一个根据\n符号位分隔符的解码器。所以每条消息的最后必须加上\n否则无法识别和解码
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;45&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;                 * &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;46&lt;/span&gt;                 ch.writeAndFlush(line + &quot;\r\n&quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;47&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;48&lt;/span&gt;         } &lt;span style=&quot;color: #0000ff;&quot;&gt;finally&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;49&lt;/span&gt;             &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; The connection is closed automatically on shutdown.&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;50&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            group.shutdownGracefully();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;51&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;        }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;52&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;53&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　下面的是HelloClientInitializer代码貌似是和服务端的完全一样。我没注意看。其实编码和解码是相对的。多以服务端和客户端都是解码和编码。才能通信。&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelInitializer;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelPipeline;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.SocketChannel;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.DelimiterBasedFrameDecoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.Delimiters;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.string.StringDecoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.string.StringEncoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt; HelloClientInitializer &lt;span style=&quot;color: #0000ff;&quot;&gt;extends&lt;/span&gt; ChannelInitializer&amp;lt;SocketChannel&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; initChannel(SocketChannel ch) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;         ChannelPipeline pipeline =&lt;span style=&quot;color: #000000;&quot;&gt; ch.pipeline();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;/*&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         * 这个地方的 必须和服务端对应上。否则无法正常解码和编码
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         *
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         * 解码和编码 我将会在下一张为大家详细的讲解。再次暂时不做详细的描述
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         *
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         * &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;         pipeline.addLast(&quot;framer&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; DelimiterBasedFrameDecoder(8192&lt;span style=&quot;color: #000000;&quot;&gt;, Delimiters.lineDelimiter()));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt;         pipeline.addLast(&quot;decoder&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; StringDecoder());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt;         pipeline.addLast(&quot;encoder&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; StringEncoder());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 客户端的逻辑&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;28&lt;/span&gt;         pipeline.addLast(&quot;handler&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloClientHandler());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;29&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;30&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;　　HellClientHandler：&lt;/p&gt;
-&lt;p&gt;　　&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelHandlerContext;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.SimpleChannelInboundHandler;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt; HelloClientHandler &lt;span style=&quot;color: #0000ff;&quot;&gt;extends&lt;/span&gt; SimpleChannelInboundHandler&amp;lt;String&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelRead0(ChannelHandlerContext ctx, String msg) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt;         System.out.println(&quot;Server say : &quot; +&lt;span style=&quot;color: #000000;&quot;&gt; msg);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelActive(ChannelHandlerContext ctx) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;         System.out.println(&quot;Client active &quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;super&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;.channelActive(ctx);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelInactive(ChannelHandlerContext ctx) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt;         System.out.println(&quot;Client close &quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;super&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;.channelInactive(ctx);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;本教程的示例源代码:&lt;a href=&quot;http://pan.baidu.com/s/1hABzK#dir&quot; target=&quot;_blank&quot;&gt;http://pan.baidu.com/s/1hABzK#dir&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;大家可以再我的百度云盘里面找到。&lt;/p&gt;
-&lt;p&gt;下面上几张成果图:&lt;/p&gt;
-&lt;p&gt;　　客户端在连接建立是输出了Client active 信息，并收到服务端返回的Welcome消息。&lt;/p&gt;
-&lt;p&gt;　　输入Hello World ! 回车发送消息。服务端响应返回消息已接受。&lt;/p&gt;
-&lt;p&gt;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/blog/359548/201312/27085946-6196642a22534635874adba84ac6e51a.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;1.客户端控制台截图&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201312/27090204-1d36617bee2441849eebdd52b06ef8e3.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;2.服务端控制台截图&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p style=&quot;text-align: left;&quot;&gt;&amp;nbsp;&lt;/p&gt;
 &lt;p style=&quot;padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 60px; font-family: 微软雅黑; font-size: 12px; border: #e0e0e0 1px dashed;&quot;&gt;&lt;strong&gt;作者&lt;/strong&gt;：TinyZ&lt;br /&gt;出处：&lt;a href=&quot;http://www.cnblogs.com/zou90512/&quot; target=&quot;_blank&quot;&gt;http://www.cnblogs.com/zou90512/&lt;/a&gt;&lt;br /&gt;关于作者：努力学习，天天向上。不断探索学习，提升自身价值。记录经验分享。&lt;br /&gt;本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文链接&lt;br /&gt;如有问题，可以通过&amp;nbsp;&lt;span style=&quot;color: #0000ff;&quot;&gt;zou90512@126.com&amp;nbsp;&lt;/span&gt;联系我，非常感谢。&lt;br /&gt;笔者网店: &lt;a href=&quot;http://aoleitaisen.taobao.com&quot; target=&quot;_blank&quot;&gt;http://aoleitaisen.taobao.com&lt;/a&gt;. 欢迎广大读者围观&lt;/p&gt;
-&lt;p style=&quot;text-align: left;&quot;&gt;&amp;nbsp;&lt;/p&gt;</description>
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;</description>
         <pubDate>2014-01-15</pubDate>
         <link>https://github.com/TinyZzh//netty/2014/01/15/Netty4.x_4.html</link>
         <guid isPermaLink="true">https://github.com/TinyZzh//netty/2014/01/15/Netty4.x_4.html</guid>
@@ -1225,9 +637,9 @@
     
       <item>
         <title>Netty4.x中文教程系列(三) Hello World ！详解</title>
-        <description>&lt;h1 align=&quot;center&quot;&gt;Netty 中文教程 （二） Hello World ！详解&lt;/h1&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 上一篇文章，笔者提供了一个Hello World 的Netty示例。&lt;/p&gt;
+        <description>&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 上一篇文章，笔者提供了一个Hello World 的Netty示例。&lt;/p&gt;
 &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 时间过去了这么久，准备解释一下示例代码。&lt;/p&gt;
+
 &lt;h2&gt;1.HelloServer 详解&lt;/h2&gt;
 &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; HelloServer首先定义了一个静态终态的变量---服务端绑定端口7878。至于为什么是这个7878端口，纯粹是笔者个人喜好。大家可以按照自己的习惯选择端口。当然了。常用的几个端口(例如:80,8080,843(Flash及Silverlight策略文件请求端口等等)，3306(Mysql数据库占用端口))最好就不要占用了，避免一些奇怪的问题。&lt;/p&gt;
 &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; HelloServer类里面的代码并不多。只有一个main函数，加上内部短短的几行代码。&lt;/p&gt;
@@ -1271,6 +683,7 @@
         <title>Netty4.x中文教程系列(二) Hello World !</title>
         <description>&lt;p&gt;　　在中国程序界。我们都是学着Hello World !慢慢成长起来的。逐渐从一无所知到熟悉精通的。&lt;/p&gt;
 &lt;p&gt;　　第二章就从Hello World 开始讲述Netty的中文教程。&lt;/p&gt;
+
 &lt;p&gt;　　首先创建一个Java项目。引入一个Netty 框架的包。这个步骤我在本系列教程的后面就不在重复了。&lt;/p&gt;
 &lt;p&gt;　　先上一张我示例的项目工程图给大家看一下:&lt;/p&gt;
 &lt;p&gt;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/blog/359548/201312/26171451-184e0b3b4ce745de81d773c097243960.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
@@ -1572,6 +985,7 @@
         <title>Netty4.x中文教程系列(一) 目录及概述</title>
         <description>&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Netty 提供异步的、事件驱动的网络应用程序框架和工具，用以快速开发高性能、高可靠性的网络服务器和客户端程序。&lt;/p&gt;
 &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Netty是一个NIO客户端 服务端框架。允许快速简单的开发网络应用程序。例如：服务端和客户端之间的协议。它最棒的地方在于简化了网络编程规范。例如:TCP和UDP socket服务。&lt;/p&gt;
+
 &lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;&amp;nbsp;Netty官网:&lt;a href=&quot;http://Netty.io&quot;&gt;Netty.io&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;　　笔者个人理解：&lt;/p&gt;
 &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 　　Netty本身是用于快速构建服务端与客户端之间通信协议的框架。Netty在消息处理上使用责任链模式，用户可以轻松方便的对它进行扩展。官方也提供了大量的优秀的扩展。&lt;/p&gt;

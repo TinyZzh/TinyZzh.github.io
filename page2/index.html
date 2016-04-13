@@ -148,37 +148,10 @@
     
       <li>
         <h2 class="post-list__post-title post-title"><a href="/netty/2014/01/06/Netty4.x_3.html" title="Netty4.x中文教程系列(三) Hello World ！详解">Netty4.x中文教程系列(三) Hello World ！详解</a></h2>
-        <p class="excerpt"><h1 align="center">Netty 中文教程 （二） Hello World ！详解</h1>
-&nbsp;&nbsp;&nbsp; 上一篇文章，笔者提供了一个Hello World 的Netty示例。
+        <p class="excerpt">&nbsp;&nbsp;&nbsp; 上一篇文章，笔者提供了一个Hello World 的Netty示例。
 &nbsp;&nbsp;&nbsp; 时间过去了这么久，准备解释一下示例代码。
-<h2>1.HelloServer 详解</h2>
-&nbsp;&nbsp;&nbsp; HelloServer首先定义了一个静态终态的变量---服务端绑定端口7878。至于为什么是这个7878端口，纯粹是笔者个人喜好。大家可以按照自己的习惯选择端口。当然了。常用的几个端口(例如:80,8080,843(Flash及Silverlight策略文件请求端口等等)，3306(Mysql数据库占用端口))最好就不要占用了，避免一些奇怪的问题。
-&nbsp;&nbsp;&nbsp; HelloServer类里面的代码并不多。只有一个main函数，加上内部短短的几行代码。
-&nbsp;&nbsp;&nbsp; Main函数开始的位置定义了两个工作线程，一个命名为WorkerGroup，另一个命名为BossGroup。都是实例化NioEventLoopGroup。这一点和3.x版本中基本思路是一致的。Worker线程用于管理线程为Boss线程服务。
-讲到这里需要解释一下EventLoopGroup，它是4.x版本提出来的一个新概念。类似于3.x版本中的线程。用于管理Channel连接的。在main函数的结尾就用到了EventLoopGroup提供的便捷的方法，shutdownGraceFully()，翻译为中文就是优雅的全部关闭。感觉是不是很有意思。作者居然会如此可爱的命名了这样一个函数。查看相应的源代码。我们可以在DefaultEventExecutorGroup的父类MultithreadEventExecutorGroup中看到它的实现代码。关闭了全部EventExecutor数组child里面子元素。相比于3.x版本这是一个比较重大的改动。开发者可以很轻松的全部关闭，而不需要担心出现内存泄露。
-&nbsp;&nbsp;&nbsp; 在try里面实例化一个ServerBootstrap b。设置group。设置channel为NioServerSocketChannel。
-设置childHandler，在这里使用实例化一个HelloServerInitializer类来实现，继承ChannelInitializer&lt;SocketChannel&gt;。内部的代码我们可以在前文的注视中大致了解一下，主要作用是设置相关的字节解码编码器，和代码处理逻辑。Handler是Netty包里面占很大一个比例。可见其的作用和用途。Handler涉及很多领域。HTTP，UDP，Socket，WebSocket等等。详细的部分在本章的第三节解释。
-设置好Handler绑定端口7878，并调用函数sync()，监听端口(等待客户端连接和发送消息)。并监听端口关闭(为了防止线程停止)。
-&nbsp;&nbsp;&nbsp; 最后finally我们要优雅的全部关闭服务端。^_^
-&nbsp;
-<h2>2.HelloClient详解</h2>
-&nbsp;&nbsp;&nbsp; 相比于服务端的代码。客户端要精简一些。
-&nbsp;&nbsp;&nbsp; 客户端仅仅只需要一个worker的EventLoopGroup。其次是类似于ServerBootstrap的HandlerInitializer。
-&nbsp;&nbsp;&nbsp; 唯一不同的可能就是客户端的connect方法。服务端的绑定并监听端口，客户端是连接指定的地址。Sync().channel()是为了返回这个连接服务端的channel，并用于后面代码的调用。
-BufferedReader 这个是用于控制台输入的。不做详细的解释了就。大家都懂的。
-当用户输入一行内容并回车之后。循环的读取每一行内容。然后使用writeAndFlush向服务端发送消息。
-<h2>3.HandlerInitializer详解</h2>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Handler在Netty中是一个比较重要的概念。有着相当重要的作用。相比于Netty的底层。我们接触更多的应该是他的Handler。在这里我将它剥离出来单独解释。
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ServerHandlerInitializer继承与ChannelInitializer&lt;SocketChannel&gt;需要我们实现一个initChannel()方法。我们定义的handler就是写在这里面。
-&nbsp;&nbsp;&nbsp; 在最开始的地方定义了一个DelimiterBasedFrameDecoder。按直接翻译就是基于分隔符的帧解码器。再一次感觉框架的作者的命名，好直接好简单。详细的内容我们在后面的文章中在为大家详细的解释。目前大家知道他是以分隔符为分割标准的解码器就好了。
-&nbsp;&nbsp;&nbsp; 也许有人会问分隔符是什么？我只能 !*_* :&ldquo;纳尼 ！！&rdquo;。分隔符其实就是&ldquo;\n&rdquo;我们在学习C语言的时候最常用的的也许就是这个分隔符了吧。
-&nbsp;&nbsp;&nbsp; 下面的则是StringDecoder 和StringEncoder。字符串解码器和字符串编码器。
-&nbsp;&nbsp;&nbsp; 最后面则是我们自己的逻辑。服务/客户端逻辑是在消息解码之后处理的。然后服务/客户端返回相关消息则是需要对消息进行相对应的编码。最终才是以二进制数据流的形势发送给服务/客户端的。
-&nbsp;&nbsp;&nbsp; 内容暂时就写到这里。O(&cap;_&cap;)O哈哈~。后面的东西慢慢为大家完善。
-&nbsp;&nbsp;&nbsp; 假如有甚么不正确的地方，敬请谅解。求大神指正。
-&nbsp;
-<p style="padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 60px; font-family: 微软雅黑; font-size: 12px; border: #e0e0e0 1px dashed;"><strong>作者</strong>：TinyZ<br />出处：<a href="http://www.cnblogs.com/zou90512/" target="_blank">http://www.cnblogs.com/zou90512/</a><br />关于作者：努力学习，天天向上。不断探索学习，提升自身价值。记录经验分享。<br />本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文链接<br />如有问题，可以通过&nbsp;<span style="color: #0000ff;">zou90512@126.com&nbsp;</span>联系我，非常感谢。<br />笔者网店: <a href="http://aoleitaisen.taobao.com" target="_blank">http://aoleitaisen.taobao.com</a>. 欢迎广大读者围观
-&nbsp;&hellip;</p>
+
+&hellip;</p>
         <div class="post-list__meta"><time datetime="2014-01-06" class="post-list__meta--date date">2014-01-06</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
         <hr class="post-list__divider">
       </li>
@@ -187,29 +160,6 @@ BufferedReader 这个是用于控制台输入的。不做详细的解释了就�
         <h2 class="post-list__post-title post-title"><a href="/netty/2013/12/26/Netty4.x_2.html" title="Netty4.x中文教程系列(二) Hello World !">Netty4.x中文教程系列(二) Hello World !</a></h2>
         <p class="excerpt">　　在中国程序界。我们都是学着Hello World !慢慢成长起来的。逐渐从一无所知到熟悉精通的。
 　　第二章就从Hello World 开始讲述Netty的中文教程。
-　　首先创建一个Java项目。引入一个Netty 框架的包。这个步骤我在本系列教程的后面就不在重复了。
-　　先上一张我示例的项目工程图给大家看一下:
-<img style="display: block; margin-left: auto; margin-right: auto;" src="http://images.cnitblog.com/blog/359548/201312/26171451-184e0b3b4ce745de81d773c097243960.png" alt="" />
-<h2>1.下载并为项目添加Netty框架</h2>
-　　Netty的包大家可以从Netty官网:<a href="http://netty.io/downloads.html" target="_blank">http://netty.io/downloads.html</a>&nbsp;下载
-　　<img style="display: block; margin-left: auto; margin-right: auto;" src="http://images.cnitblog.com/blog/359548/201312/26171717-5926ec582cab4167b6aca539d8c8adff.jpg" alt="" />
-如图所示: Netty提供了三个主要版本的框架包给大家下载。
-3.9版本Final 说明这个版本是3.x版本中最新的版本。final意味着功能不再继续添加更新。仅为修改bug等提供继续的更新。
-5.x版本由于是开始。不能排除是否稳定运行等问题。加上5.x在4.x的版本上略微修改的。在5.x稳定之前。不推荐大家学习使用。
-本教程是基于Netty4.x版本的。
-　　笔者也是从3.6版本，经过了相当痛苦的一段时间才算是真正的过度到4.x版本。
-<img style="display: block; margin-left: auto; margin-right: auto;" src="http://images.cnitblog.com/blog/359548/201312/26172210-783e94446ac0417fab5493bb6dcdf526.jpg" alt="" />
-　　下载之后解压缩。大家可以看到这样一个目录结构。非常的清晰。
-　　第一个文件夹jar是jar包的文件夹。第二个javadoc是API文档。第三个license文件夹是开源的授权文件(可以直接无视)。
-　　javadoc文件夹下面是一个jar包。可以直接解压缩出来。解压缩之后的文件夹就是api文档(以网页的形势展现)。
-　　jar文件夹里面有很多的jar包和一个all-in-one文件夹。都是Netty框架的组成部分。all-in-one里面有两个文件一个是jar包，另一个是对应的source源代码包。这样做的目的是为了给程序员有选择的添加自己所需要的包。
-　　假如读者是初学者的话。推荐直接套用all-in-one里面的jar包。假如你熟悉Netty的话可以根据自己的项目需求添加不同的jar包。
-<h2 style="text-align: center;">2.创建Server 服务端</h2>
-　　Netty创建全部都是实现自<a title="class in io.netty.bootstrap" href="http://netty.io/5.0/api/io/netty/bootstrap/AbstractBootstrap.html" target="classFrame">AbstractBootstrap</a>。客户端的是Bootstrap，服务端的则是ServerBootstrap。
-　　
-<h3><span>2.1创建一个 HelloServer </span></h3>
-<div class="cnblogs_code">
-<pre><span style="color: #0000ff;">package</span><span style="color: #000000;"> org.example.hello;
 
 &hellip;</p>
         <div class="post-list__meta"><time datetime="2013-12-26" class="post-list__meta--date date">2013-12-26</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
@@ -220,26 +170,8 @@ BufferedReader 这个是用于控制台输入的。不做详细的解释了就�
         <h2 class="post-list__post-title post-title"><a href="/netty/2013/12/26/Netty4.x_1.html" title="Netty4.x中文教程系列(一) 目录及概述">Netty4.x中文教程系列(一) 目录及概述</a></h2>
         <p class="excerpt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Netty 提供异步的、事件驱动的网络应用程序框架和工具，用以快速开发高性能、高可靠性的网络服务器和客户端程序。
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Netty是一个NIO客户端 服务端框架。允许快速简单的开发网络应用程序。例如：服务端和客户端之间的协议。它最棒的地方在于简化了网络编程规范。例如:TCP和UDP socket服务。
-&nbsp; &nbsp; &nbsp;&nbsp;Netty官网:<a href="http://Netty.io">Netty.io</a>
-　　笔者个人理解：
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 　　Netty本身是用于快速构建服务端与客户端之间通信协议的框架。Netty在消息处理上使用责任链模式，用户可以轻松方便的对它进行扩展。官方也提供了大量的优秀的扩展。
-　　本系列主要讲的内容将是Netty的一些基础概念和一些应用。
-&nbsp; &nbsp; &nbsp; ps：博客内容若有错误，还望各位大神指正。
-<h1 style="text-align: center;"><span style="color: #00ccff;"><strong>教程目录</strong></span></h1>
-<ul>
-    <li><span style="color: #00ccff;">1.<a class="titlelink" href="http://www.cnblogs.com/zou90512/p/3492287.html"><span style="color: #00ccff;">Netty4.x中文教程系列(一)</span></a></span></li>
-    <li><span style="color: #00ccff;">2.<a class="titlelink" href="http://www.cnblogs.com/zou90512/p/3492878.html"><span style="color: #00ccff;">Netty4.x中文教程系列(二) Hello World !</span></a></span></li>
-    <li><span style="color: #00ccff;">3.<a class="titlelink" href="http://www.cnblogs.com/zou90512/p/3507729.html"><span style="color: #00ccff;">Netty4.x中文教程系列(三) Hello World ！详解</span></a></span></li>
-    <li><span style="color: #00ccff;">4.<a class="titlelink" href="http://www.cnblogs.com/zou90512/p/3521250.html"><span style="color: #00ccff;">Netty4.x中文教程系列(四) ChannelHandler</span></a></span></li>
-    <li><span style="color: #00ccff;"><span style="color: #00ccff;">5.<span><a href="http://www.cnblogs.com/zou90512/p/3654163.html" target="_blank">Netty4.x中文教程系列(五)&nbsp;编解码器Codec</a></span></span></span></li>
-    <li><span style="color: #00ccff;"><span style="color: #00ccff;">6.<a href="http://www.cnblogs.com/zou90512/p/3908022.html" target="_blank">Netty4.x中文教程系列(六) 从头开始Bootstrap</a></span></span></li>
-</ul>
-&nbsp;
-<h1 style="text-align: center;">教程相关代码和文档&nbsp;</h1>
-百度云盘：<a href="http://pan.baidu.com/s/1pJsKEAR" target="_blank">http://pan.baidu.com/s/1pJsKEAR</a>
-&nbsp;
-<p style="padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 60px; font-family: 微软雅黑; font-size: 12px; border: #e0e0e0 1px dashed;"><strong>作者</strong>：TinyZ<br />出处：<a href="http://www.cnblogs.com/zou90512/" target="_blank">http://www.cnblogs.com/zou90512/</a><br />关于作者：努力学习，天天向上。不断探索学习，提升自身价值。记录经验分享。<br />本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文链接<br />如有问题，可以通过&nbsp;<span style="color: #0000ff;">zou90512@126.com&nbsp;</span>联系我，非常感谢。<br />笔者网店: <a href="http://aoleitaisen.taobao.com" target="_blank">http://aoleitaisen.taobao.com</a>. 欢迎广大读者围观
-<p align="center">&nbsp;&hellip;</p>
+
+&hellip;</p>
         <div class="post-list__meta"><time datetime="2013-12-26" class="post-list__meta--date date">2013-12-26</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
         <hr class="post-list__divider">
       </li>
