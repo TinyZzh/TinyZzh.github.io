@@ -5,9 +5,414 @@
     <description>专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。</description>
     <link>https://github.com/TinyZzh//</link>
     <atom:link href="https://github.com/TinyZzh//feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>2016-04-13</pubDate>
-    <lastBuildDate>2016-04-13</lastBuildDate>
+    <pubDate>2016-04-19</pubDate>
+    <lastBuildDate>2016-04-19</lastBuildDate>
     <generator>Jekyll v3.1.2</generator>
+    
+      <item>
+        <title>Okra框架(三) 搭建HTTP服务器</title>
+        <description>&lt;p&gt;Okra通过封装成熟高效的框架以简化应用程序服务器构建的过程。上一篇介绍了使用Okra快速搭建Socket服务器。
+本篇承接上一篇，介绍快速搭建简单高性能的Http服务器。&lt;/p&gt;
+
+&lt;p&gt;这里需要说明一下Okra框架&lt;strong&gt;不适用&lt;/strong&gt;于web服务器。Okra的通信是基于Netty框架的，而Netty本身不提供强有力的web相关功能支持。
+但是作为app或者是网页游戏的短连接服务器，Okra还是绰绰有余的。&lt;/p&gt;
+
+&lt;h3 id=&quot;executor&quot;&gt;1. 创建Executor&lt;/h3&gt;
+
+&lt;p&gt;和Socket服务器搭建流程类似。首先实现一个简单的HttpRequestExecutor，用于处理Http请求:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HttpRequestExecutor&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Executor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Logger&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOG&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LogManager&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getLogger&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;HttpRequestExecutor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Session&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FullHttpRequest&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpRequestExecutor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Session&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FullHttpRequest&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;session&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;request&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;onExecute&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;throw&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NullPointerException&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;request&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;QueryStringDecoder&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;decoder&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;QueryStringDecoder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getUri&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;switch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;decoder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;/test&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;{state:0}&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+                    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;/favicon.ico&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+                    &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;simple&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;channel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpResponseStatus&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;FORBIDDEN&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Exception&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;LOG&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;info&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;HTTP Api throw exception : &quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;simple&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Channel&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;channel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpResponseStatus&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;ChannelFuture&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;channelFuture&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;channel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;writeAndFlush&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DefaultFullHttpResponse&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;HttpVersion&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;HTTP_1_1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;channelFuture&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;addListener&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ChannelFutureListener&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;CLOSE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ChannelHandlerContext&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;HttpResponse&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;ByteBuf&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;byteBuf&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Unpooled&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;wrappedBuffer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getBytes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DefaultFullHttpResponse&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;HttpVersion&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;HTTP_1_1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpResponseStatus&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;OK&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;byteBuf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DefaultFullHttpResponse&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;HttpVersion&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;HTTP_1_1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpResponseStatus&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;OK&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;ChannelFuture&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;channelFuture&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;channel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;writeAndFlush&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;channelFuture&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;addListener&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ChannelFutureListener&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;CLOSE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;release&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;session&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;request&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Okra提供了封装好的Disruptor桥用于Netty结合Disruptor。Okra通过Executor工厂让用户可以便捷灵活的定制特殊的处理者.
+继承DisruptorAdapterBy41xHandler（依赖于&lt;strong&gt;Netty4.1.x&lt;/strong&gt;）或者DisruptorAdapterHandler（&lt;strong&gt;依赖于Netty4.0.x&lt;/strong&gt;）实现创建HttpRequestExecutor的Executor工厂。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ExampleApiHandler&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DisruptorAdapterBy41xHandler&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;FullHttpRequest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Executor&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;newExecutor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Session&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FullHttpRequest&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpRequestExecutor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;server&quot;&gt;2. 创建Server&lt;/h3&gt;
+
+&lt;p&gt;然后创建一个Server继承TcpProtocolServer实现自己的服务器类. 增加Handler处理&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HttpServer&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TcpProtocolServer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpServer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;setPort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ChannelHandler&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;newChannelInitializer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ChannelInitializer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NioSocketChannel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+            &lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;initChannel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NioSocketChannel&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ch&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Exception&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;ChannelPipeline&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ch&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;pipeline&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;cp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;addLast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;decoder&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpRequestDecoder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;cp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;addLast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;encoder&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpResponseEncoder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;cp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;addLast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;aggregator&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpObjectAggregator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1048576&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;cp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;addLast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;handler&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ExampleApiHandler&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;};&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;3. 启动服务器&lt;/h3&gt;
+
+&lt;p&gt;假如你的项目中使用了Spring框架，那么只需要在配置如下bean就可以启动:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Http protocol server --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;bean&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;httpServer&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;org.ogcs.okra.example.http.HttpServer&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;init-method=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;start&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;destroy-method=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;stop&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;constructor-arg&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;port&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;value=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;${http.port}&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/bean&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;普通Java程序:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;HttpServer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpServer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9005&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;只需要简短的两行代码就可以启动服务器了。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;4. 总结&lt;/h3&gt;
+&lt;p&gt;本文介绍了使用Okra快速搭建高可用，高性能，可扩展，高并发服务器的示例。Okra通过封装，简化了服务器搭建过程。&lt;/p&gt;
+
+</description>
+        <pubDate>2016-04-18</pubDate>
+        <link>https://github.com/TinyZzh//okra/2016/04/18/Okra_Example_HTTP.html</link>
+        <guid isPermaLink="true">https://github.com/TinyZzh//okra/2016/04/18/Okra_Example_HTTP.html</guid>
+        
+        <category>Okra框架</category>
+        
+        
+        <category>Okra</category>
+        
+      </item>
+    
+      <item>
+        <title>Okra框架(二) 搭建Socket服务器</title>
+        <description>&lt;p&gt;本文将介绍使用Okra框架帮助开发者快速搭建高性能应用程序Socket服务端。
+博主接触的网络游戏（包含但不限于网页, 手机）的服务端通信使用的协议基本上就Socket，Http或是WebSocket三种方式。
+本系列教程将介绍利用Okra框架这三种通信方式的示例。&lt;/p&gt;
+
+&lt;h3 id=&quot;executor&quot;&gt;1. 创建Executor&lt;/h3&gt;
+
+&lt;p&gt;在通信过程中，我们可以把每一个消息可以当做是一个任务。Executor则是Okra中负责处理每一条消息的任务执行者。
+同时，每一个Executor都是一个并发线程。
+如下代码实现一个简单的示例ObjectExecutor:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ObjectExecutor&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Executor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Session&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ObjectExecutor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Session&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;session&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;request&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;onExecute&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;throw&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NullPointerException&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;request&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// TODO: Just send message back, do some logic on real&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;writeAndFlush&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;valueOf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;release&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;session&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;request&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Okra提供了封装好的Disruptor桥用于Netty结合Disruptor。Okra通过Executor工厂让用户可以便捷灵活的定制特殊的处理者.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ExampleSocketHandler&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DisruptorAdapterBy41xHandler&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Executor&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;newExecutor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Session&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ObjectExecutor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;server&quot;&gt;2. 创建Server&lt;/h3&gt;
+
+&lt;p&gt;然后创建一个Server继承TcpProtocolServer实现自己的服务器类. 增加Handler处理&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TcpServer&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TcpProtocolServer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TcpServer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;setPort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ChannelHandler&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FRAME_PREPENDER&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LengthFieldPrepender&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ChannelHandler&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;newChannelInitializer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ChannelInitializer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NioSocketChannel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+            &lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;initChannel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NioSocketChannel&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ch&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Exception&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;ChannelPipeline&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ch&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;pipeline&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;cp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;addLast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;frame&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LengthFieldBasedFrameDecoder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;MAX_VALUE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;cp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;addLast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;prepender&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FRAME_PREPENDER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;// Any other useful handler&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;cp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;addLast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;handler&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ExampleSocketHandler&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;};&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;3. 启动服务器&lt;/h3&gt;
+
+&lt;p&gt;假如你的项目中使用了Spring框架，那么只需要在配置如下bean就可以启动:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Tcp server --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;bean&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;tcpServer&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;org.ogcs.okra.example.socket.TcpServer&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;init-method=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;start&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;destroy-method=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;stop&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;constructor-arg&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;port&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;value=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;${tcp.port}&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/bean&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;普通Java程序:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;TcpServer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TcpServer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9005&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;只需要简短的两行代码就可以启动服务器了。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;4. 总结&lt;/h3&gt;
+&lt;p&gt;本文介绍了使用Okra快速搭建高可用，高性能，可扩展，高并发服务器的示例。Okra通过封装，简化了服务器搭建过程。&lt;/p&gt;
+
+</description>
+        <pubDate>2016-04-18</pubDate>
+        <link>https://github.com/TinyZzh//okra/2016/04/18/Okra_Example_TCP.html</link>
+        <guid isPermaLink="true">https://github.com/TinyZzh//okra/2016/04/18/Okra_Example_TCP.html</guid>
+        
+        <category>Okra框架</category>
+        
+        
+        <category>Okra</category>
+        
+      </item>
+    
+      <item>
+        <title>Okra框架(一) 简介</title>
+        <description>&lt;p&gt;Okra是一个构建在Netty框架和Disruptor框架之上轻量级JAVA服务器框架。
+使用Netty实现高性能，可灵活扩展的网络通信，使用Disruptor实现高吞吐量，低延迟的并发。
+Okra主要依赖如下：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;netty.io&quot;&gt;Netty 4.x 以上版本&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://lmax-exchange.github.io/disruptor/&quot;&gt;Disruptor 3.3.x 以上版本&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;JDK 1.8 above&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;相关资料:&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/ogcs/Okra/wiki&quot;&gt;GitHub Wiki&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;okragithub&quot;&gt;Okra开源在GitHub&lt;/h3&gt;
+&lt;p&gt;开源地址 : &lt;a href=&quot;https://github.com/ogcs/Okra/&quot;&gt;https://github.com/ogcs/Okra/&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;okra&quot;&gt;为什么叫Okra?&lt;/h3&gt;
+&lt;p&gt;Okra中文意思是秋葵。作者一直很想试试，但一直都没机会吃。所以就这么称呼，已提醒自己啥时候有机会要尝试一下。&lt;/p&gt;
+
+</description>
+        <pubDate>2016-04-18</pubDate>
+        <link>https://github.com/TinyZzh//okra/2016/04/18/Okra_Framework_Intruduce.html</link>
+        <guid isPermaLink="true">https://github.com/TinyZzh//okra/2016/04/18/Okra_Framework_Intruduce.html</guid>
+        
+        <category>Okra框架</category>
+        
+        
+        <category>Okra</category>
+        
+      </item>
+    
+      <item>
+        <title>Rust笔记(一) 搭建开发环境</title>
+        <description>&lt;p&gt;Rust是一门强调安全、并发、高效的系统编程语言。无GC实现内存安全机制、无数据竞争的并发机制、无运行时开销的抽象机制，是Rust独特的优越特性。
+它声称解决了传统C语言和C++语言几十年来饱受责难的内存安全问题，同时还保持了很高的运行效率、很深的底层控制、很广的应用范围，
+在系统编程领域具有强劲的竞争力和广阔的应用前景。&lt;/p&gt;
+
+&lt;h1 id=&quot;rust&quot;&gt;搭建Rust开发环境&lt;/h1&gt;
+
+&lt;p&gt;博主从Rust 0.9版本时开始关注Rust项目。到现在落笔时Rust的1.8稳定版本。
+感觉是时候接触一下这门新系统级编程语言了。Rust诞生至今还不算很长，虽然社区等对各种IDE都有了初步支持，
+但是相比于其他老牌语法而言，仍很不完善。本文记录博主搭建Rust环境的流程和遇到的坑&lt;/p&gt;
+
+&lt;p&gt;需求：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.rust-lang.org/downloads.html&quot;&gt;Rust环境&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Visual Studio 2015&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://visualstudiogallery.msdn.microsoft.com/c6075d2f-8864-47c0-8333-92f183d3e640/&quot;&gt;VisualRust插件&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/phildawes/racer&quot;&gt;racer代码补全&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;rust-1&quot;&gt;1.1安装Rust环境&lt;/h2&gt;
+&lt;p&gt;选择适合自己开发平台的Rust包.由于博主使用的是VS2015，这里选择下载Rust的MSVC安装包。
+另外一个需要下载的是source包（用于rust标准库的代码提示）。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/2016-04/a1.jpg&quot; alt=&quot;Alt text&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;双击运行”rust-1.8.0-x86_64-pc-windows-msvc.msi”启动windows操作系统的安装程序.
+ * 默认安装路径: C:\Progrem Files\Rust *** 版本号
+ * 自定义安装路径: 点选”advanced”按钮.在设置里面安装路径和需要的模块.
+一路Next然后Finish&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;由于需要写入注册列表和修改环境变量，所以操作系统中安装了安全软件的请允许安装器操作&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;rust-2&quot;&gt;1.2校验Rust编译环境&lt;/h2&gt;
+&lt;p&gt;运行windows命令行(快捷键:Win + R 输入cmd 回车). 输入如下命令并回车&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rustc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;version&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cargo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;version&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;img src=&quot;/images/2016-04/a2.jpg&quot; alt=&quot;Alt text&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;正确输出版本信息说明安装和环境变量配置成功.
+&lt;strong&gt;假如出现  “‘rustc’不是内部或外部命令，也不是可运行的程序或批处理文件”
+请在”环境变量”的Path中增加rust的bin目录&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;cargo&quot;&gt;cargo&lt;/h2&gt;
+&lt;p&gt;cargo是rust官方推荐使用的项目管理软件。功能大概类似于java里面的maven和ant。负责管理依赖项和编译。
+安装rust时，默认安装(可以自定义为不安装)&lt;/p&gt;
+
+&lt;h2 id=&quot;visualrust&quot;&gt;2 安装VisualRust插件&lt;/h2&gt;
+
+&lt;p&gt;VisualRust插件下载地址:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://visualstudiogallery.msdn.microsoft.com/c6075d2f-8864-47c0-8333-92f183d3e640/&quot;&gt;MSDN-VisualRust&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;下载插件，选择对应的Visual Studio版本安装即可.&lt;/p&gt;
+
+&lt;h2 id=&quot;racer&quot;&gt;3 安装racer&lt;/h2&gt;
+&lt;p&gt;racer是rust社区里面出现的一个代码补全提示工具。针对多种IDE都有相对应的支持。
+(截至于v1.2.6版本貌似只支持标准库的代码提示)&lt;/p&gt;
+
+&lt;p&gt;在命令行中输入如下指令并回车:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cargo&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;racer&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;此方法来自《Rust primer》pdf电子书。博主一直无法编译安装成功。所以采用了下载源码包编译的办法，具体办法如下&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;在&lt;a href=&quot;https://github.com/phildawes/racer&quot;&gt;https://github.com/phildawes/racer&lt;/a&gt;项目下载最新的racer包&lt;/li&gt;
+  &lt;li&gt;在解压缩之后的目录中，使用cargo编译racer&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;racer&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cargo&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;build&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;release&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;编译需要联网，cargo会管理和下载racer的相关依赖。中途可能会出现编译失败（基本上都是因为网络原因无法下载到，你懂的）。
+多尝试编译几次即可。
+编译完成，在racer目录下面的target目录会生成一个racer.exe的可执行文件
+将racer.exe文件复制到rust的bin目录下&lt;/p&gt;
+
+&lt;h3 id=&quot;vs2015racer&quot;&gt;3.1 在VS2015中配置racer&lt;/h3&gt;
+&lt;p&gt;点击”工具” -&amp;gt; “选项”  -&amp;gt; “Visual Rust”  界面如下:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/2016-04/a3.jpg&quot; alt=&quot;Alt text&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;根据racer.exe的路径配置。设置rust源码的source/src的目录。
+博主这里设置了RUST_SRC_PATH的环境变量，所以无需手动设置Rust sources的路径&lt;/p&gt;
+
+&lt;p&gt;至此，在Windows 10操作系统中使用Visual Studio 2015开发Rust的环境就搭建完成了。&lt;/p&gt;
+
+&lt;p&gt;enjoy it !:)&lt;/p&gt;
+
+</description>
+        <pubDate>2016-04-15</pubDate>
+        <link>https://github.com/TinyZzh//rust/2016/04/15/Rust_Note_1.html</link>
+        <guid isPermaLink="true">https://github.com/TinyZzh//rust/2016/04/15/Rust_Note_1.html</guid>
+        
+        <category>Rust笔记</category>
+        
+        
+        <category>Rust</category>
+        
+      </item>
     
       <item>
         <title>搭建自己的GitHub Pages</title>
@@ -671,344 +1076,6 @@
         <pubDate>2014-01-06</pubDate>
         <link>https://github.com/TinyZzh//netty/2014/01/06/Netty4.x_3.html</link>
         <guid isPermaLink="true">https://github.com/TinyZzh//netty/2014/01/06/Netty4.x_3.html</guid>
-        
-        <category>Netty4.x中文教程系列</category>
-        
-        
-        <category>Netty</category>
-        
-      </item>
-    
-      <item>
-        <title>Netty4.x中文教程系列(二) Hello World !</title>
-        <description>&lt;p&gt;　　在中国程序界。我们都是学着Hello World !慢慢成长起来的。逐渐从一无所知到熟悉精通的。&lt;/p&gt;
-&lt;p&gt;　　第二章就从Hello World 开始讲述Netty的中文教程。&lt;/p&gt;
-
-&lt;p&gt;　　首先创建一个Java项目。引入一个Netty 框架的包。这个步骤我在本系列教程的后面就不在重复了。&lt;/p&gt;
-&lt;p&gt;　　先上一张我示例的项目工程图给大家看一下:&lt;/p&gt;
-&lt;p&gt;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/blog/359548/201312/26171451-184e0b3b4ce745de81d773c097243960.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;h2&gt;1.下载并为项目添加Netty框架&lt;/h2&gt;
-&lt;p&gt;　　Netty的包大家可以从Netty官网:&lt;a href=&quot;http://netty.io/downloads.html&quot; target=&quot;_blank&quot;&gt;http://netty.io/downloads.html&lt;/a&gt;&amp;nbsp;下载&lt;/p&gt;
-&lt;p&gt;　　&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/blog/359548/201312/26171717-5926ec582cab4167b6aca539d8c8adff.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;如图所示: Netty提供了三个主要版本的框架包给大家下载。&lt;/p&gt;
-&lt;p&gt;3.9版本Final 说明这个版本是3.x版本中最新的版本。final意味着功能不再继续添加更新。仅为修改bug等提供继续的更新。&lt;/p&gt;
-&lt;p&gt;5.x版本由于是开始。不能排除是否稳定运行等问题。加上5.x在4.x的版本上略微修改的。在5.x稳定之前。不推荐大家学习使用。&lt;/p&gt;
-&lt;p&gt;本教程是基于Netty4.x版本的。&lt;/p&gt;
-&lt;p&gt;　　笔者也是从3.6版本，经过了相当痛苦的一段时间才算是真正的过度到4.x版本。&lt;/p&gt;
-&lt;p&gt;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/blog/359548/201312/26172210-783e94446ac0417fab5493bb6dcdf526.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;　　下载之后解压缩。大家可以看到这样一个目录结构。非常的清晰。&lt;/p&gt;
-&lt;p&gt;　　第一个文件夹jar是jar包的文件夹。第二个javadoc是API文档。第三个license文件夹是开源的授权文件(可以直接无视)。&lt;/p&gt;
-&lt;p&gt;　　javadoc文件夹下面是一个jar包。可以直接解压缩出来。解压缩之后的文件夹就是api文档(以网页的形势展现)。&lt;/p&gt;
-&lt;p&gt;　　jar文件夹里面有很多的jar包和一个all-in-one文件夹。都是Netty框架的组成部分。all-in-one里面有两个文件一个是jar包，另一个是对应的source源代码包。这样做的目的是为了给程序员有选择的添加自己所需要的包。&lt;/p&gt;
-&lt;p&gt;　　假如读者是初学者的话。推荐直接套用all-in-one里面的jar包。假如你熟悉Netty的话可以根据自己的项目需求添加不同的jar包。&lt;/p&gt;
-&lt;h2 style=&quot;text-align: center;&quot;&gt;2.创建Server 服务端&lt;/h2&gt;
-&lt;p&gt;　　Netty创建全部都是实现自&lt;a title=&quot;class in io.netty.bootstrap&quot; href=&quot;http://netty.io/5.0/api/io/netty/bootstrap/AbstractBootstrap.html&quot; target=&quot;classFrame&quot;&gt;AbstractBootstrap&lt;/a&gt;。客户端的是Bootstrap，服务端的则是ServerBootstrap。&lt;/p&gt;
-&lt;p&gt;　　&lt;/p&gt;
-&lt;h3&gt;&lt;span&gt;2.1创建一个 HelloServer &lt;/span&gt;&lt;/h3&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-
-
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.bootstrap.ServerBootstrap;
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelFuture;
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.EventLoopGroup;
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.nio.NioEventLoopGroup;
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.nio.NioServerSocketChannel;
-
-&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloServer {
-
-    &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;/**&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;
-     * 服务端监听的端口地址
-     &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-    &lt;span style=&quot;color: #0000ff;&quot;&gt;private&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;final&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;int&lt;/span&gt; portNumber = 7878&lt;span style=&quot;color: #000000;&quot;&gt;;
-
-    &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; main(String[] args) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; InterruptedException {
-        EventLoopGroup bossGroup &lt;/span&gt;= &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; NioEventLoopGroup();
-        EventLoopGroup workerGroup &lt;/span&gt;= &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; NioEventLoopGroup();
-        &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;try&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-            ServerBootstrap b &lt;/span&gt;= &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; ServerBootstrap();
-            b.group(bossGroup, workerGroup);
-            b.channel(NioServerSocketChannel.&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
-            b.childHandler(&lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloServerInitializer());
-
-            &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 服务器绑定端口监听&lt;/span&gt;
-            ChannelFuture f =&lt;span style=&quot;color: #000000;&quot;&gt; b.bind(portNumber).sync();
-            &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 监听服务器关闭监听&lt;/span&gt;
-&lt;span style=&quot;color: #000000;&quot;&gt;            f.channel().closeFuture().sync();
-
-            &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 可以简写为&lt;/span&gt;
-            &lt;span style=&quot;color: #008000;&quot;&gt;/*&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; b.bind(portNumber).sync().channel().closeFuture().sync(); &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;
-        } &lt;/span&gt;&lt;span style=&quot;color: #0000ff;&quot;&gt;finally&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
-        }
-    }
-}&lt;/span&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&lt;span&gt;　　EventLoopGroup 是在4.x版本中提出来的一个新概念。用于channel的管理。服务端需要两个。和3.x版本一样，一个是boss线程一个是worker线程。&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;span&gt;　&lt;span style=&quot;color: #c0c0c0;&quot;&gt;　b.childHandler(&lt;/span&gt;&lt;/span&gt;&lt;span style=&quot;color: #00ffff;&quot;&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;new HelloServerInitializer());　　　　//&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;用于添加相关的Handler&lt;/span&gt;&lt;/span&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;span&gt;　　服务端简单的代码，真的没有办法在精简了感觉。就是一个绑定端口操作。&lt;/span&gt;&lt;/p&gt;
-&lt;h3&gt;&lt;span&gt;2.2创建和实现HelloServerInitializer&lt;/span&gt;&lt;/h3&gt;
-&lt;p&gt;&lt;span&gt;　　在HelloServer中的HelloServerInitializer在这里实现。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span&gt;　　首先我们需要明确我们到底是要做什么的。很简单。HelloWorld!。我们希望实现一个能够像服务端发送文字的功能。服务端假如可以最好还能返回点消息给客户端，然客户端去显示。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span&gt;　　需求简单。那我们下面就准备开始实现。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span&gt;　　DelimiterBasedFrameDecoder Netty在官方网站上提供的示例显示 有这么一个解码器可以简单的消息分割。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span&gt;　　其次 在decoder里面我们找到了String解码编码器。着都是官网提供给我们的。&lt;/span&gt;&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelInitializer;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelPipeline;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.SocketChannel;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.DelimiterBasedFrameDecoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.Delimiters;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.string.StringDecoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.string.StringEncoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt; HelloServerInitializer &lt;span style=&quot;color: #0000ff;&quot;&gt;extends&lt;/span&gt; ChannelInitializer&amp;lt;SocketChannel&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; initChannel(SocketChannel ch) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;         ChannelPipeline pipeline =&lt;span style=&quot;color: #000000;&quot;&gt; ch.pipeline();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 以(&quot;\n&quot;)为结尾分割的 解码器&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt;         pipeline.addLast(&quot;framer&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; DelimiterBasedFrameDecoder(8192&lt;span style=&quot;color: #000000;&quot;&gt;, Delimiters.lineDelimiter()));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 字符串解码 和 编码&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt;         pipeline.addLast(&quot;decoder&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; StringDecoder());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt;         pipeline.addLast(&quot;encoder&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; StringEncoder());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 自己的逻辑Handler&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt;         pipeline.addLast(&quot;handler&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloServerHandler());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;　　上面的三个解码和编码都是系统。&lt;/p&gt;
-&lt;p&gt;　　另外我们自己的Handler怎么办呢。在最后我们添加一个自己的Handler用于写自己的处理逻辑。&lt;/p&gt;
-&lt;h3&gt;2.3 增加自己的逻辑HelloServerHandler&lt;/h3&gt;
-&lt;p&gt;　　自己的Handler我们这里先去继承extends官网推荐的SimpleChannelInboundHandler&amp;lt;C&amp;gt; 。在这里C，由于我们需求里面发送的是字符串。这里的C改写为String。&lt;/p&gt;
-&lt;p&gt;　　&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.net.InetAddress;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelHandlerContext;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.SimpleChannelInboundHandler;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt; HelloServerHandler &lt;span style=&quot;color: #0000ff;&quot;&gt;extends&lt;/span&gt; SimpleChannelInboundHandler&amp;lt;String&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelRead0(ChannelHandlerContext ctx, String msg) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 收到消息直接打印输出&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt;         System.out.println(ctx.channel().remoteAddress() + &quot; Say : &quot; +&lt;span style=&quot;color: #000000;&quot;&gt; msg);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 返回客户端消息 - 我已经接收到了你的消息&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;         ctx.writeAndFlush(&quot;Received your message !\n&quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt;     &lt;span style=&quot;color: #008000;&quot;&gt;/*&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     *
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * 覆盖 channelActive 方法 在channel被启用的时候触发 (在建立连接的时候)
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     *
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * channelActive 和 channelInActive 在后面的内容中讲述，这里先不做详细的描述
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelActive(ChannelHandlerContext ctx) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;28&lt;/span&gt;         System.out.println(&quot;RamoteAddress : &quot; + ctx.channel().remoteAddress() + &quot; active !&quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;29&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;30&lt;/span&gt;         ctx.writeAndFlush( &quot;Welcome to &quot; + InetAddress.getLocalHost().getHostName() + &quot; service!\n&quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;31&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;32&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;super&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;.channelActive(ctx);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;33&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;34&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;　　在channelHandlerContent自带一个writeAndFlush方法。方法的作用是写入Buffer并刷入。&lt;/p&gt;
-&lt;p&gt;　　&lt;span style=&quot;color: #000000;&quot;&gt;注意:&lt;span style=&quot;text-decoration: underline;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;text-decoration: underline;&quot;&gt;在3.x版本中此处有很大区别。在3.x版本中write()方法是自动flush的。在4.x版本的前面几个版本也是一样的。但是在4.0.9之后修改为WriteAndFlush。普通的write方法将不会发送消息。需要手动在write之后flush()一次&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　这里channeActive的意思是当连接活跃(建立)的时候触发.输出消息源的远程地址。并返回欢迎消息。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　channelRead0 在这里的作用是类似于3.x版本的messageReceived()。可以当做是每一次收到消息是触发。&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　我们在这里的代码是返回客户端一个字符串&quot;Received your message !&quot;.&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　&lt;span style=&quot;text-decoration: underline;&quot;&gt;&lt;strong&gt;注意:字符串最后面的&quot;\n&quot;是必须的。因为我们在前面的解码器DelimiterBasedFrameDecoder是一个根据字符串结尾为&amp;ldquo;\n&amp;rdquo;来结尾的。假如没有这个字符的话。解码会出现问题。&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;h2&gt;2.Client客户端&lt;/h2&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　类似于服务端的代码。我们不做特别详细的解释。&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　直接上示例代码:&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.bootstrap.Bootstrap;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.Channel;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.EventLoopGroup;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.nio.NioEventLoopGroup;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.nio.NioSocketChannel;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.io.BufferedReader;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.io.IOException;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.io.InputStreamReader;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloClient {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; String host = &quot;127.0.0.1&quot;&lt;span style=&quot;color: #000000;&quot;&gt;;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;int&lt;/span&gt; port = 7878&lt;span style=&quot;color: #000000;&quot;&gt;;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt;     &lt;span style=&quot;color: #008000;&quot;&gt;/**&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * &lt;/span&gt;&lt;span style=&quot;color: #808080;&quot;&gt;@param&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; args
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * &lt;/span&gt;&lt;span style=&quot;color: #808080;&quot;&gt;@throws&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; InterruptedException
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;     * &lt;/span&gt;&lt;span style=&quot;color: #808080;&quot;&gt;@throws&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; IOException
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt;      &lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; main(String[] args) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; InterruptedException, IOException {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt;         EventLoopGroup group = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; NioEventLoopGroup();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;try&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt;             Bootstrap b = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Bootstrap();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            b.group(group)
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;28&lt;/span&gt;             .channel(NioSocketChannel.&lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;)
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;29&lt;/span&gt;             .handler(&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloClientInitializer());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;30&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;31&lt;/span&gt;             &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 连接服务端&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;32&lt;/span&gt;             Channel ch =&lt;span style=&quot;color: #000000;&quot;&gt; b.connect(host, port).sync().channel();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;33&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;34&lt;/span&gt;             &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 控制台输入&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;35&lt;/span&gt;             BufferedReader in = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; BufferedReader(&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; InputStreamReader(System.in));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;36&lt;/span&gt;             &lt;span style=&quot;color: #0000ff;&quot;&gt;for&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; (;;) {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;37&lt;/span&gt;                 String line =&lt;span style=&quot;color: #000000;&quot;&gt; in.readLine();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;38&lt;/span&gt;                 &lt;span style=&quot;color: #0000ff;&quot;&gt;if&lt;/span&gt; (line == &lt;span style=&quot;color: #0000ff;&quot;&gt;null&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;) {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;39&lt;/span&gt;                     &lt;span style=&quot;color: #0000ff;&quot;&gt;continue&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;40&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;41&lt;/span&gt;                 &lt;span style=&quot;color: #008000;&quot;&gt;/*&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;42&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;                 * 向服务端发送在控制台输入的文本 并用&quot;\r\n&quot;结尾
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;43&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;                 * 之所以用\r\n结尾 是因为我们在handler中添加了 DelimiterBasedFrameDecoder 帧解码。
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;44&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;                 * 这个解码器是一个根据\n符号位分隔符的解码器。所以每条消息的最后必须加上\n否则无法识别和解码
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;45&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;                 * &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;46&lt;/span&gt;                 ch.writeAndFlush(line + &quot;\r\n&quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;47&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;48&lt;/span&gt;         } &lt;span style=&quot;color: #0000ff;&quot;&gt;finally&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;49&lt;/span&gt;             &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; The connection is closed automatically on shutdown.&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;50&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            group.shutdownGracefully();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;51&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;        }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;52&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;53&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　下面的是HelloClientInitializer代码貌似是和服务端的完全一样。我没注意看。其实编码和解码是相对的。多以服务端和客户端都是解码和编码。才能通信。&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color: #c0c0c0;&quot;&gt;&lt;span style=&quot;color: #000000;&quot;&gt;　　&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelInitializer;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelPipeline;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.SocketChannel;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.DelimiterBasedFrameDecoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.Delimiters;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.string.StringDecoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.string.StringEncoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt; HelloClientInitializer &lt;span style=&quot;color: #0000ff;&quot;&gt;extends&lt;/span&gt; ChannelInitializer&amp;lt;SocketChannel&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; initChannel(SocketChannel ch) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;         ChannelPipeline pipeline =&lt;span style=&quot;color: #000000;&quot;&gt; ch.pipeline();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;/*&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         * 这个地方的 必须和服务端对应上。否则无法正常解码和编码
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         *
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         * 解码和编码 我将会在下一张为大家详细的讲解。再次暂时不做详细的描述
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         *
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;         * &lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;         pipeline.addLast(&quot;framer&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; DelimiterBasedFrameDecoder(8192&lt;span style=&quot;color: #000000;&quot;&gt;, Delimiters.lineDelimiter()));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt;         pipeline.addLast(&quot;decoder&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; StringDecoder());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt;         pipeline.addLast(&quot;encoder&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; StringEncoder());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 客户端的逻辑&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;28&lt;/span&gt;         pipeline.addLast(&quot;handler&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; HelloClientHandler());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;29&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;30&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;　　HellClientHandler：&lt;/p&gt;
-&lt;p&gt;　　&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; org.example.hello;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.ChannelHandlerContext;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.SimpleChannelInboundHandler;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt; HelloClientHandler &lt;span style=&quot;color: #0000ff;&quot;&gt;extends&lt;/span&gt; SimpleChannelInboundHandler&amp;lt;String&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelRead0(ChannelHandlerContext ctx, String msg) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt;         System.out.println(&quot;Server say : &quot; +&lt;span style=&quot;color: #000000;&quot;&gt; msg);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelActive(ChannelHandlerContext ctx) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;         System.out.println(&quot;Client active &quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;super&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;.channelActive(ctx);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelInactive(ChannelHandlerContext ctx) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt;         System.out.println(&quot;Client close &quot;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;super&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;.channelInactive(ctx);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt; }&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;本教程的示例源代码:&lt;a href=&quot;http://pan.baidu.com/s/1hABzK#dir&quot; target=&quot;_blank&quot;&gt;http://pan.baidu.com/s/1hABzK#dir&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;大家可以再我的百度云盘里面找到。&lt;/p&gt;
-&lt;p&gt;下面上几张成果图:&lt;/p&gt;
-&lt;p&gt;　　客户端在连接建立是输出了Client active 信息，并收到服务端返回的Welcome消息。&lt;/p&gt;
-&lt;p&gt;　　输入Hello World ! 回车发送消息。服务端响应返回消息已接受。&lt;/p&gt;
-&lt;p&gt;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/blog/359548/201312/27085946-6196642a22534635874adba84ac6e51a.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;1.客户端控制台截图&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201312/27090204-1d36617bee2441849eebdd52b06ef8e3.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;2.服务端控制台截图&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p style=&quot;text-align: left;&quot;&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p style=&quot;padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 60px; font-family: 微软雅黑; font-size: 12px; border: #e0e0e0 1px dashed;&quot;&gt;&lt;strong&gt;作者&lt;/strong&gt;：TinyZ&lt;br /&gt;出处：&lt;a href=&quot;http://www.cnblogs.com/zou90512/&quot; target=&quot;_blank&quot;&gt;http://www.cnblogs.com/zou90512/&lt;/a&gt;&lt;br /&gt;关于作者：努力学习，天天向上。不断探索学习，提升自身价值。记录经验分享。&lt;br /&gt;本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文链接&lt;br /&gt;如有问题，可以通过&amp;nbsp;&lt;span style=&quot;color: #0000ff;&quot;&gt;zou90512@126.com&amp;nbsp;&lt;/span&gt;联系我，非常感谢。&lt;br /&gt;笔者网店: &lt;a href=&quot;http://aoleitaisen.taobao.com&quot; target=&quot;_blank&quot;&gt;http://aoleitaisen.taobao.com&lt;/a&gt;. 欢迎广大读者围观&lt;/p&gt;
-&lt;p style=&quot;text-align: left;&quot;&gt;&amp;nbsp;&lt;/p&gt;</description>
-        <pubDate>2013-12-26</pubDate>
-        <link>https://github.com/TinyZzh//netty/2013/12/26/Netty4.x_2.html</link>
-        <guid isPermaLink="true">https://github.com/TinyZzh//netty/2013/12/26/Netty4.x_2.html</guid>
-        
-        <category>Netty4.x中文教程系列</category>
-        
-        
-        <category>Netty</category>
-        
-      </item>
-    
-      <item>
-        <title>Netty4.x中文教程系列(一) 目录及概述</title>
-        <description>&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Netty 提供异步的、事件驱动的网络应用程序框架和工具，用以快速开发高性能、高可靠性的网络服务器和客户端程序。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Netty是一个NIO客户端 服务端框架。允许快速简单的开发网络应用程序。例如：服务端和客户端之间的协议。它最棒的地方在于简化了网络编程规范。例如:TCP和UDP socket服务。&lt;/p&gt;
-
-&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;&amp;nbsp;Netty官网:&lt;a href=&quot;http://Netty.io&quot;&gt;Netty.io&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;　　笔者个人理解：&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 　　Netty本身是用于快速构建服务端与客户端之间通信协议的框架。Netty在消息处理上使用责任链模式，用户可以轻松方便的对它进行扩展。官方也提供了大量的优秀的扩展。&lt;/p&gt;
-&lt;p&gt;　　本系列主要讲的内容将是Netty的一些基础概念和一些应用。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; ps：博客内容若有错误，还望各位大神指正。&lt;/p&gt;
-&lt;h1 style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;color: #00ccff;&quot;&gt;&lt;strong&gt;教程目录&lt;/strong&gt;&lt;/span&gt;&lt;/h1&gt;
-&lt;ul&gt;
-    &lt;li&gt;&lt;span style=&quot;color: #00ccff;&quot;&gt;1.&lt;a class=&quot;titlelink&quot; href=&quot;http://www.cnblogs.com/zou90512/p/3492287.html&quot;&gt;&lt;span style=&quot;color: #00ccff;&quot;&gt;Netty4.x中文教程系列(一)&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;span style=&quot;color: #00ccff;&quot;&gt;2.&lt;a class=&quot;titlelink&quot; href=&quot;http://www.cnblogs.com/zou90512/p/3492878.html&quot;&gt;&lt;span style=&quot;color: #00ccff;&quot;&gt;Netty4.x中文教程系列(二) Hello World !&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;span style=&quot;color: #00ccff;&quot;&gt;3.&lt;a class=&quot;titlelink&quot; href=&quot;http://www.cnblogs.com/zou90512/p/3507729.html&quot;&gt;&lt;span style=&quot;color: #00ccff;&quot;&gt;Netty4.x中文教程系列(三) Hello World ！详解&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;span style=&quot;color: #00ccff;&quot;&gt;4.&lt;a class=&quot;titlelink&quot; href=&quot;http://www.cnblogs.com/zou90512/p/3521250.html&quot;&gt;&lt;span style=&quot;color: #00ccff;&quot;&gt;Netty4.x中文教程系列(四) ChannelHandler&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;span style=&quot;color: #00ccff;&quot;&gt;&lt;span style=&quot;color: #00ccff;&quot;&gt;5.&lt;span&gt;&lt;a href=&quot;http://www.cnblogs.com/zou90512/p/3654163.html&quot; target=&quot;_blank&quot;&gt;Netty4.x中文教程系列(五)&amp;nbsp;编解码器Codec&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;span style=&quot;color: #00ccff;&quot;&gt;&lt;span style=&quot;color: #00ccff;&quot;&gt;6.&lt;a href=&quot;http://www.cnblogs.com/zou90512/p/3908022.html&quot; target=&quot;_blank&quot;&gt;Netty4.x中文教程系列(六) 从头开始Bootstrap&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;h1 style=&quot;text-align: center;&quot;&gt;教程相关代码和文档&amp;nbsp;&lt;/h1&gt;
-&lt;p&gt;百度云盘：&lt;a href=&quot;http://pan.baidu.com/s/1pJsKEAR&quot; target=&quot;_blank&quot;&gt;http://pan.baidu.com/s/1pJsKEAR&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p style=&quot;padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 60px; font-family: 微软雅黑; font-size: 12px; border: #e0e0e0 1px dashed;&quot;&gt;&lt;strong&gt;作者&lt;/strong&gt;：TinyZ&lt;br /&gt;出处：&lt;a href=&quot;http://www.cnblogs.com/zou90512/&quot; target=&quot;_blank&quot;&gt;http://www.cnblogs.com/zou90512/&lt;/a&gt;&lt;br /&gt;关于作者：努力学习，天天向上。不断探索学习，提升自身价值。记录经验分享。&lt;br /&gt;本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文链接&lt;br /&gt;如有问题，可以通过&amp;nbsp;&lt;span style=&quot;color: #0000ff;&quot;&gt;zou90512@126.com&amp;nbsp;&lt;/span&gt;联系我，非常感谢。&lt;br /&gt;笔者网店: &lt;a href=&quot;http://aoleitaisen.taobao.com&quot; target=&quot;_blank&quot;&gt;http://aoleitaisen.taobao.com&lt;/a&gt;. 欢迎广大读者围观&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&amp;nbsp;&lt;/p&gt;</description>
-        <pubDate>2013-12-26</pubDate>
-        <link>https://github.com/TinyZzh//netty/2013/12/26/Netty4.x_1.html</link>
-        <guid isPermaLink="true">https://github.com/TinyZzh//netty/2013/12/26/Netty4.x_1.html</guid>
         
         <category>Netty4.x中文教程系列</category>
         
