@@ -3,7 +3,7 @@
   
     
     <url>
-      <loc>https://github.com/TinyZzh/okra/2016/04/18/Okra_Example_HTTP.html</loc>
+      <loc>https://tinyzzh.github.io/okra/2016/04/18/Okra_Example_HTTP.html</loc>
       
         <lastmod>2016-04-18T12:58:00+00:00</lastmod>
       
@@ -18,7 +18,7 @@
   
     
     <url>
-      <loc>https://github.com/TinyZzh/okra/2016/04/18/Okra_Example_TCP.html</loc>
+      <loc>https://tinyzzh.github.io/okra/2016/04/18/Okra_Example_TCP.html</loc>
       
         <lastmod>2016-04-18T11:29:00+00:00</lastmod>
       
@@ -33,7 +33,7 @@
   
     
     <url>
-      <loc>https://github.com/TinyZzh/okra/2016/04/18/Okra_Framework_Intruduce.html</loc>
+      <loc>https://tinyzzh.github.io/okra/2016/04/18/Okra_Framework_Intruduce.html</loc>
       
         <lastmod>2016-04-18T11:26:00+00:00</lastmod>
       
@@ -48,7 +48,7 @@
   
     
     <url>
-      <loc>https://github.com/TinyZzh/rust/2016/04/15/Rust_Note_1.html</loc>
+      <loc>https://tinyzzh.github.io/rust/2016/04/15/Rust_Note_1.html</loc>
       
         <lastmod>2016-04-15T06:14:00+00:00</lastmod>
       
@@ -63,7 +63,7 @@
   
     
     <url>
-      <loc>https://github.com/TinyZzh/github/2016/04/13/Build_GitHub_Pages.html</loc>
+      <loc>https://tinyzzh.github.io/github/2016/04/13/Build_GitHub_Pages.html</loc>
       
         <lastmod>2016-04-13T01:54:00+00:00</lastmod>
       
@@ -78,7 +78,7 @@
   
     
     <url>
-      <loc>https://github.com/TinyZzh/netty/2015/06/10/Netty4.x_7.html</loc>
+      <loc>https://tinyzzh.github.io/netty/2015/06/10/Netty4.x_7.html</loc>
       
         <lastmod>2015-06-10T13:12:00+00:00</lastmod>
       
@@ -93,7 +93,7 @@
   
     
     <url>
-      <loc>https://github.com/TinyZzh/netty/2014/08/12/Netty4.x_6.html</loc>
+      <loc>https://tinyzzh.github.io/netty/2014/08/12/Netty4.x_6.html</loc>
       
         <lastmod>2014-08-12T10:24:00+00:00</lastmod>
       
@@ -108,7 +108,7 @@
   
     
     <url>
-      <loc>https://github.com/TinyZzh/netty/2014/04/09/Netty4.x_5.html</loc>
+      <loc>https://tinyzzh.github.io/netty/2014/04/09/Netty4.x_5.html</loc>
       
         <lastmod>2014-04-09T06:27:00+00:00</lastmod>
       
@@ -123,7 +123,7 @@
   
     
     <url>
-      <loc>https://github.com/TinyZzh/netty/2014/01/15/Netty4.x_4.html</loc>
+      <loc>https://tinyzzh.github.io/netty/2014/01/15/Netty4.x_4.html</loc>
       
         <lastmod>2014-01-15T09:32:00+00:00</lastmod>
       
@@ -138,7 +138,7 @@
   
     
     <url>
-      <loc>https://github.com/TinyZzh/netty/2014/01/06/Netty4.x_3.html</loc>
+      <loc>https://tinyzzh.github.io/netty/2014/01/06/Netty4.x_3.html</loc>
       
         <lastmod>2014-01-06T10:33:00+00:00</lastmod>
       
@@ -153,7 +153,7 @@
   
     
     <url>
-      <loc>https://github.com/TinyZzh/netty/2013/12/26/Netty4.x_2.html</loc>
+      <loc>https://tinyzzh.github.io/netty/2013/12/26/Netty4.x_2.html</loc>
       
         <lastmod>2013-12-26T10:14:00+00:00</lastmod>
       
@@ -168,7 +168,7 @@
   
     
     <url>
-      <loc>https://github.com/TinyZzh/netty/2013/12/26/Netty4.x_1.html</loc>
+      <loc>https://tinyzzh.github.io/netty/2013/12/26/Netty4.x_1.html</loc>
       
         <lastmod>2013-12-26T05:54:00+00:00</lastmod>
       
@@ -184,7 +184,7 @@
   
     
     <url>
-      <loc>https://github.com/TinyZzh/about/</loc>
+      <loc>https://tinyzzh.github.io/about/</loc>
       
         <lastmod>2016-02-08T15:04:23+00:00</lastmod>
       
@@ -199,24 +199,9 @@
   
     
     <url>
-      <loc>https://github.com/TinyZzh/archives/</loc>
+      <loc>https://tinyzzh.github.io/archives/</loc>
       
-        <lastmod>2016-04-25T03:27:07+00:00</lastmod>
-      
-      
-        <changefreq>monthly</changefreq>
-      
-      
-        <priority>0.3</priority>
-      
-    </url>
-    
-  
-    
-    <url>
-      <loc>https://github.com/TinyZzh/categories/</loc>
-      
-        <lastmod>2016-04-25T03:27:07+00:00</lastmod>
+        <lastmod>2016-04-25T03:27:58+00:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -229,24 +214,9 @@
   
     
     <url>
-      <loc>https://github.com/TinyZzh/feed.xml</loc>
+      <loc>https://tinyzzh.github.io/categories/</loc>
       
-        <lastmod>2016-04-25T03:27:07+00:00</lastmod>
-      
-      
-        <changefreq>monthly</changefreq>
-      
-      
-        <priority>0.3</priority>
-      
-    </url>
-    
-  
-    
-    <url>
-      <loc>https://github.com/TinyZzh/</loc>
-      
-        <lastmod>2016-04-25T03:27:07+00:00</lastmod>
+        <lastmod>2016-04-25T03:27:58+00:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -259,9 +229,39 @@
   
     
     <url>
-      <loc>https://github.com/TinyZzh/js/main.js</loc>
+      <loc>https://tinyzzh.github.io/feed.xml</loc>
       
-        <lastmod>2016-04-25T03:27:07+00:00</lastmod>
+        <lastmod>2016-04-25T03:27:58+00:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.3</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://tinyzzh.github.io/</loc>
+      
+        <lastmod>2016-04-25T03:27:58+00:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.3</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://tinyzzh.github.io/js/main.js</loc>
+      
+        <lastmod>2016-04-25T03:27:58+00:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -276,24 +276,9 @@
   
     
     <url>
-      <loc>https://github.com/TinyZzh/tags/</loc>
+      <loc>https://tinyzzh.github.io/tags/</loc>
       
-        <lastmod>2016-04-25T03:27:07+00:00</lastmod>
-      
-      
-        <changefreq>monthly</changefreq>
-      
-      
-        <priority>0.3</priority>
-      
-    </url>
-    
-  
-    
-    <url>
-      <loc>https://github.com/TinyZzh/page2/</loc>
-      
-        <lastmod>2016-04-25T03:27:07+00:00</lastmod>
+        <lastmod>2016-04-25T03:27:58+00:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -306,9 +291,24 @@
   
     
     <url>
-      <loc>https://github.com/TinyZzh/page3/</loc>
+      <loc>https://tinyzzh.github.io/page2/</loc>
       
-        <lastmod>2016-04-25T03:27:07+00:00</lastmod>
+        <lastmod>2016-04-25T03:27:58+00:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.3</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://tinyzzh.github.io/page3/</loc>
+      
+        <lastmod>2016-04-25T03:27:58+00:00</lastmod>
       
       
         <changefreq>monthly</changefreq>

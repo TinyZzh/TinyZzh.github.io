@@ -3,8 +3,8 @@
   <channel>
     <title>TinyZ&#39;s Blog</title>
     <description>专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。</description>
-    <link>https://github.com/TinyZzh//</link>
-    <atom:link href="https://github.com/TinyZzh//feed.xml" rel="self" type="application/rss+xml" />
+    <link>https://tinyzzh.github.io//</link>
+    <atom:link href="https://tinyzzh.github.io//feed.xml" rel="self" type="application/rss+xml" />
     <pubDate>2016-04-25</pubDate>
     <lastBuildDate>2016-04-25</lastBuildDate>
     <generator>Jekyll v3.1.2</generator>
@@ -145,8 +145,8 @@
 
 </description>
         <pubDate>2016-04-18</pubDate>
-        <link>https://github.com/TinyZzh//okra/2016/04/18/Okra_Example_HTTP.html</link>
-        <guid isPermaLink="true">https://github.com/TinyZzh//okra/2016/04/18/Okra_Example_HTTP.html</guid>
+        <link>https://tinyzzh.github.io//okra/2016/04/18/Okra_Example_HTTP.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//okra/2016/04/18/Okra_Example_HTTP.html</guid>
         
         <category>Okra框架</category>
         
@@ -260,8 +260,8 @@
 
 </description>
         <pubDate>2016-04-18</pubDate>
-        <link>https://github.com/TinyZzh//okra/2016/04/18/Okra_Example_TCP.html</link>
-        <guid isPermaLink="true">https://github.com/TinyZzh//okra/2016/04/18/Okra_Example_TCP.html</guid>
+        <link>https://tinyzzh.github.io//okra/2016/04/18/Okra_Example_TCP.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//okra/2016/04/18/Okra_Example_TCP.html</guid>
         
         <category>Okra框架</category>
         
@@ -293,8 +293,8 @@ Okra主要依赖如下：&lt;/p&gt;
 
 </description>
         <pubDate>2016-04-18</pubDate>
-        <link>https://github.com/TinyZzh//okra/2016/04/18/Okra_Framework_Intruduce.html</link>
-        <guid isPermaLink="true">https://github.com/TinyZzh//okra/2016/04/18/Okra_Framework_Intruduce.html</guid>
+        <link>https://tinyzzh.github.io//okra/2016/04/18/Okra_Framework_Intruduce.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//okra/2016/04/18/Okra_Framework_Intruduce.html</guid>
         
         <category>Okra框架</category>
         
@@ -405,8 +405,8 @@ Okra主要依赖如下：&lt;/p&gt;
 
 </description>
         <pubDate>2016-04-15</pubDate>
-        <link>https://github.com/TinyZzh//rust/2016/04/15/Rust_Note_1.html</link>
-        <guid isPermaLink="true">https://github.com/TinyZzh//rust/2016/04/15/Rust_Note_1.html</guid>
+        <link>https://tinyzzh.github.io//rust/2016/04/15/Rust_Note_1.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//rust/2016/04/15/Rust_Note_1.html</guid>
         
         <category>Rust笔记</category>
         
@@ -518,8 +518,8 @@ Okra主要依赖如下：&lt;/p&gt;
 
 </description>
         <pubDate>2016-04-13</pubDate>
-        <link>https://github.com/TinyZzh//github/2016/04/13/Build_GitHub_Pages.html</link>
-        <guid isPermaLink="true">https://github.com/TinyZzh//github/2016/04/13/Build_GitHub_Pages.html</guid>
+        <link>https://tinyzzh.github.io//github/2016/04/13/Build_GitHub_Pages.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//github/2016/04/13/Build_GitHub_Pages.html</guid>
         
         <category>GitHub</category>
         
@@ -714,8 +714,8 @@ Okra主要依赖如下：&lt;/p&gt;
 &lt;p&gt;　　ps.UDP协议最大特点就是效率高，速度快。用于某些场合可以极大改善系统的性能。&lt;/p&gt;
 &lt;p&gt;&amp;nbsp;&lt;/p&gt;</description>
         <pubDate>2015-06-10</pubDate>
-        <link>https://github.com/TinyZzh//netty/2015/06/10/Netty4.x_7.html</link>
-        <guid isPermaLink="true">https://github.com/TinyZzh//netty/2015/06/10/Netty4.x_7.html</guid>
+        <link>https://tinyzzh.github.io//netty/2015/06/10/Netty4.x_7.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//netty/2015/06/10/Netty4.x_7.html</guid>
         
         <category>Netty4.x中文教程系列</category>
         
@@ -892,8 +892,8 @@ Okra主要依赖如下：&lt;/p&gt;
 &lt;p style=&quot;padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 60px; font-family: 微软雅黑; font-size: 12px; border: #e0e0e0 1px dashed;&quot;&gt;&lt;strong&gt;作者&lt;/strong&gt;：TinyZ&lt;br /&gt;出处：&lt;a href=&quot;http://www.cnblogs.com/zou90512/&quot; target=&quot;_blank&quot;&gt;http://www.cnblogs.com/zou90512/&lt;/a&gt;&lt;br /&gt;关于作者：努力学习，天天向上。不断探索学习，提升自身价值。记录经验分享。&lt;br /&gt;本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文链接&lt;br /&gt;如有问题，可以通过&amp;nbsp;&lt;span style=&quot;color: #0000ff;&quot;&gt;zou90512@126.com&amp;nbsp;&lt;/span&gt;联系我，非常感谢。&lt;br /&gt;笔者网店: &lt;a href=&quot;http://aoleitaisen.taobao.com&quot; target=&quot;_blank&quot;&gt;http://aoleitaisen.taobao.com&lt;/a&gt;. 欢迎广大读者围观&lt;/p&gt;
 &lt;p&gt;&amp;nbsp;&lt;/p&gt;</description>
         <pubDate>2014-08-12</pubDate>
-        <link>https://github.com/TinyZzh//netty/2014/08/12/Netty4.x_6.html</link>
-        <guid isPermaLink="true">https://github.com/TinyZzh//netty/2014/08/12/Netty4.x_6.html</guid>
+        <link>https://tinyzzh.github.io//netty/2014/08/12/Netty4.x_6.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//netty/2014/08/12/Netty4.x_6.html</guid>
         
         <category>Netty4.x中文教程系列</category>
         
@@ -982,8 +982,8 @@ Okra主要依赖如下：&lt;/p&gt;
 &lt;p style=&quot;padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 60px; font-family: 微软雅黑; font-size: 12px; border: #e0e0e0 1px dashed;&quot;&gt;&lt;strong&gt;作者&lt;/strong&gt;：TinyZ&lt;br /&gt;出处：&lt;a href=&quot;http://www.cnblogs.com/zou90512/&quot; target=&quot;_blank&quot;&gt;http://www.cnblogs.com/zou90512/&lt;/a&gt;&lt;br /&gt;关于作者：努力学习，天天向上。不断探索学习，提升自身价值。记录经验分享。&lt;br /&gt;本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文链接&lt;br /&gt;如有问题，可以通过&amp;nbsp;&lt;span style=&quot;color: #0000ff;&quot;&gt;zou90512@126.com&amp;nbsp;&lt;/span&gt;联系我，非常感谢。&lt;br /&gt;笔者网店: &lt;a href=&quot;http://aoleitaisen.taobao.com&quot; target=&quot;_blank&quot;&gt;http://aoleitaisen.taobao.com&lt;/a&gt;. 欢迎广大读者围观&lt;/p&gt;
 &lt;p&gt;&amp;nbsp;&lt;/p&gt;</description>
         <pubDate>2014-04-09</pubDate>
-        <link>https://github.com/TinyZzh//netty/2014/04/09/Netty4.x_5.html</link>
-        <guid isPermaLink="true">https://github.com/TinyZzh//netty/2014/04/09/Netty4.x_5.html</guid>
+        <link>https://tinyzzh.github.io//netty/2014/04/09/Netty4.x_5.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//netty/2014/04/09/Netty4.x_5.html</guid>
         
         <category>Netty4.x中文教程系列</category>
         
@@ -1031,8 +1031,8 @@ Okra主要依赖如下：&lt;/p&gt;
 &lt;p style=&quot;padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 60px; font-family: 微软雅黑; font-size: 12px; border: #e0e0e0 1px dashed;&quot;&gt;&lt;strong&gt;作者&lt;/strong&gt;：TinyZ&lt;br /&gt;出处：&lt;a href=&quot;http://www.cnblogs.com/zou90512/&quot; target=&quot;_blank&quot;&gt;http://www.cnblogs.com/zou90512/&lt;/a&gt;&lt;br /&gt;关于作者：努力学习，天天向上。不断探索学习，提升自身价值。记录经验分享。&lt;br /&gt;本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文链接&lt;br /&gt;如有问题，可以通过&amp;nbsp;&lt;span style=&quot;color: #0000ff;&quot;&gt;zou90512@126.com&amp;nbsp;&lt;/span&gt;联系我，非常感谢。&lt;br /&gt;笔者网店: &lt;a href=&quot;http://aoleitaisen.taobao.com&quot; target=&quot;_blank&quot;&gt;http://aoleitaisen.taobao.com&lt;/a&gt;. 欢迎广大读者围观&lt;/p&gt;
 &lt;p&gt;&amp;nbsp;&lt;/p&gt;</description>
         <pubDate>2014-01-15</pubDate>
-        <link>https://github.com/TinyZzh//netty/2014/01/15/Netty4.x_4.html</link>
-        <guid isPermaLink="true">https://github.com/TinyZzh//netty/2014/01/15/Netty4.x_4.html</guid>
+        <link>https://tinyzzh.github.io//netty/2014/01/15/Netty4.x_4.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//netty/2014/01/15/Netty4.x_4.html</guid>
         
         <category>Netty4.x中文教程系列</category>
         
@@ -1075,8 +1075,8 @@ Okra主要依赖如下：&lt;/p&gt;
 &lt;p style=&quot;padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 60px; font-family: 微软雅黑; font-size: 12px; border: #e0e0e0 1px dashed;&quot;&gt;&lt;strong&gt;作者&lt;/strong&gt;：TinyZ&lt;br /&gt;出处：&lt;a href=&quot;http://www.cnblogs.com/zou90512/&quot; target=&quot;_blank&quot;&gt;http://www.cnblogs.com/zou90512/&lt;/a&gt;&lt;br /&gt;关于作者：努力学习，天天向上。不断探索学习，提升自身价值。记录经验分享。&lt;br /&gt;本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文链接&lt;br /&gt;如有问题，可以通过&amp;nbsp;&lt;span style=&quot;color: #0000ff;&quot;&gt;zou90512@126.com&amp;nbsp;&lt;/span&gt;联系我，非常感谢。&lt;br /&gt;笔者网店: &lt;a href=&quot;http://aoleitaisen.taobao.com&quot; target=&quot;_blank&quot;&gt;http://aoleitaisen.taobao.com&lt;/a&gt;. 欢迎广大读者围观&lt;/p&gt;
 &lt;p&gt;&amp;nbsp;&lt;/p&gt;</description>
         <pubDate>2014-01-06</pubDate>
-        <link>https://github.com/TinyZzh//netty/2014/01/06/Netty4.x_3.html</link>
-        <guid isPermaLink="true">https://github.com/TinyZzh//netty/2014/01/06/Netty4.x_3.html</guid>
+        <link>https://tinyzzh.github.io//netty/2014/01/06/Netty4.x_3.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//netty/2014/01/06/Netty4.x_3.html</guid>
         
         <category>Netty4.x中文教程系列</category>
         
