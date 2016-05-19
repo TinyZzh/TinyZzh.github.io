@@ -5,9 +5,125 @@
     <description>专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。</description>
     <link>https://tinyzzh.github.io//</link>
     <atom:link href="https://tinyzzh.github.io//feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>2016-04-27</pubDate>
-    <lastBuildDate>2016-04-27</lastBuildDate>
+    <pubDate>2016-05-19</pubDate>
+    <lastBuildDate>2016-05-19</lastBuildDate>
     <generator>Jekyll v3.1.2</generator>
+    
+      <item>
+        <title>Okra框架(四) 使用引导说明</title>
+        <description>&lt;p&gt;Okra是一个构建在Netty框架和Disruptor框架之上轻量级JAVA服务器框架。
+使用Netty实现高性能，可灵活扩展的网络通信，使用Disruptor实现高吞吐量，低延迟的并发。&lt;/p&gt;
+
+&lt;p&gt;如何将Okra应用到实际开发中?&lt;/p&gt;
+
+&lt;p&gt;本文旨在帮助初次接触Okra框架的用户上手使用Okra框架.&lt;/p&gt;
+
+&lt;h2 id=&quot;okra-xyzjar&quot;&gt;1. 下载Okra-x.y.z.jar&lt;/h2&gt;
+
+&lt;p&gt;首先我们需要下载Okra框架最新的稳定版本.Jar:&lt;a href=&quot;https://github.com/ogcs/Okra/releases&quot;&gt;下载地址&lt;/a&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;目前Okra没有推送到Maven仓库,使用Okra-x.y.z.jar需要手动添加类库引用.&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;2. 导入工程&lt;/h2&gt;
+
+&lt;p&gt;本文以Intellij IDEA 2016.1.2为例. IDEA提供多种多样的添加类库的途径. 本段只做简单的举例示范.&lt;/p&gt;
+
+&lt;p&gt;方法一: 设置通用类库导入&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;打开工程设置. “File” -&amp;gt; “Project Structure…” 或者使用快捷键(Ctrl + Alt + + Shift + S).&lt;/li&gt;
+  &lt;li&gt;选择”Global Libraries”, 点击符号”+”，添加Okra-x.y.z.jar为通用类库.&lt;/li&gt;
+  &lt;li&gt;添加Okra到工程中, 选中新添加的Okra-x.y.z.jar点击鼠标右键 -&amp;gt; “Add to Modules” 选中对应的模块, 最终”Ok”, 完成导入&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;方法二: 在Modules界面设置导入&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;打开工程设置. “File” -&amp;gt; “Project Structure…” 或者使用快捷键(Ctrl + Alt + + Shift + S).&lt;/li&gt;
+  &lt;li&gt;选择”Modules”， 选中需要添加Okra的模块, 点击”Dependencies”, 点击符号”+”.&lt;/li&gt;
+  &lt;li&gt;点击”JARs or directories”选择Okra文件或所在目录按照提示完成添加&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;okra&quot;&gt;3. Okra框架的依赖&lt;/h2&gt;
+&lt;p&gt;Okra核心是整合Netty和Disruptor两个框架. 以便于快速开发高并发, 低延迟，高吞吐量， 灵活可扩展的网络服务器.&lt;/p&gt;
+
+&lt;p&gt;(required) :&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;io.netty&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;netty-all&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;4.0.36.Final&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;com.lmax&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;disruptor&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;3.3.2&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;(optional) :&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Spring框架支持&lt;/p&gt;
+
+    &lt;p&gt;使用Spring框架, 除了Spring框架自身带来的IOC等便利之外, 还可以快速集成大量优秀的类库, 例如: Hibernate, Mybatis, BoneCP, HikariCP等等.&lt;/p&gt;
+
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-context&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;4.2.2.RELEASE&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Flex通信支持&lt;/p&gt;
+
+    &lt;p&gt;Flex客户端和Java服务端的通信支持依赖于&lt;strong&gt;BlazeDS&lt;/strong&gt;类库.&lt;/p&gt;
+
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.apache.flex.blazeds&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;flex-messaging-core&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;4.7.2&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.apache.flex.blazeds&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;flex-messaging-common&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;4.7.2&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;4. 项目中使用&lt;/h2&gt;
+
+&lt;p&gt;示例1: &lt;a href=&quot;https://github.com/ogcs/Okra/wiki/Okra%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BAHTTP%E6%9C%8D%E5%8A%A1%E5%99%A8&quot;&gt;Okra框架搭建HTTP服务器&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;示例2: &lt;a href=&quot;https://github.com/ogcs/Okra/wiki/Okra%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BASocket%E6%9C%8D%E5%8A%A1%E5%99%A8&quot;&gt;Okra框架搭建Socket服务器&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Java服务器Demo: &lt;a href=&quot;https://github.com/ogcs/Okra/tree/master/okra-demo&quot;&gt;okra-demo&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;5. 总结&lt;/h2&gt;
+
+&lt;p&gt;本文旨在帮助初次接触Okra框架的用户，快速搭建基于Okra的网络服务器. 提供了两个简单的示例和一个相对来说比较完整的服务端demo.
+用户在实际开发过程中遇到问题或者BUG欢迎反馈到&lt;strong&gt;&lt;a href=&quot;https://github.com/ogcs/Okra/issues&quot;&gt;issues&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+</description>
+        <pubDate>2016-05-19</pubDate>
+        <link>https://tinyzzh.github.io//okra/2016/05/19/Okra_Get_Started.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//okra/2016/05/19/Okra_Get_Started.html</guid>
+        
+        <category>Okra框架</category>
+        
+        
+        <category>Okra</category>
+        
+      </item>
     
       <item>
         <title>Okra框架(三) 搭建HTTP服务器</title>
@@ -1033,50 +1149,6 @@ Okra主要依赖如下：&lt;/p&gt;
         <pubDate>2014-01-15</pubDate>
         <link>https://tinyzzh.github.io//netty/2014/01/15/Netty4.x_4.html</link>
         <guid isPermaLink="true">https://tinyzzh.github.io//netty/2014/01/15/Netty4.x_4.html</guid>
-        
-        <category>Netty4.x中文教程系列</category>
-        
-        
-        <category>Netty</category>
-        
-      </item>
-    
-      <item>
-        <title>Netty4.x中文教程系列(三) Hello World ！详解</title>
-        <description>&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 上一篇文章，笔者提供了一个Hello World 的Netty示例。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 时间过去了这么久，准备解释一下示例代码。&lt;/p&gt;
-
-&lt;h2&gt;1.HelloServer 详解&lt;/h2&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; HelloServer首先定义了一个静态终态的变量---服务端绑定端口7878。至于为什么是这个7878端口，纯粹是笔者个人喜好。大家可以按照自己的习惯选择端口。当然了。常用的几个端口(例如:80,8080,843(Flash及Silverlight策略文件请求端口等等)，3306(Mysql数据库占用端口))最好就不要占用了，避免一些奇怪的问题。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; HelloServer类里面的代码并不多。只有一个main函数，加上内部短短的几行代码。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; Main函数开始的位置定义了两个工作线程，一个命名为WorkerGroup，另一个命名为BossGroup。都是实例化NioEventLoopGroup。这一点和3.x版本中基本思路是一致的。Worker线程用于管理线程为Boss线程服务。&lt;/p&gt;
-&lt;p&gt;讲到这里需要解释一下EventLoopGroup，它是4.x版本提出来的一个新概念。类似于3.x版本中的线程。用于管理Channel连接的。在main函数的结尾就用到了EventLoopGroup提供的便捷的方法，shutdownGraceFully()，翻译为中文就是优雅的全部关闭。感觉是不是很有意思。作者居然会如此可爱的命名了这样一个函数。查看相应的源代码。我们可以在DefaultEventExecutorGroup的父类MultithreadEventExecutorGroup中看到它的实现代码。关闭了全部EventExecutor数组child里面子元素。相比于3.x版本这是一个比较重大的改动。开发者可以很轻松的全部关闭，而不需要担心出现内存泄露。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 在try里面实例化一个ServerBootstrap b。设置group。设置channel为NioServerSocketChannel。&lt;/p&gt;
-&lt;p&gt;设置childHandler，在这里使用实例化一个HelloServerInitializer类来实现，继承ChannelInitializer&amp;lt;SocketChannel&amp;gt;。内部的代码我们可以在前文的注视中大致了解一下，主要作用是设置相关的字节解码编码器，和代码处理逻辑。Handler是Netty包里面占很大一个比例。可见其的作用和用途。Handler涉及很多领域。HTTP，UDP，Socket，WebSocket等等。详细的部分在本章的第三节解释。&lt;/p&gt;
-&lt;p&gt;设置好Handler绑定端口7878，并调用函数sync()，监听端口(等待客户端连接和发送消息)。并监听端口关闭(为了防止线程停止)。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 最后finally我们要优雅的全部关闭服务端。^_^&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;h2&gt;2.HelloClient详解&lt;/h2&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 相比于服务端的代码。客户端要精简一些。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 客户端仅仅只需要一个worker的EventLoopGroup。其次是类似于ServerBootstrap的HandlerInitializer。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 唯一不同的可能就是客户端的connect方法。服务端的绑定并监听端口，客户端是连接指定的地址。Sync().channel()是为了返回这个连接服务端的channel，并用于后面代码的调用。&lt;/p&gt;
-&lt;p&gt;BufferedReader 这个是用于控制台输入的。不做详细的解释了就。大家都懂的。&lt;/p&gt;
-&lt;p&gt;当用户输入一行内容并回车之后。循环的读取每一行内容。然后使用writeAndFlush向服务端发送消息。&lt;/p&gt;
-&lt;h2&gt;3.HandlerInitializer详解&lt;/h2&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Handler在Netty中是一个比较重要的概念。有着相当重要的作用。相比于Netty的底层。我们接触更多的应该是他的Handler。在这里我将它剥离出来单独解释。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ServerHandlerInitializer继承与ChannelInitializer&amp;lt;SocketChannel&amp;gt;需要我们实现一个initChannel()方法。我们定义的handler就是写在这里面。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 在最开始的地方定义了一个DelimiterBasedFrameDecoder。按直接翻译就是基于分隔符的帧解码器。再一次感觉框架的作者的命名，好直接好简单。详细的内容我们在后面的文章中在为大家详细的解释。目前大家知道他是以分隔符为分割标准的解码器就好了。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 也许有人会问分隔符是什么？我只能 !*_* :&amp;ldquo;纳尼 ！！&amp;rdquo;。分隔符其实就是&amp;ldquo;\n&amp;rdquo;我们在学习C语言的时候最常用的的也许就是这个分隔符了吧。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 下面的则是StringDecoder 和StringEncoder。字符串解码器和字符串编码器。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 最后面则是我们自己的逻辑。服务/客户端逻辑是在消息解码之后处理的。然后服务/客户端返回相关消息则是需要对消息进行相对应的编码。最终才是以二进制数据流的形势发送给服务/客户端的。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 内容暂时就写到这里。O(&amp;cap;_&amp;cap;)O哈哈~。后面的东西慢慢为大家完善。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 假如有甚么不正确的地方，敬请谅解。求大神指正。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p style=&quot;padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 60px; font-family: 微软雅黑; font-size: 12px; border: #e0e0e0 1px dashed;&quot;&gt;&lt;strong&gt;作者&lt;/strong&gt;：TinyZ&lt;br /&gt;出处：&lt;a href=&quot;http://www.cnblogs.com/zou90512/&quot; target=&quot;_blank&quot;&gt;http://www.cnblogs.com/zou90512/&lt;/a&gt;&lt;br /&gt;关于作者：努力学习，天天向上。不断探索学习，提升自身价值。记录经验分享。&lt;br /&gt;本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文链接&lt;br /&gt;如有问题，可以通过&amp;nbsp;&lt;span style=&quot;color: #0000ff;&quot;&gt;zou90512@126.com&amp;nbsp;&lt;/span&gt;联系我，非常感谢。&lt;br /&gt;笔者网店: &lt;a href=&quot;http://aoleitaisen.taobao.com&quot; target=&quot;_blank&quot;&gt;http://aoleitaisen.taobao.com&lt;/a&gt;. 欢迎广大读者围观&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;</description>
-        <pubDate>2014-01-06</pubDate>
-        <link>https://tinyzzh.github.io//netty/2014/01/06/Netty4.x_3.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//netty/2014/01/06/Netty4.x_3.html</guid>
         
         <category>Netty4.x中文教程系列</category>
         
