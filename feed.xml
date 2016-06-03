@@ -5,9 +5,103 @@
     <description>专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。</description>
     <link>https://tinyzzh.github.io//</link>
     <atom:link href="https://tinyzzh.github.io//feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>2016-05-26</pubDate>
-    <lastBuildDate>2016-05-26</lastBuildDate>
+    <pubDate>2016-06-03</pubDate>
+    <lastBuildDate>2016-06-03</lastBuildDate>
     <generator>Jekyll v3.1.5</generator>
+    
+      <item>
+        <title>2016年离职总结</title>
+        <description>&lt;p&gt;最近忙着离职的事情，O(∩_∩)O哈哈~，自我总结一下。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;离职原因&lt;/h2&gt;
+
+&lt;p&gt;从业四年，先后在3家公司任职，在最近一家公司工作两年，主要从事网络游戏服务端(后端)开发相关的工作。
+也算是一步一步从的“打杂”过度到项目组服务端主程序，领导一个小中型项目的后端的设计和研发。&lt;/p&gt;
+
+&lt;p&gt;任职的三家公司都不算是大公司（最大的规模，公司技术人员也就30-40人左右），技术氛围一般，所以很多时候都需要自己去尝试和摸索道路来（传说中的野路子?）。踩过了很多坑，也填了很多坑。
+感觉假如自己想在技术道路上走的更远，真的需要一个技术氛围良好的团队或公司。闭门造成终归是成就有限。于是就有了离职和这篇文字。(*^__^*) 嘻嘻……&lt;/p&gt;
+
+&lt;p&gt;游戏行业，游戏研发团队往往都是人员比较少的小规模团队。项目组人员一般不超过20个，前后端研发占一半策划占一半，可能会捎带几个美术。
+服务端人数往往也略少于客户端。后端同学往往都需要肩负一部分运维的职责（例如部署服务器运行环境，调优等等）。因此在某种程度上讲，相比于其他行业的后端，更辛苦。
+当然，付出和收获是成正比的。做得越多对搞技术的来说是能学习到更多的东西。跑题跑得有点远诶。O(∩_∩)O哈哈~&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;面试收获&lt;/h2&gt;
+
+&lt;p&gt;最近一段时间东跑西跑的面试，虽然很辛苦（刮风下雨的啊），但收获满满。主要分为下面两个方面：&lt;/p&gt;
+
+&lt;p&gt;一方面参加一些行业内公司的面试，有了和技术主管/技术牛人有面对面沟通的机会。O(∩_∩)O哈哈~。
+和资深程序聊天，往往很快就能知道了自身的问题和不足。总结一下自己的不足：~~&lt;del&gt;(&amp;gt;_&amp;lt;)&lt;/del&gt;~~)&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;理论基础知识不算特别扎实。多看些技术书籍，补充扩展自己的知识面&lt;/li&gt;
+  &lt;li&gt;缺乏实践。多动手测试，不能人云亦云，尝试实践分析后端的技术。准备好好读读 &lt;strong&gt;《JAVA性能优化权威指南》&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;虽然知道自己的缺点和不足是一件很打击人的事情，但是很感谢这些大牛能抽时间，给我一个面试聊聊的机会（窃喜）。
+O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
+
+&lt;p&gt;另外一方面和业内的朋友聊聊天，谈谈人生理想，未来规划。和这些过来人的聊天。开阔了视野，增长了见识。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;分享&lt;/h2&gt;
+
+&lt;p&gt;一个最近面试遇到的唯一一个代码题。嘿嘿&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;blockquote&gt;
+    &lt;p&gt;问题：有一个数组a，有一个变量n，大于变量n的放到数组的前面，小于变量n的放到数组的后面（不需要排序）。&lt;/p&gt;
+  &lt;/blockquote&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;解决思路：
+数组a从0开始向后遍历，检查到小于n的元素k1，那么从队尾指针tail处向前遍历，检查到大于n的元素k2停止，并k1和k2互换位置。
+在从k1处继续向后遍历直至k1位置大于队尾指针位置（遍历结束）。&lt;/p&gt;
+
+&lt;p&gt;后面还有延伸版本，当n改为n1，n2…nx数组时如何实现，后面有空就整一个。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;SimpleSort&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ary&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;};&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+                    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;obj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;];&lt;/span&gt;
+                        &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;];&lt;/span&gt;
+                        &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+                        &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+                    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+</description>
+        <pubDate>2016-06-03</pubDate>
+        <link>https://tinyzzh.github.io//other/2016/06/03/Interview.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//other/2016/06/03/Interview.html</guid>
+        
+        <category>生活</category>
+        
+        
+        <category>Other</category>
+        
+      </item>
     
       <item>
         <title>Okra框架(四) 使用引导说明</title>
@@ -1100,55 +1194,6 @@ Okra主要依赖如下：&lt;/p&gt;
         <pubDate>2014-04-09</pubDate>
         <link>https://tinyzzh.github.io//netty/2014/04/09/Netty4.x_5.html</link>
         <guid isPermaLink="true">https://tinyzzh.github.io//netty/2014/04/09/Netty4.x_5.html</guid>
-        
-        <category>Netty4.x中文教程系列</category>
-        
-        
-        <category>Netty</category>
-        
-      </item>
-    
-      <item>
-        <title>Netty4.x中文教程系列(四) ChannelHandler</title>
-        <description>&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 上一篇文章详细解释了Hello World示例的代码。里面涉及了一些Netty框架的基础。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 这篇文章用以解释ChannelHandler。笔者本身在以前写过文章&lt;a href=&quot;http://www.cnblogs.com/zou90512/p/3421478.html&quot;&gt;ChannelHandler改动及影响&lt;/a&gt; 和 &lt;a href=&quot;http://www.cnblogs.com/zou90512/p/3407192.html&quot;&gt;ChannelInitializer 学习&lt;/a&gt; 对Netty的.ChannelHandler做过阐述。里面主要描述了4.x版本相对于3.x版本的改动以及影响。并引用了一些文章。为大家详细的解释了ChannelHandler里面涉及架构。&lt;/p&gt;
-
-&lt;h2&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 1.在4.x版本中的ChannelHandler&lt;/h2&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; ChannelHandler接口是Handler里面的最高的接口。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ChannelInboundHandler接口和ChannelOutboundHandler接口，继承ChannelHandler接口。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 流程如下图:&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201401/151733070028.jpg&quot; alt=&quot;&quot; /&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; ChannelInBoundHandler负责数据进入并在ChannelPipeline中按照从上至下的顺序查找调用相应的InBoundHandler。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; ChannelOutBoundHandler负责数据出去并在ChannelPipeline中按照从下至上的顺序查找调用相应的OutBoundHandler。&lt;/p&gt;
-&lt;h2&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 2.在5.x版本中的改动&lt;/h2&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 在5.x版本中。作者再次对ChannelHandler进行了改动。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 在更新说明里可以看到:&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 作者简化了Handler的类型层次结构。&lt;/p&gt;
-&lt;p&gt;ChannelInboundHandler和ChannelOutboundHandler接口合并到ChannelHandler里面。&lt;/p&gt;
-&lt;p&gt;ChannelInboundHandlerAdapter，ChannelOutboundHandlerAdapter以及ChannelDuplexHandlerAdapter被取消，其功能被ChannelHandlerAdapter代替。&lt;/p&gt;
-&lt;p&gt;由于上述的改动，开发者将无法区分InBoundHandler和OutBoundHandler 所以CombinedChannelDuplexHandler&amp;nbsp;的功能也被ChannelHandlerAdapter代替。&lt;/p&gt;
-&lt;p&gt;有兴趣了解的可以看一下注释。假如不看也影响不大。因为5.x看上去改动很大，实际上框架的设计思路并没有改变。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;(注释:&lt;/p&gt;
-&lt;p&gt;5.x版本中虽然删除了InBoundHandler和OutBoundHandler，但是在设计思想上InBound和OurBound的概念还是存在的。只不过是作者使用了另外一种方式去实现罢了。&lt;/p&gt;
-&lt;p&gt;查看过4.x版本代码的朋友可能已经了解知道了。消息在管道中都是以ChannelHandlerContext的形势传递的。而InBound和OutBound主要作用是被当做ChannelPipeline管道中标识。用于Handler中相对应的调用处理，通过两个布尔值变量inBound和outBound来区分是进入还是出去。并以此来区分Handler并调用相应的方法，其实没有什么实际用途。于是作者在5.x版本中对此做出了优化。优化方案笔者感觉very nice。&lt;/p&gt;
-&lt;p&gt;由于删除了InBoundHandler和OutBoundHandler的接口。作者在DefaultChannelHandlerContext中重写了findContextInBound()和findContextOutBound()方法。并且在方法里引入了参数mask。&lt;/p&gt;
-&lt;p&gt;在类开始处定义静态终态的变量来标记4.x版本中定义的InBound和OutBound中的方法名(可以变相的认为是枚举)。在源代码中的实现是利用mask来获取对应的flag，最终实现使用mask来区分InBoundHandler亦或是OutBoundHandler。&lt;/p&gt;
-&lt;p&gt;这样的改动，优点显而易见。简化了层次结构，降低了框架的复杂度。同时功能上却没有什么变化。易于使用了解。&lt;/p&gt;
-&lt;p&gt;)&lt;/p&gt;
-&lt;p&gt;目前在不涉及框架底层的情况下。笔者将继续使用Netty 4.0.14 final版本。正如第一章介绍所说。5.x版本作者并没有进行大规模的设计变更。仅仅只是局部的小部分修改。所以在版本没有稳定之前。教程都将采用4.0.14final为框架包。&lt;/p&gt;
-&lt;h2&gt;3.认识Handler中的编解码器&lt;/h2&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 编解码器在Netty框架中占了相当大的一部分代码量。由此可见其重要性。本章内容旨在阐述编解码器的基础。下一章会详细分类的按照框架的结构详解其余编解码器。&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201401/151733164087.jpg&quot; alt=&quot;&quot; /&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 在Netty的codec包内部我们可以看到很多的编解码器和一些异常捕获。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 下一章为大家相熟Handler里面的各种编解码器。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p style=&quot;padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 60px; font-family: 微软雅黑; font-size: 12px; border: #e0e0e0 1px dashed;&quot;&gt;&lt;strong&gt;作者&lt;/strong&gt;：TinyZ&lt;br /&gt;出处：&lt;a href=&quot;http://www.cnblogs.com/zou90512/&quot; target=&quot;_blank&quot;&gt;http://www.cnblogs.com/zou90512/&lt;/a&gt;&lt;br /&gt;关于作者：努力学习，天天向上。不断探索学习，提升自身价值。记录经验分享。&lt;br /&gt;本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文链接&lt;br /&gt;如有问题，可以通过&amp;nbsp;&lt;span style=&quot;color: #0000ff;&quot;&gt;zou90512@126.com&amp;nbsp;&lt;/span&gt;联系我，非常感谢。&lt;br /&gt;笔者网店: &lt;a href=&quot;http://aoleitaisen.taobao.com&quot; target=&quot;_blank&quot;&gt;http://aoleitaisen.taobao.com&lt;/a&gt;. 欢迎广大读者围观&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;</description>
-        <pubDate>2014-01-15</pubDate>
-        <link>https://tinyzzh.github.io//netty/2014/01/15/Netty4.x_4.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//netty/2014/01/15/Netty4.x_4.html</guid>
         
         <category>Netty4.x中文教程系列</category>
         
