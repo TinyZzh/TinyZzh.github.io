@@ -5,9 +5,243 @@
     <description>专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。</description>
     <link>https://tinyzzh.github.io//</link>
     <atom:link href="https://tinyzzh.github.io//feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>2016-06-03</pubDate>
-    <lastBuildDate>2016-06-03</lastBuildDate>
-    <generator>Jekyll v3.1.5</generator>
+    <pubDate>2016-06-04</pubDate>
+    <lastBuildDate>2016-06-04</lastBuildDate>
+    <generator>Jekyll v3.1.6</generator>
+    
+      <item>
+        <title>为什么使用HikariCP连接池?</title>
+        <description>&lt;p&gt;笔者最近在换工作的时，被面试官问数据库和连接池相关的一些问题。
+下面从面试这块开始&lt;/p&gt;
+
+&lt;p&gt;简单介绍一下笔者项目中数据库的使用情况。项目中使用MySQL做数据存储，Redis做数据缓存。读写数据流程如下：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;读&lt;/strong&gt;数据：先查询Redis中是否存在，存在直接取出数据，不存在从MySQL查询并保存包Redis中缓存起来。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;写&lt;/strong&gt;数据：先写入Redis，然后异步提交到MySQL写入线程，实现数据落地。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;问题1：如何保证数据读写的“原子性”?如何解决脏数据?&lt;/h2&gt;
+
+&lt;p&gt;众所周知，当使用数据库跨表操作时，利用数据库引擎提供的事务和回滚机制，可以保证数据库跨表操作的原子性。&lt;/p&gt;
+
+&lt;p&gt;一方面在项目中引入数据缓存层也是一种常见的减轻数据库压力的做法。另一方面引入了缓存增加了数据操作的复杂度。&lt;/p&gt;
+
+&lt;p&gt;如何解决缓存中和数据库中数据不一致的问题?
+笔者以线上项目为例简单的说了说。在线上的代码，主要以缓存层数据为主，数据不统一的情况，会在下一次落地时覆盖数据库的数据，实现同步。&lt;/p&gt;
+
+&lt;p&gt;假如是因为版本迭代数据库字段变更导致数据库落地错误时，由于Redis缓存的有效期是7天，在&lt;strong&gt;缓存失效前手动&lt;/strong&gt;执行脚本将数据重新落地。&lt;/p&gt;
+
+&lt;p&gt;由于面试官一再强调是&lt;strong&gt;自动修复&lt;/strong&gt;脏数据。
+说实话笔者在保证Redis和MySQL两者数据操作的原子性这块没有什么涉猎。也没想出什么好的办法。
+由于面试官一再询问，笔者就稍微讲了讲一个思路回答：也许是否可以使用数据库的原子性，回滚的时候回退数据?&lt;/p&gt;
+
+&lt;p&gt;当然事实证明一时的想法总是有漏洞的。数据回退涉及到数据回退前多次被修改的复杂情况。显得不是很合适。&lt;/p&gt;
+
+&lt;p&gt;最后引发尴尬的是面试官的总结：(大意如下)
+在修改数据前，尽可能多的判定用户是否满足操作的条件，以便于提早发现问题并退出, 以避免数据操作。同时避免异步操作数据库，同步操作及早出现问题并退出。&lt;/p&gt;
+
+&lt;p&gt;wtf…  当时一下子感觉自己有点懵逼的。才发现整个就理解错了。瞬间也是好尴尬。&lt;/p&gt;
+
+&lt;h2 id=&quot;hikaricp&quot;&gt;问题2：HikariCP是什么?&lt;/h2&gt;
+
+&lt;p&gt;HikariCP是一个高性能的JDBC连接池。Hikari是日语“光”的意思。可能是目前java业界最快的数据库连接池（BoneCP因此停止维护，其作者推荐HikariCP）。
+面试官说项目用的c3p0作为数据库连接池，也没接触过HikariCP。还问了何时连接池会关闭数据库的连接。&lt;/p&gt;
+
+&lt;p&gt;说实在的，当时笔者没回答好，一般数据库连接池会自动管理数据库连接建立、复用和关闭。一般情况下不会关闭已经建立的数据库连接。
+连接池关闭连接方面，其他连接池竞品不清楚，HikariCP会在设置的最大生命周期后，最大空闲时间后等多个条件作用下自动关闭释放连接。&lt;/p&gt;
+
+&lt;p&gt;下面是总结&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;数据库连接池技术&lt;/h2&gt;
+
+&lt;p&gt;数据库连接池负责分配、管理和释放数据库的连接。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;数据库连接复用。重复使用现有的数据库连接，可以避免连接频繁建立、关闭的开销。&lt;/li&gt;
+  &lt;li&gt;统一的连接管理。释放空闲时间超过最大空闲时间的数据库连接，避免因为没有释放数据库连接而引起的数据库连接泄漏。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;一些数据库连接池的对比&lt;/h2&gt;
+
+&lt;p&gt;首先明确：无论任何形式的数据库连接复用（数据库连接池技术）都避免了频繁建立、关闭数据库连接带来的开销。性能相对于没有连接池有质的提升。
+另外一点需要明确：数据库连接池一般不会成为整个程序的性能瓶颈。更多的出现在数据库读写，带宽，cpu等方面（开始人云亦云模式，o(∩_∩)o 哈哈）。&lt;/p&gt;
+
+&lt;p&gt;下面引入正文，先来一个对比。
+文章&lt;a href=&quot;http://freeman1.iteye.com/blog/2268874&quot;&gt;数据库连接池性能比对&lt;/a&gt;很早之前看到过，但一直没找到原帖。
+皇天不负有心人，今天总算是挖出来了原帖（鄙视一下盗链和转帖不挂源地址的）。&lt;/p&gt;
+
+&lt;h2 id=&quot;hikaricp-1&quot;&gt;HikariCP&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/brettwooldridge/HikariCP&quot;&gt;HikariCP&lt;/a&gt;可能是目前业内最快的数据库连接池。&lt;/p&gt;
+
+&lt;p&gt;说到HikariCP就不得不说BoneCP。笔者之前是BoneCP的使用者。突然那么一天（忘记具体是哪天了）想看看BoneCP是否有新版本。
+然后发现BoneCP作者在项目主页的描述说不再更新BoneCP并且推荐了HikariCP。&lt;/p&gt;
+
+&lt;p&gt;笔者也有段时间没关注这个类库了，面试的时候因为也好久没看了，所以讲的也不是很清楚。于是就抽空复习总结一下。
+笔者之前在&lt;strong&gt;博客园&lt;/strong&gt;发表过一篇关于HikariCP的文章&lt;a href=&quot;http://www.cnblogs.com/zou90512/p/4044818.html&quot;&gt;从BoneCP到HikariCP&lt;/a&gt;，
+简单讲了Spring+Mybatis+HikariCP的配合使用。
+那时候刚接触HikariCP，被官方的测试数据所吸引，毕竟BoneCP停产了，而且在代码基本上不需要改动的情况下就能获得更好的性能，何乐而不为呢? 所以决定试试这个“新家伙”&lt;/p&gt;
+
+&lt;p&gt;HikariCP的官方Wiki中提到的为什么HikariCP是如何实现这么高效率。详细见:
+&lt;a href=&quot;https://github.com/brettwooldridge/HikariCP/wiki/Down-the-Rabbit-Hole&quot;&gt;Down the Rabbit Hole&lt;/a&gt;
+掉进兔子洞? 反正我是不懂这是什么谚语。o(∩_∩)o 哈哈。
+大概内容如下：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;优化字节码（JVM内联），减少生成的机器码&lt;/li&gt;
+  &lt;li&gt;精简代码, 使用Javassist生成委托。&lt;/li&gt;
+  &lt;li&gt;无锁容器。FastStatementList、ConcurrentBag&lt;/li&gt;
+  &lt;li&gt;等等针对BoneCP的优化。(好针对BoneCP啊，o(∩_∩)o 哈哈)&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;druid&quot;&gt;Druid&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/alibaba/druid&quot;&gt;Druid&lt;/a&gt;是阿里巴巴开源的“为监控而生的数据库连接池！”。
+性能测试过程略低于HikariCP，但是提供了强大的监控和扩展功能。支持psCache。&lt;/p&gt;
+
+&lt;p&gt;有兴趣可以去GitHub查看。有中文文档。o(∩_∩)o 哈哈。阿里威武&lt;/p&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;结论&lt;/h2&gt;
+
+&lt;p&gt;为什么使用HikariCP?
+首先它是一个优秀的数据库连接池，代码少，&lt;strong&gt;效率高&lt;/strong&gt;。
+支持多种常见的数据库（包含但不限于：Oracle、MS SQL Server、&lt;strong&gt;MySQL&lt;/strong&gt;、PostgreSQL）
+轻松&lt;strong&gt;集成Spring+Hibernate/Mybatis&lt;/strong&gt;。
+而且笔者平时的业务内容不是特别需要&lt;strong&gt;监控&lt;/strong&gt;这么“重度”的功能。有慢查询日志基本上就足够了。&lt;/p&gt;
+
+</description>
+        <pubDate>2016-06-04</pubDate>
+        <link>https://tinyzzh.github.io//database/2016/06/04/Why_Use_HikariCP.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//database/2016/06/04/Why_Use_HikariCP.html</guid>
+        
+        <category>HikariCP</category>
+        
+        
+        <category>Database</category>
+        
+      </item>
+    
+      <item>
+        <title>面试笔试题 - 续</title>
+        <description>&lt;p&gt;回顾一下之前的笔试题。&lt;a href=&quot;/other/2016/06/03/Interview.html&quot;&gt;URL地址&lt;/a&gt;。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;blockquote&gt;
+    &lt;p&gt;问题：有一个数组a，有一个变量n，大于变量n的放到数组的前面，小于变量n的放到数组的后面（不需要排序）。&lt;/p&gt;
+  &lt;/blockquote&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;解决思路：
+数组a从0开始向后遍历，检查到小于n的元素k1，那么从队尾指针tail处向前遍历，检查到大于n的元素k2停止，并k1和k2互换位置。
+在从k1处继续向后遍历直至k1位置大于队尾指针位置（遍历结束）。&lt;/p&gt;
+
+&lt;p&gt;测试用例:&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ary&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;};&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;逻辑代码如下:&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;obj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;];&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;];&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+                    &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+                &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;延伸版本，当n改为n1，n2…nx数组时如何实现?&lt;/p&gt;
+
+&lt;p&gt;晚上洗澡的时候想起了这么一个问题。决定折腾一下解决这个问题。
+最开始有点钻进死胡同。想通过一次遍历实现相应的拆分功能（效率最高的情况）。感觉情况略微有点复杂。
+考虑十几分钟后感觉可能需要向效率妥协，转变思路。&lt;/p&gt;
+
+&lt;p&gt;解决思路：根据n1, n2… nx分隔数组array，先将n的数组从大到小排序。再将分隔问题简化成x个拆分n的连续小问题。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;按照n1和其他拆分&lt;/li&gt;
+  &lt;li&gt;在n1和其他的分界点为起始点, 按照n2和其他拆分&lt;/li&gt;
+  &lt;li&gt;重复步骤2，直至起始点到达数组终点，退出循环.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;算法根据数据的复杂度，时间复杂度最小是(O(n)), 最大是O(n(n+1)/2)。&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;sortn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ns&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// 这里的排序保证n的数组是从大到小有序的， 当然可以自己设置，以避免排序的损耗&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Arrays&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ns&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Comparator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;compare&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;o1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;o2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;o2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;o1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;});&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ns&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ns&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;obj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;];&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;];&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+                    &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+                &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;ok。解决问题。以后想到更高效的算法逻辑了。再继续优化。目前可能就这样啦。各位晚安&lt;/p&gt;
+
+</description>
+        <pubDate>2016-06-04</pubDate>
+        <link>https://tinyzzh.github.io//other/2016/06/04/Interview_Next.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//other/2016/06/04/Interview_Next.html</guid>
+        
+        <category>生活</category>
+        
+        
+        <category>Other</category>
+        
+      </item>
     
       <item>
         <title>2016年离职总结</title>
@@ -58,7 +292,7 @@ O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
 
 &lt;p&gt;后面还有延伸版本，当n改为n1，n2…nx数组时如何实现，后面有空就整一个。&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;SimpleSort&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;SimpleSort&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
 
     &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
         &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ary&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;};&lt;/span&gt;
@@ -90,6 +324,9 @@ O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
+
+&lt;p&gt;补充于2016-06-04
+&lt;a href=&quot;/other/2016/06/04/Interview_Next.html&quot;&gt;延伸试题解决&lt;/a&gt;&lt;/p&gt;
 
 </description>
         <pubDate>2016-06-03</pubDate>
@@ -145,7 +382,7 @@ O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
 
 &lt;p&gt;(required) :&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+&lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
     &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;io.netty&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
     &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;netty-all&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
     &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;4.0.36.Final&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
@@ -166,7 +403,7 @@ O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
 
     &lt;p&gt;使用Spring框架, 除了Spring框架自身带来的IOC等便利之外, 还可以快速集成大量优秀的类库, 例如: Hibernate, Mybatis, BoneCP, HikariCP等等.&lt;/p&gt;
 
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+    &lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
     &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
     &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-context&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
     &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;4.2.2.RELEASE&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
@@ -179,7 +416,7 @@ O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
 
     &lt;p&gt;Flex客户端和Java服务端的通信支持依赖于&lt;strong&gt;BlazeDS&lt;/strong&gt;类库.&lt;/p&gt;
 
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+    &lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
     &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.apache.flex.blazeds&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
     &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;flex-messaging-core&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
     &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;4.7.2&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
@@ -231,7 +468,7 @@ O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
 
 &lt;p&gt;和Socket服务器搭建流程类似。首先实现一个简单的HttpRequestExecutor，用于处理Http请求:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HttpRequestExecutor&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Executor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HttpRequestExecutor&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Executor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
 
     &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Logger&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOG&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LogManager&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getLogger&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;HttpRequestExecutor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
 
@@ -293,7 +530,7 @@ O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
 &lt;p&gt;Okra提供了封装好的Disruptor桥用于Netty结合Disruptor。Okra通过Executor工厂让用户可以便捷灵活的定制特殊的处理者.
 继承DisruptorAdapterBy41xHandler（依赖于&lt;strong&gt;Netty4.1.x&lt;/strong&gt;）或者DisruptorAdapterHandler（&lt;strong&gt;依赖于Netty4.0.x&lt;/strong&gt;）实现创建HttpRequestExecutor的Executor工厂。&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ExampleApiHandler&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DisruptorAdapterBy41xHandler&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;FullHttpRequest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ExampleApiHandler&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DisruptorAdapterBy41xHandler&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;FullHttpRequest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
     &lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Executor&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;newExecutor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Session&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FullHttpRequest&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
         &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpRequestExecutor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
@@ -306,7 +543,7 @@ O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
 
 &lt;p&gt;然后创建一个Server继承TcpProtocolServer实现自己的服务器类. 增加Handler处理&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HttpServer&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TcpProtocolServer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HttpServer&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TcpProtocolServer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
 
     &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpServer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
         &lt;span class=&quot;n&quot;&gt;setPort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
@@ -333,7 +570,7 @@ O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
 
 &lt;p&gt;假如你的项目中使用了Spring框架，那么只需要在配置如下bean就可以启动:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Http protocol server --&amp;gt;&lt;/span&gt;
+&lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Http protocol server --&amp;gt;&lt;/span&gt;
 &lt;span class=&quot;nt&quot;&gt;&amp;lt;bean&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;httpServer&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;org.ogcs.okra.example.http.HttpServer&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;init-method=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;start&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;destroy-method=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;stop&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
     &lt;span class=&quot;nt&quot;&gt;&amp;lt;constructor-arg&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;port&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;value=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;${http.port}&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
 &lt;span class=&quot;nt&quot;&gt;&amp;lt;/bean&amp;gt;&lt;/span&gt;
@@ -342,7 +579,7 @@ O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
 
 &lt;p&gt;普通Java程序:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;HttpServer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpServer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9005&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;HttpServer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpServer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9005&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -377,7 +614,7 @@ O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
 同时，每一个Executor都是一个并发线程。
 如下代码实现一个简单的示例ObjectExecutor:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ObjectExecutor&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Executor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ObjectExecutor&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Executor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
 
     &lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Session&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
     &lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
@@ -407,7 +644,7 @@ O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
 
 &lt;p&gt;Okra提供了封装好的Disruptor桥用于Netty结合Disruptor。Okra通过Executor工厂让用户可以便捷灵活的定制特殊的处理者.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ExampleSocketHandler&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DisruptorAdapterBy41xHandler&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ExampleSocketHandler&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DisruptorAdapterBy41xHandler&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
     &lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Executor&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;newExecutor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Session&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
         &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ObjectExecutor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
@@ -420,7 +657,7 @@ O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
 
 &lt;p&gt;然后创建一个Server继承TcpProtocolServer实现自己的服务器类. 增加Handler处理&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TcpServer&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TcpProtocolServer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TcpServer&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TcpProtocolServer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
 
     &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TcpServer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
         &lt;span class=&quot;n&quot;&gt;setPort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
@@ -449,7 +686,7 @@ O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
 
 &lt;p&gt;假如你的项目中使用了Spring框架，那么只需要在配置如下bean就可以启动:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Tcp server --&amp;gt;&lt;/span&gt;
+&lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Tcp server --&amp;gt;&lt;/span&gt;
 &lt;span class=&quot;nt&quot;&gt;&amp;lt;bean&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;tcpServer&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;org.ogcs.okra.example.socket.TcpServer&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;init-method=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;start&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;destroy-method=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;stop&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
     &lt;span class=&quot;nt&quot;&gt;&amp;lt;constructor-arg&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;port&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;value=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;${tcp.port}&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
 &lt;span class=&quot;nt&quot;&gt;&amp;lt;/bean&amp;gt;&lt;/span&gt;
@@ -458,7 +695,7 @@ O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
 
 &lt;p&gt;普通Java程序:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;TcpServer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TcpServer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9005&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;TcpServer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TcpServer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9005&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -552,7 +789,7 @@ Okra主要依赖如下：&lt;/p&gt;
 &lt;h2 id=&quot;rust-2&quot;&gt;1.2校验Rust编译环境&lt;/h2&gt;
 &lt;p&gt;运行windows命令行(快捷键:Win + R 输入cmd 回车). 输入如下命令并回车&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rustc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;version&lt;/span&gt;
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rustc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;version&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cargo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;version&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -582,7 +819,7 @@ Okra主要依赖如下：&lt;/p&gt;
 
 &lt;p&gt;在命令行中输入如下指令并回车:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cargo&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;racer&lt;/span&gt;
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cargo&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;racer&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;p&gt;此方法来自《Rust primer》pdf电子书。博主一直无法编译安装成功。所以采用了下载源码包编译的办法，具体办法如下&lt;/p&gt;
@@ -592,7 +829,7 @@ Okra主要依赖如下：&lt;/p&gt;
   &lt;li&gt;在解压缩之后的目录中，使用cargo编译racer&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;racer&lt;/span&gt;
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;racer&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cargo&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;build&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;release&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -661,7 +898,7 @@ Okra主要依赖如下：&lt;/p&gt;
 &lt;h3 id=&quot;jekyll-1&quot;&gt;2.2 安装Jekyll&lt;/h3&gt;
 &lt;p&gt;在命令行中使用如下命令安装Jekyll:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jekyll&lt;/span&gt;
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jekyll&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;p&gt;&lt;img src=&quot;/images/2016-04/s4.jpg&quot; alt=&quot;Jekyll安装成功&quot; /&gt;&lt;/p&gt;
@@ -671,7 +908,7 @@ Okra主要依赖如下：&lt;/p&gt;
 &lt;p&gt;笔者出现安装失败的情况。Google之后一说百说的推荐了淘宝Gem仓库，但是博主无法成功更换使用淘宝的Gem（HTTPS）。(淘宝的Gem目前已不支持Http连接)。
 经过一番研究解决,博主命令如下:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sources&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;remove&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:/&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rubygems&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;org&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:/&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rubygems&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;org&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sources&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;remove&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:/&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rubygems&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;org&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:/&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rubygems&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;org&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
@@ -682,7 +919,7 @@ Okra主要依赖如下：&lt;/p&gt;
 
 &lt;p&gt;未安装的可以使用以下命令安装.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kramdown&lt;/span&gt;
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kramdown&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rouge&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -690,7 +927,7 @@ Okra主要依赖如下：&lt;/p&gt;
 &lt;h3 id=&quot;section-1&quot;&gt;2.4 代码高亮&lt;/h3&gt;
 &lt;p&gt;无代码高亮需求的小伙伴无视本节内容即可。Jekyll相关的代码高亮插件有很多。本站使用CodeRay + rouge实现代码高亮。示例配置如下:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nl&quot;&gt;markdown:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kramdown&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;#&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rdiscount&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;karkdown&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nl&quot;&gt;markdown:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kramdown&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;#&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rdiscount&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;karkdown&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;highlighter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rouge&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;#&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rouge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pygments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;kramdown&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GFM&lt;/span&gt;
@@ -708,7 +945,7 @@ Okra主要依赖如下：&lt;/p&gt;
 &lt;h3 id=&quot;jekyll-2&quot;&gt;2.4 创建Jekyll模板&lt;/h3&gt;
 &lt;p&gt;创建一个简单的缺省页面示例。&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jekyll&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;myblog&lt;/span&gt;
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jekyll&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;myblog&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jekyll&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;build&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jekyll&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
@@ -926,274 +1163,6 @@ Okra主要依赖如下：&lt;/p&gt;
         <pubDate>2015-06-10</pubDate>
         <link>https://tinyzzh.github.io//netty/2015/06/10/Netty4.x_7.html</link>
         <guid isPermaLink="true">https://tinyzzh.github.io//netty/2015/06/10/Netty4.x_7.html</guid>
-        
-        <category>Netty4.x中文教程系列</category>
-        
-        
-        <category>Netty</category>
-        
-      </item>
-    
-      <item>
-        <title>Netty4.x中文教程系列(六) 从头开始Bootstrap</title>
-        <description>&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;其实自从中文教程系列（五）一直不知道自己到底想些什么。加上忙着工作上出现了一些问题。本来想就这么放弃维护了。没想到有朋友和我说百度搜索推荐了我的文章。瞬间有点小激动啊。决定自己要把这个教程系列完善下去。这里诚挚的想支持我的盆友们道歉。真的是让你们失望了。我居然有想放弃的这种丧心病狂的念头。以后绝对不会了。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;其实伴随着对Netty的逐步深入学习。感觉自己对netty的了解仍然有所欠缺。加上笔者语文课是美术老师教的。所以。。说多了都是泪啊。~~o(&amp;gt;_&amp;lt;)o ~~&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;下面开始正文：&lt;/p&gt;
-&lt;p&gt;纵览Netty框架的包结构，不难看出。其实Netty是有五大模块组成。&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823447646483.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;ol style=&quot;margin-left: 60pt;&quot;&gt;
-    &lt;li&gt;
-        &lt;div style=&quot;text-align: justify;&quot;&gt;&lt;span style=&quot;font-size: 10pt;&quot;&gt;Bootstrap负责启动引导 &lt;/span&gt;&lt;/div&gt;
-    &lt;/li&gt;
-    &lt;li&gt;
-        &lt;div style=&quot;text-align: justify;&quot;&gt;&lt;span style=&quot;font-size: 10pt;&quot;&gt;Buffer是Netty自己封装的缓存器 &lt;/span&gt;&lt;/div&gt;
-    &lt;/li&gt;
-    &lt;li&gt;
-        &lt;div style=&quot;text-align: justify;&quot;&gt;&lt;span style=&quot;font-size: 10pt;&quot;&gt;Channel负责管理和建立连接 &lt;/span&gt;&lt;/div&gt;
-    &lt;/li&gt;
-    &lt;li&gt;
-        &lt;div style=&quot;text-align: justify;&quot;&gt;&lt;span style=&quot;font-size: 10pt;&quot;&gt;Handler是责任链路模式中的处理者 &lt;/span&gt;&lt;/div&gt;
-    &lt;/li&gt;
-    &lt;li&gt;
-        &lt;div style=&quot;text-align: justify;&quot;&gt;&lt;span style=&quot;font-size: 10pt;&quot;&gt;Util是Netty提供和使用到的一些工具 &lt;/span&gt;&lt;/div&gt;
-    &lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2&gt;如何启动Netty服务器&lt;/h2&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Netty的启动服务器相关的类全部都在bootstrap包里面。所以本章我们从头开始，从bootstrap包里面的内容开始。从创建一个Netty服务器开始为大家逐步讲解Netty的应用。&lt;/p&gt;
-&lt;p&gt;相比于第五章的ChannelHandler里面的编解码器bootstrap里面可以说是内容少的可怜。来看一下他的包内容：&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823451397298.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p style=&quot;margin-left: 21pt;&quot;&gt;简简单单的三个类，一个接口。&lt;/p&gt;
-&lt;p style=&quot;margin-left: 21pt;&quot;&gt;Bootstrap是客户端的启动程序类。&lt;/p&gt;
-&lt;p style=&quot;margin-left: 21pt;&quot;&gt;ServerBootstrap是服务端的启动程序类&lt;/p&gt;
-&lt;p style=&quot;margin-left: 21pt;&quot;&gt;Bootstrap和ServerBootstrap继承AbstractBootstrap。&lt;/p&gt;
-&lt;p style=&quot;margin-left: 21pt;&quot;&gt;ChannelFactory则是AbstractBootstrap中用于创建Channel的接口&lt;/p&gt;
-&lt;p&gt;以下代码以服务端的启动程序启动为例：&lt;/p&gt;
-&lt;h3&gt;步骤一：实例化ServerBootstrap&lt;/h3&gt;
-&lt;p&gt;首先我们需要实例化一个ServerBootstrap服务端启动引导程序。如下图：&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823454209084.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;h3&gt;步骤二：设置它的线程组&lt;/h3&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;创建两个NioEventLoopGroup，一个是父线程（Boss线程），一个是子线程(work线程)。&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823456703628.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;设置bootstrap的线程组&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823459363941.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;设置线程组主要的目的是为了处理Channel中的事件和IO操作。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;下图为ServerBootstrap的group方法的源码：&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823462806512.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;父线程组被传递到父类中。详细的解释在最后面。涉及的东西太多。在后面在进行解释。&lt;/p&gt;
-&lt;h3&gt;步骤三：设置Channel类型&lt;/h3&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;设置Channel类型：&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823465775070.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;下图ServerBootstrap中channel()方法的源码：&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823469203343.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;我们可以看到创建并设置了一个Channel工厂。&lt;/p&gt;
-&lt;p&gt;下图是BootstrapChannelFactory的源码。它是一个终态的静态的类。实现ChannelFactory。作用是根据初始设置的Channel类型，创建并返回一个新的Channel。&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823472954157.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;h3&gt;步骤四：设置责任链路&lt;/h3&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;责任链模式是Netty的核心部分。每个处理者只负责自己有关的东西。然后将处理结果根据责任链传递下去。&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823476704972.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;我们要在初始的设置一个责任链路。当一个Channel被创建之后初始化的时候将被设置。下图是ServerBootstrap在init（）方法的源码：&lt;/p&gt;
-&lt;p style=&quot;text-align: center; margin-left: 21pt;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823480304314.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;创建一个Channel，在初始化的设置管道里面的处理者。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;h3&gt;步骤五：绑定并监听端口&lt;/h3&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;绑定并设置监听端口。&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823484206601.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;经过以上的5个步骤，我们的服务器就足以启动了。很多的设置都是Netty默认的。我们想设置自己的参数怎么办呢？Netty提供了这个方法。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;h3&gt;步骤六：其他设置&lt;/h3&gt;
-&lt;p&gt;1. 设置Channel选项配置：&lt;/p&gt;
-&lt;p&gt;在Netty 以前的版本中都是以字符串来配置的。4.x版本发布之后统一修改为使用ChannelOption类来实现配置。&lt;/p&gt;
-&lt;p&gt;例如：&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823486866915.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;Socket连接是否保存连接:&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823489361458.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;还有很多其他的参数。如下图所示：&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823492955502.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;这里不详细讲了。参考：io.netty.channel.ChannelOption&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;2. 设置子Channel的属性：&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823496863087.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;设置子Channel的属性。当值为null是，属性将被删除。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;h3&gt;解释EventLoopGroup&lt;/h3&gt;
-&lt;p&gt;这里解释一下我们上面创建的两个完全一样的线程组的作用。&lt;/p&gt;
-&lt;p&gt;Netty的架构使用了非常复杂的主从式Reactor线程模型。简单的说就是。父线程组（代码中的parentBosser）担任（acceptor）的角色。负责接收客户端的连接请求，处理完成请求，创建一个Channel并注册到子线程组（代码中的childWorker）中的某个线程上面，然后这个线程将负责Channel的读写，编解码等操作。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;源代码查看：&lt;/p&gt;
-&lt;p&gt;在步骤四中我们设置了责任链路。这里是Channel初始化和注册。在这里的init就是Channel的初始化。初始化完成之后。Group()则是获取在步骤一种的设置父线程组，并将这个新的Channel注册进来。&lt;/p&gt;
-&lt;p&gt;下图是AbstractBootstrap的initAndRegister方法&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823502486659.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;方法Init()实现在ServerBootstrap中。代码如下：&lt;/p&gt;
-&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/blog/359548/201408/121823509988288.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;看到下面的代码是不是有种和熟悉的感觉？没错。就是在步骤四中设置责任链路的那段代码。这里将注册新创建的Channel到子线程组&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;Ps: 完。。。O(&amp;cap;_&amp;cap;)O哈哈~。。。写的好辛苦的说。。。附上我的测试示例代码。好累。。写这么多字。希望能帮助到大家&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot; onclick=&quot;cnblogs_code_show(&#39;356a8199-3469-4147-be11-b53ac34cefa8&#39;)&quot;&gt;&lt;img id=&quot;code_img_closed_356a8199-3469-4147-be11-b53ac34cefa8&quot; class=&quot;code_img_closed&quot; src=&quot;http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif&quot; alt=&quot;&quot; /&gt;&lt;img id=&quot;code_img_opened_356a8199-3469-4147-be11-b53ac34cefa8&quot; class=&quot;code_img_opened&quot; style=&quot;display: none;&quot; onclick=&quot;cnblogs_code_hide(&#39;356a8199-3469-4147-be11-b53ac34cefa8&#39;,event)&quot; src=&quot;http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif&quot; alt=&quot;&quot; /&gt;
-    &lt;div id=&quot;cnblogs_code_open_356a8199-3469-4147-be11-b53ac34cefa8&quot; class=&quot;cnblogs_code_hide&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.bootstrap.ServerBootstrap;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt; io.netty.channel.*&lt;span style=&quot;color: #000000;&quot;&gt;;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.nio.NioEventLoopGroup;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.nio.NioServerSocketChannel;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.nio.NioSocketChannel;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.LengthFieldPrepender;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;/**&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt; * 测试。。O(&amp;cap;_&amp;cap;)O哈哈~
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt; * Created by TinyZ on 2014/8/12.
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt;  &lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; MainTest {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; main(String[] args) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;         NioEventLoopGroup parentBosser = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; NioEventLoopGroup();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt;         NioEventLoopGroup childWorker = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; NioEventLoopGroup();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt;         ServerBootstrap bootstrap = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; ServerBootstrap();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;        bootstrap.group(parentBosser, childWorker);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt;         bootstrap.channel(NioServerSocketChannel.&lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;         bootstrap.childHandler(&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; ChannelInitializer&amp;lt;NioSocketChannel&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt;() {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt;             &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; initChannel(NioSocketChannel ch) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt;                 ChannelPipeline cp =&lt;span style=&quot;color: #000000;&quot;&gt; ch.pipeline();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt;                 &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 基于长度的解码器&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;28&lt;/span&gt;                 cp.addLast(&quot;framer&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 2, 0, 2&lt;span style=&quot;color: #000000;&quot;&gt;));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;29&lt;/span&gt;                 cp.addLast(&quot;prepender&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; LengthFieldPrepender(4&lt;span style=&quot;color: #000000;&quot;&gt;));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;30&lt;/span&gt;                 &lt;span style=&quot;color: #008000;&quot;&gt;//
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;31&lt;/span&gt;                 cp.addLast(&quot;handler&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; SimpleChannelInboundHandler&amp;lt;Object&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt;() {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;32&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;33&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;34&lt;/span&gt;                     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelRead0(ChannelHandlerContext ctx, Object msg) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;35&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;36&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                        System.out.println();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;37&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                        ctx.channel().writeAndFlush(msg);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;38&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;39&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;40&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                });
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;41&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;42&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;        });
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;43&lt;/span&gt;         bootstrap.option(ChannelOption.SO_KEEPALIVE, &lt;span style=&quot;color: #0000ff;&quot;&gt;true&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;44&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;bootstrap.childAttr()&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;45&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;try&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;46&lt;/span&gt;             &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 绑定并监听端口&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;47&lt;/span&gt;             ChannelFuture future = bootstrap.bind(9002&lt;span style=&quot;color: #000000;&quot;&gt;).sync();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;48&lt;/span&gt;             &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 等待关闭事件&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;49&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            future.channel().closeFuture().sync();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;50&lt;/span&gt;         } &lt;span style=&quot;color: #0000ff;&quot;&gt;finally&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;51&lt;/span&gt;             &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 释放资源&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;52&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            parentBosser.shutdownGracefully();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;53&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            childWorker.shutdownGracefully();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;54&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;        }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;55&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;56&lt;/span&gt; }&lt;/pre&gt;
-    &lt;/div&gt;
-    &lt;span class=&quot;cnblogs_code_collapse&quot;&gt;View Code&lt;/span&gt;&lt;/div&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p style=&quot;padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 60px; font-family: 微软雅黑; font-size: 12px; border: #e0e0e0 1px dashed;&quot;&gt;&lt;strong&gt;作者&lt;/strong&gt;：TinyZ&lt;br /&gt;出处：&lt;a href=&quot;http://www.cnblogs.com/zou90512/&quot; target=&quot;_blank&quot;&gt;http://www.cnblogs.com/zou90512/&lt;/a&gt;&lt;br /&gt;关于作者：努力学习，天天向上。不断探索学习，提升自身价值。记录经验分享。&lt;br /&gt;本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文链接&lt;br /&gt;如有问题，可以通过&amp;nbsp;&lt;span style=&quot;color: #0000ff;&quot;&gt;zou90512@126.com&amp;nbsp;&lt;/span&gt;联系我，非常感谢。&lt;br /&gt;笔者网店: &lt;a href=&quot;http://aoleitaisen.taobao.com&quot; target=&quot;_blank&quot;&gt;http://aoleitaisen.taobao.com&lt;/a&gt;. 欢迎广大读者围观&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;</description>
-        <pubDate>2014-08-12</pubDate>
-        <link>https://tinyzzh.github.io//netty/2014/08/12/Netty4.x_6.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//netty/2014/08/12/Netty4.x_6.html</guid>
-        
-        <category>Netty4.x中文教程系列</category>
-        
-        
-        <category>Netty</category>
-        
-      </item>
-    
-      <item>
-        <title>Netty4.x中文教程系列(五) 编解码器Codec</title>
-        <description>&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 上一篇文章详细解释了ChannelHandler的相关构架设计，版本和设计逻辑变更等等。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 这篇文章主要在于讲述Handler里面的Codec，也就是相关的编解码器。原本想把编解码器写在上一篇文章里面的。后来想想Netty里面的编解码器太多了。想要一次写完比较困难。于是重新开了一篇文章来专门写这个。&lt;/p&gt;
-
-&lt;h2 align=&quot;center&quot;&gt;1.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Hello World ！实例中的使用&lt;/h2&gt;
-&lt;p&gt;　　在这里先讲一下我们第一篇文章里面的实例使用到编解码器。&lt;/p&gt;
-&lt;h3&gt;1.1 DelimiterBasedFrameDecoder解码器&lt;/h3&gt;
-&lt;p&gt;　　DelimiterBasedFrameDecoder 顾名思义我们可以理解为基于分隔符的帧解码器。参数有两个，一个是最大帧长度，另外一个是定义分隔符。&lt;/p&gt;
-&lt;p&gt;在Delimiters中提供给我们两种分隔符。一种是&amp;ldquo;0x00-NUL&amp;rdquo;分隔符。另外一种就是实例中使用的&amp;ldquo;\r\n&amp;rdquo;或&amp;ldquo;\n&amp;rdquo;分隔符。&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/i/359548/201404/091422514341001.png&quot; alt=&quot;&quot; /&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; 在构造函数中我们可以看出，当分隔符是&amp;ldquo;\n&amp;rdquo;的时候，框架默认解码器为基于行的帧解码器（LineBasedFrameDecoder）。否则按照可读取比特长度进行帧解码。&lt;/p&gt;
-&lt;h3&gt;1.2 StringDecoder 字符串解码器 和 编码器&lt;/h3&gt;
-&lt;p&gt;　　解码器:将比特流转换为默认编码的字符串。默认编码为UTF-8。当然开发者可以通过设置字符编码参数来设置字符编码。编码器:将字符串转换为Byte[]&lt;/p&gt;
-&lt;h2 align=&quot;center&quot;&gt;2.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Netty中Handler详述&lt;/h2&gt;
-&lt;p&gt;　　在Netty的类库的handler目录可以看出它的基本结构(下图)：&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;http://images.cnitblog.com/i/359548/201404/091423044653221.png&quot; alt=&quot;&quot; /&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;图2.1 handler包结构&lt;/p&gt;
-&lt;p&gt;　　整个包由6个主要部分组成，笔者将由简入繁，慢慢想读者解释每个包的含义和用法。(若有不正确之处，希望大家能给予指点)&lt;/p&gt;
-&lt;h3&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 2.1 Logging 日志&lt;/h3&gt;
-&lt;p&gt;&amp;nbsp;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/i/359548/201404/091424014189420.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;　　　　用于Netty中的日志输出。&lt;/p&gt;
-&lt;h4&gt;　　　　2.1.1 loggingHandler&lt;/h4&gt;
-&lt;p&gt;　　LoggingHandler 继承于ChannelDuplexHandler。它的注释我们可以看出：&amp;ldquo;是一个使用日志框架记录全部事件的ChannelHandler,&amp;nbsp; 缺省值是记录全部DEBUG级别以上的事件&amp;rdquo;。它的功能是记录全部事件，包含Inbound和Outbound的，之所以选择了继承ChannelDuplexHandler，是由于ChannelDuplexHandler 继承ChannelInboundHandlerAdapter 实现ChannelOutboundHandler。所以相当于Netty框架内的全部通信相关的事件都会得到处理。&lt;/p&gt;
-&lt;h4&gt;　　　　2.1.2LogLevel&lt;/h4&gt;
-&lt;p&gt;在这里作者定义了5个级别的log。TRACE，DEBUG，INFO，WARN，ERROR。&lt;/p&gt;
-&lt;h3&gt;　　2.2 Ssl&lt;/h3&gt;
-&lt;p&gt;&amp;nbsp;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/i/359548/201404/091424185281994.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;　　用于SSL协议解析和编码。&lt;/p&gt;
-&lt;h4&gt;　　　　2.2.1&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; SslHandler&lt;/h4&gt;
-&lt;p&gt;　　　　熟悉了解过Http的朋友应该是知道ssl的。SSL 的英文全称是 &amp;ldquo;Secure Sockets Layer&amp;rdquo; ，中文名为 &amp;ldquo; 安全套接层协议层 &amp;rdquo; ，它是网景（ Netscape ）公司提出的基于 WEB 应用的安全协议。 SSL 协议指定了一种在应用程序协议（如 HTTP 、 Telenet 、 NMTP 和 FTP 等）和 TCP/IP 协议之间提供数据安全性分层的机制，它为 TCP/IP 连接提供数据加密、服务器认证、消息完整性以及可选的客户机认证。现在的相当一部分网站都有SSL加密。而SslHander则是Netty提供的Ssl解码编码处理。&lt;/p&gt;
-&lt;h4&gt;　　　　2.2.2&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; NotSslRecordException 和 SslHandshakeCompletionEvent&amp;nbsp;抛出异常和处理完成触发事件。&lt;/h4&gt;
-&lt;h3&gt;　　2.3 Stream 流&lt;/h3&gt;
-&lt;p&gt;&amp;nbsp;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/i/359548/201404/091424254979031.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;　　用于文件的的传输。将Java里面的File转换为Stream流，然后进行传输。&lt;/p&gt;
-&lt;h3&gt;　　2.4 Timeout 空闲检测&lt;/h3&gt;
-&lt;p&gt;&amp;nbsp;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/i/359548/201404/091424317936441.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 用于Netty框架中空闲超时相关。&lt;/p&gt;
-&lt;p&gt;IdleState 空闲状态。Netty中的空闲时间包括，读空闲，写空闲和读写空闲3种时间。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 顾名思义，读空闲即一段时间内没有接受到消息，写空闲即一段时间内没有发送消息。读写空闲即一段时间内读写都空闲。主要是用于检测空闲状态。并且特定条件下服务端关闭和释放一些资源。&lt;/p&gt;
-&lt;h3&gt;　　2.5 Traffic 流量统计&lt;/h3&gt;
-&lt;p&gt;&amp;nbsp;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/i/359548/201404/091424389976707.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;　　用于流量统计。&lt;/p&gt;
-&lt;p&gt;　　Netty提供了一个流量统计抽象类，一个Channel流量统计Handler和一个全局带宽流量统计Handler。&lt;/p&gt;
-&lt;h3&gt;　　2.6 Codec 编解码器&lt;/h3&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 这个是目前Netty的重点。也是最核心最复杂的部分。也是笔者认为Netty设计里面最好的一部分。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 用于数据的编解码。&lt;/p&gt;
-&lt;p&gt;　　编解码器可以理解为订立一个规范让客户端和服务端能够理解和识别字节流所包含的意思。其实编码和解码就是这么简单的事情，没什么复杂的。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;http://images.cnitblog.com/i/359548/201404/091424487622056.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;　　看到codec里面的这么一大堆的包类。读者是不是赶脚着很头晕？ O(&amp;cap;_&amp;cap;)O哈哈~。作者设计了非常友好的包逻辑结构。方便我们理解源码。&lt;/p&gt;
-&lt;p&gt;即Codec包中的类优先看，下面的子包都是一些Netty开发者们提供的一些实现。&lt;/p&gt;
-&lt;p&gt;有没有看到HelloWorld出现的LengthFieldBaseFrameDecoder和FixedLengthFrameDecoder。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;这里主要讲的是Netty中最重要的两个编解码器ByteToMessageCodec和MessageToMessageCodec。之所只讲着两个的原因是其他的编解码器都是继承于这两个的。&lt;/p&gt;
-&lt;p&gt;ByteToMessageCodec：在Netty4.x版本中允许传递Java中的对象，所以这个编解码起的作用就是讲Byte流转换为对象。而MessageToMessageCodec则是将Object转换为Object。这两个的区分其实很模糊。可能需要大家亲自动手写过之后才会有比较好的感受。&lt;/p&gt;
-&lt;p&gt;包base64：继承MessageToMessageEncoder&amp;lt;ByteBuf&amp;gt;。是base64编码的一些东西。&lt;/p&gt;
-&lt;p&gt;包bytes：继承MessageToMessageEncoder&amp;lt;ByteBuf&amp;gt;。用于字节数组和Netty里面的ByteBuf互相转换&lt;/p&gt;
-&lt;p&gt;包compression：用于ByteBuf数据压缩和解压缩的。继承MessageToMessageEncoder&amp;lt;ByteBuf&amp;gt;&lt;/p&gt;
-&lt;p&gt;包http：用于HTTP请求相关的。这个包里面就比较复杂了。下面详细讲一下。&lt;/p&gt;
-&lt;ol&gt;
-    &lt;li&gt;包空间：HTTP内容，请求，响应等。&lt;/li&gt;
-    &lt;li&gt;包cors: 包名称是（跨域资源分享）Cross Origin Resource Sharing 的简写。用于客户端跨域请求。&amp;nbsp; 可以参考 &lt;a href=&quot;http://www.w3.org/TR/cors/&quot;&gt;http://www.w3.org/TR/cors/&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;包multipart：POST消息和文件上传相关的一些。只是粗略看了一下。&lt;/li&gt;
-    &lt;li&gt;包websocketx：针对近年来Html5发展起来的websocket技术的。不过貌似由于Html5标准还未正式的确定。所以这个包里面的内容比较多。编解码器版本也很多。相信以后统一标准之后会简单一些。暂时不推荐吧&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;包marshalling：&lt;/p&gt;
-&lt;p&gt;包protoBuf：用于&lt;a href=&quot;http://code.google.com/p/protobuf/&quot;&gt;Google Protocol Buffers&lt;/a&gt; 编解码&lt;/p&gt;
-&lt;p&gt;包rtsp：实时流传输协议（Real Time Streaming Protocol，RTSP）&lt;/p&gt;
-&lt;p&gt;包sctp：流控制传输协议（Stream Control Transmission Protocol，SCTP）&lt;/p&gt;
-&lt;p&gt;包serialization：用于序列化的Java对象的和ByteBuf之间的转换。&lt;/p&gt;
-&lt;p&gt;包scoks：用于Java Socket通信相关的。支持Socket4a和 Socket 5两个版本&lt;/p&gt;
-&lt;p&gt;包spdy：SPDY协议是近年来发展的一种协议。主要目的是为了减少网页加载的时间。它是HTTP协议的增强版本。它从某种程度上讲提高了HTTP协议在数据传输时的速度和性能&lt;/p&gt;
-&lt;p&gt;包string：用于java里面字符串的编解码&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p style=&quot;padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 60px; font-family: 微软雅黑; font-size: 12px; border: #e0e0e0 1px dashed;&quot;&gt;&lt;strong&gt;作者&lt;/strong&gt;：TinyZ&lt;br /&gt;出处：&lt;a href=&quot;http://www.cnblogs.com/zou90512/&quot; target=&quot;_blank&quot;&gt;http://www.cnblogs.com/zou90512/&lt;/a&gt;&lt;br /&gt;关于作者：努力学习，天天向上。不断探索学习，提升自身价值。记录经验分享。&lt;br /&gt;本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文链接&lt;br /&gt;如有问题，可以通过&amp;nbsp;&lt;span style=&quot;color: #0000ff;&quot;&gt;zou90512@126.com&amp;nbsp;&lt;/span&gt;联系我，非常感谢。&lt;br /&gt;笔者网店: &lt;a href=&quot;http://aoleitaisen.taobao.com&quot; target=&quot;_blank&quot;&gt;http://aoleitaisen.taobao.com&lt;/a&gt;. 欢迎广大读者围观&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;</description>
-        <pubDate>2014-04-09</pubDate>
-        <link>https://tinyzzh.github.io//netty/2014/04/09/Netty4.x_5.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//netty/2014/04/09/Netty4.x_5.html</guid>
         
         <category>Netty4.x中文教程系列</category>
         

@@ -160,7 +160,7 @@
 同时，每一个Executor都是一个并发线程。
 如下代码实现一个简单的示例ObjectExecutor:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ObjectExecutor</span> <span class="kd">implements</span> <span class="n">Executor</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ObjectExecutor</span> <span class="kd">implements</span> <span class="n">Executor</span> <span class="o">{</span>
 
     <span class="kd">protected</span> <span class="n">Session</span> <span class="n">session</span><span class="o">;</span>
     <span class="kd">protected</span> <span class="n">Object</span> <span class="n">request</span><span class="o">;</span>
@@ -190,7 +190,7 @@
 
 <p>Okra提供了封装好的Disruptor桥用于Netty结合Disruptor。Okra通过Executor工厂让用户可以便捷灵活的定制特殊的处理者.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ExampleSocketHandler</span> <span class="kd">extends</span> <span class="n">DisruptorAdapterBy41xHandler</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ExampleSocketHandler</span> <span class="kd">extends</span> <span class="n">DisruptorAdapterBy41xHandler</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="o">{</span>
     <span class="nd">@Override</span>
     <span class="kd">protected</span> <span class="n">Executor</span> <span class="n">newExecutor</span><span class="o">(</span><span class="n">Session</span> <span class="n">session</span><span class="o">,</span> <span class="n">Object</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">return</span> <span class="k">new</span> <span class="n">ObjectExecutor</span><span class="o">(</span><span class="n">session</span><span class="o">,</span> <span class="n">msg</span><span class="o">);</span>
@@ -203,7 +203,7 @@
 
 <p>然后创建一个Server继承TcpProtocolServer实现自己的服务器类. 增加Handler处理</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TcpServer</span> <span class="kd">extends</span> <span class="n">TcpProtocolServer</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TcpServer</span> <span class="kd">extends</span> <span class="n">TcpProtocolServer</span> <span class="o">{</span>
 
     <span class="kd">public</span> <span class="n">TcpServer</span><span class="o">(</span><span class="kt">int</span> <span class="n">port</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">setPort</span><span class="o">(</span><span class="n">port</span><span class="o">);</span>
@@ -232,7 +232,7 @@
 
 <p>假如你的项目中使用了Spring框架，那么只需要在配置如下bean就可以启动:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c">&lt;!-- Tcp server --&gt;</span>
+<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="c">&lt;!-- Tcp server --&gt;</span>
 <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"tcpServer"</span> <span class="na">class=</span><span class="s">"org.ogcs.okra.example.socket.TcpServer"</span> <span class="na">init-method=</span><span class="s">"start"</span> <span class="na">destroy-method=</span><span class="s">"stop"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;constructor-arg</span> <span class="na">name=</span><span class="s">"port"</span> <span class="na">value=</span><span class="s">"${tcp.port}"</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/bean&gt;</span>
@@ -241,7 +241,7 @@
 
 <p>普通Java程序:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">TcpServer</span> <span class="n">server</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TcpServer</span><span class="o">(</span><span class="mi">9005</span><span class="o">);</span>
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">TcpServer</span> <span class="n">server</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TcpServer</span><span class="o">(</span><span class="mi">9005</span><span class="o">);</span>
 <span class="n">server</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
 </code></pre>
 </div>

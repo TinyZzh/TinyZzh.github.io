@@ -160,7 +160,7 @@
 
 <p>和Socket服务器搭建流程类似。首先实现一个简单的HttpRequestExecutor，用于处理Http请求:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HttpRequestExecutor</span> <span class="kd">implements</span> <span class="n">Executor</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HttpRequestExecutor</span> <span class="kd">implements</span> <span class="n">Executor</span> <span class="o">{</span>
 
     <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Logger</span> <span class="n">LOG</span> <span class="o">=</span> <span class="n">LogManager</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">HttpRequestExecutor</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
 
@@ -222,7 +222,7 @@
 <p>Okra提供了封装好的Disruptor桥用于Netty结合Disruptor。Okra通过Executor工厂让用户可以便捷灵活的定制特殊的处理者.
 继承DisruptorAdapterBy41xHandler（依赖于<strong>Netty4.1.x</strong>）或者DisruptorAdapterHandler（<strong>依赖于Netty4.0.x</strong>）实现创建HttpRequestExecutor的Executor工厂。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ExampleApiHandler</span> <span class="kd">extends</span> <span class="n">DisruptorAdapterBy41xHandler</span><span class="o">&lt;</span><span class="n">FullHttpRequest</span><span class="o">&gt;</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ExampleApiHandler</span> <span class="kd">extends</span> <span class="n">DisruptorAdapterBy41xHandler</span><span class="o">&lt;</span><span class="n">FullHttpRequest</span><span class="o">&gt;</span> <span class="o">{</span>
     <span class="nd">@Override</span>
     <span class="kd">protected</span> <span class="n">Executor</span> <span class="n">newExecutor</span><span class="o">(</span><span class="n">Session</span> <span class="n">session</span><span class="o">,</span> <span class="n">FullHttpRequest</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">return</span> <span class="k">new</span> <span class="n">HttpRequestExecutor</span><span class="o">(</span><span class="n">session</span><span class="o">,</span> <span class="n">msg</span><span class="o">);</span>
@@ -235,7 +235,7 @@
 
 <p>然后创建一个Server继承TcpProtocolServer实现自己的服务器类. 增加Handler处理</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HttpServer</span> <span class="kd">extends</span> <span class="n">TcpProtocolServer</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HttpServer</span> <span class="kd">extends</span> <span class="n">TcpProtocolServer</span> <span class="o">{</span>
 
     <span class="kd">public</span> <span class="n">HttpServer</span><span class="o">(</span><span class="kt">int</span> <span class="n">port</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">setPort</span><span class="o">(</span><span class="n">port</span><span class="o">);</span>
@@ -262,7 +262,7 @@
 
 <p>假如你的项目中使用了Spring框架，那么只需要在配置如下bean就可以启动:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c">&lt;!-- Http protocol server --&gt;</span>
+<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="c">&lt;!-- Http protocol server --&gt;</span>
 <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"httpServer"</span> <span class="na">class=</span><span class="s">"org.ogcs.okra.example.http.HttpServer"</span> <span class="na">init-method=</span><span class="s">"start"</span> <span class="na">destroy-method=</span><span class="s">"stop"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;constructor-arg</span> <span class="na">name=</span><span class="s">"port"</span> <span class="na">value=</span><span class="s">"${http.port}"</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/bean&gt;</span>
@@ -271,7 +271,7 @@
 
 <p>普通Java程序:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">HttpServer</span> <span class="n">server</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HttpServer</span><span class="o">(</span><span class="mi">9005</span><span class="o">);</span>
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">HttpServer</span> <span class="n">server</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HttpServer</span><span class="o">(</span><span class="mi">9005</span><span class="o">);</span>
 <span class="n">server</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
 </code></pre>
 </div>

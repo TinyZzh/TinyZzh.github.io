@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <title>Okra框架(四) 使用引导说明</title>
+  <title>为什么使用HikariCP连接池?</title>
   <meta name="description" content="专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。">
   <meta name="author" content="TinyZ">
   <meta name="HandheldFriendly" content="True">
@@ -43,7 +43,7 @@
   <meta name="theme-color" content="#ffffff">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="https://tinyzzh.github.io//okra/2016/05/19/Okra_Get_Started.html">
+  <link rel="canonical" href="https://tinyzzh.github.io//database/2016/06/04/Why_Use_HikariCP.html">
   <link rel="alternate" type="application/rss+xml" title="TinyZ's Blog" href="/feed.xml">
 
 </head>
@@ -146,111 +146,108 @@
         <article class="post-container post-container--single">
 
   <header class="post-header">
-    <h1 class="post-title">Okra框架(四) 使用引导说明</h1>
+    <h1 class="post-title">为什么使用HikariCP连接池?</h1>
   </header>
 
   <section class="post">
-    <p>Okra是一个构建在Netty框架和Disruptor框架之上轻量级JAVA服务器框架。
-使用Netty实现高性能，可灵活扩展的网络通信，使用Disruptor实现高吞吐量，低延迟的并发。</p>
+    <p>笔者最近在换工作的时，被面试官问数据库和连接池相关的一些问题。
+下面从面试这块开始</p>
 
-<p>如何将Okra应用到实际开发中?</p>
-
-<p>本文旨在帮助初次接触Okra框架的用户上手使用Okra框架.</p>
-
-<h2 id="okra-xyzjar">1. 下载Okra-x.y.z.jar</h2>
-
-<p>首先我们需要下载Okra框架最新的稳定版本.Jar:<a href="https://github.com/ogcs/Okra/releases">下载地址</a>.</p>
-
-<blockquote>
-  <p><strong>目前Okra没有推送到Maven仓库,使用Okra-x.y.z.jar需要手动添加类库引用.</strong></p>
-</blockquote>
-
-<h2 id="section">2. 导入工程</h2>
-
-<p>本文以Intellij IDEA 2016.1.2为例. IDEA提供多种多样的添加类库的途径. 本段只做简单的举例示范.</p>
-
-<p>方法一: 设置通用类库导入</p>
+<p>简单介绍一下笔者项目中数据库的使用情况。项目中使用MySQL做数据存储，Redis做数据缓存。读写数据流程如下：</p>
 
 <ol>
-  <li>打开工程设置. “File” -&gt; “Project Structure…” 或者使用快捷键(Ctrl + Alt + + Shift + S).</li>
-  <li>选择”Global Libraries”, 点击符号”+”，添加Okra-x.y.z.jar为通用类库.</li>
-  <li>添加Okra到工程中, 选中新添加的Okra-x.y.z.jar点击鼠标右键 -&gt; “Add to Modules” 选中对应的模块, 最终”Ok”, 完成导入</li>
+  <li><strong>读</strong>数据：先查询Redis中是否存在，存在直接取出数据，不存在从MySQL查询并保存包Redis中缓存起来。</li>
+  <li><strong>写</strong>数据：先写入Redis，然后异步提交到MySQL写入线程，实现数据落地。</li>
 </ol>
 
-<p>方法二: 在Modules界面设置导入</p>
+<h2 id="section">问题1：如何保证数据读写的“原子性”?如何解决脏数据?</h2>
+
+<p>众所周知，当使用数据库跨表操作时，利用数据库引擎提供的事务和回滚机制，可以保证数据库跨表操作的原子性。</p>
+
+<p>一方面在项目中引入数据缓存层也是一种常见的减轻数据库压力的做法。另一方面引入了缓存增加了数据操作的复杂度。</p>
+
+<p>如何解决缓存中和数据库中数据不一致的问题?
+笔者以线上项目为例简单的说了说。在线上的代码，主要以缓存层数据为主，数据不统一的情况，会在下一次落地时覆盖数据库的数据，实现同步。</p>
+
+<p>假如是因为版本迭代数据库字段变更导致数据库落地错误时，由于Redis缓存的有效期是7天，在<strong>缓存失效前手动</strong>执行脚本将数据重新落地。</p>
+
+<p>由于面试官一再强调是<strong>自动修复</strong>脏数据。
+说实话笔者在保证Redis和MySQL两者数据操作的原子性这块没有什么涉猎。也没想出什么好的办法。
+由于面试官一再询问，笔者就稍微讲了讲一个思路回答：也许是否可以使用数据库的原子性，回滚的时候回退数据?</p>
+
+<p>当然事实证明一时的想法总是有漏洞的。数据回退涉及到数据回退前多次被修改的复杂情况。显得不是很合适。</p>
+
+<p>最后引发尴尬的是面试官的总结：(大意如下)
+在修改数据前，尽可能多的判定用户是否满足操作的条件，以便于提早发现问题并退出, 以避免数据操作。同时避免异步操作数据库，同步操作及早出现问题并退出。</p>
+
+<p>wtf…  当时一下子感觉自己有点懵逼的。才发现整个就理解错了。瞬间也是好尴尬。</p>
+
+<h2 id="hikaricp">问题2：HikariCP是什么?</h2>
+
+<p>HikariCP是一个高性能的JDBC连接池。Hikari是日语“光”的意思。可能是目前java业界最快的数据库连接池（BoneCP因此停止维护，其作者推荐HikariCP）。
+面试官说项目用的c3p0作为数据库连接池，也没接触过HikariCP。还问了何时连接池会关闭数据库的连接。</p>
+
+<p>说实在的，当时笔者没回答好，一般数据库连接池会自动管理数据库连接建立、复用和关闭。一般情况下不会关闭已经建立的数据库连接。
+连接池关闭连接方面，其他连接池竞品不清楚，HikariCP会在设置的最大生命周期后，最大空闲时间后等多个条件作用下自动关闭释放连接。</p>
+
+<p>下面是总结</p>
+
+<h2 id="section-1">数据库连接池技术</h2>
+
+<p>数据库连接池负责分配、管理和释放数据库的连接。</p>
 
 <ol>
-  <li>打开工程设置. “File” -&gt; “Project Structure…” 或者使用快捷键(Ctrl + Alt + + Shift + S).</li>
-  <li>选择”Modules”， 选中需要添加Okra的模块, 点击”Dependencies”, 点击符号”+”.</li>
-  <li>点击”JARs or directories”选择Okra文件或所在目录按照提示完成添加</li>
+  <li>数据库连接复用。重复使用现有的数据库连接，可以避免连接频繁建立、关闭的开销。</li>
+  <li>统一的连接管理。释放空闲时间超过最大空闲时间的数据库连接，避免因为没有释放数据库连接而引起的数据库连接泄漏。</li>
 </ol>
 
-<h2 id="okra">3. Okra框架的依赖</h2>
-<p>Okra核心是整合Netty和Disruptor两个框架. 以便于快速开发高并发, 低延迟，高吞吐量， 灵活可扩展的网络服务器.</p>
+<h2 id="section-2">一些数据库连接池的对比</h2>
 
-<p>(required) :</p>
+<p>首先明确：无论任何形式的数据库连接复用（数据库连接池技术）都避免了频繁建立、关闭数据库连接带来的开销。性能相对于没有连接池有质的提升。
+另外一点需要明确：数据库连接池一般不会成为整个程序的性能瓶颈。更多的出现在数据库读写，带宽，cpu等方面（开始人云亦云模式，o(∩_∩)o 哈哈）。</p>
 
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
-    <span class="nt">&lt;groupId&gt;</span>io.netty<span class="nt">&lt;/groupId&gt;</span>
-    <span class="nt">&lt;artifactId&gt;</span>netty-all<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>4.0.36.Final<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-<span class="nt">&lt;dependency&gt;</span>
-    <span class="nt">&lt;groupId&gt;</span>com.lmax<span class="nt">&lt;/groupId&gt;</span>
-    <span class="nt">&lt;artifactId&gt;</span>disruptor<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>3.3.2<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-</code></pre>
-</div>
+<p>下面引入正文，先来一个对比。
+文章<a href="http://freeman1.iteye.com/blog/2268874">数据库连接池性能比对</a>很早之前看到过，但一直没找到原帖。
+皇天不负有心人，今天总算是挖出来了原帖（鄙视一下盗链和转帖不挂源地址的）。</p>
 
-<p>(optional) :</p>
+<h2 id="hikaricp-1">HikariCP</h2>
+
+<p><a href="https://github.com/brettwooldridge/HikariCP">HikariCP</a>可能是目前业内最快的数据库连接池。</p>
+
+<p>说到HikariCP就不得不说BoneCP。笔者之前是BoneCP的使用者。突然那么一天（忘记具体是哪天了）想看看BoneCP是否有新版本。
+然后发现BoneCP作者在项目主页的描述说不再更新BoneCP并且推荐了HikariCP。</p>
+
+<p>笔者也有段时间没关注这个类库了，面试的时候因为也好久没看了，所以讲的也不是很清楚。于是就抽空复习总结一下。
+笔者之前在<strong>博客园</strong>发表过一篇关于HikariCP的文章<a href="http://www.cnblogs.com/zou90512/p/4044818.html">从BoneCP到HikariCP</a>，
+简单讲了Spring+Mybatis+HikariCP的配合使用。
+那时候刚接触HikariCP，被官方的测试数据所吸引，毕竟BoneCP停产了，而且在代码基本上不需要改动的情况下就能获得更好的性能，何乐而不为呢? 所以决定试试这个“新家伙”</p>
+
+<p>HikariCP的官方Wiki中提到的为什么HikariCP是如何实现这么高效率。详细见:
+<a href="https://github.com/brettwooldridge/HikariCP/wiki/Down-the-Rabbit-Hole">Down the Rabbit Hole</a>
+掉进兔子洞? 反正我是不懂这是什么谚语。o(∩_∩)o 哈哈。
+大概内容如下：</p>
 
 <ol>
-  <li>
-    <p>Spring框架支持</p>
-
-    <p>使用Spring框架, 除了Spring框架自身带来的IOC等便利之外, 还可以快速集成大量优秀的类库, 例如: Hibernate, Mybatis, BoneCP, HikariCP等等.</p>
-
-    <div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
-    <span class="nt">&lt;groupId&gt;</span>org.springframework<span class="nt">&lt;/groupId&gt;</span>
-    <span class="nt">&lt;artifactId&gt;</span>spring-context<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>4.2.2.RELEASE<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-</code></pre>
-    </div>
-  </li>
-  <li>
-    <p>Flex通信支持</p>
-
-    <p>Flex客户端和Java服务端的通信支持依赖于<strong>BlazeDS</strong>类库.</p>
-
-    <div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
-    <span class="nt">&lt;groupId&gt;</span>org.apache.flex.blazeds<span class="nt">&lt;/groupId&gt;</span>
-    <span class="nt">&lt;artifactId&gt;</span>flex-messaging-core<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>4.7.2<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-<span class="nt">&lt;dependency&gt;</span>
-    <span class="nt">&lt;groupId&gt;</span>org.apache.flex.blazeds<span class="nt">&lt;/groupId&gt;</span>
-    <span class="nt">&lt;artifactId&gt;</span>flex-messaging-common<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>4.7.2<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-</code></pre>
-    </div>
-  </li>
+  <li>优化字节码（JVM内联），减少生成的机器码</li>
+  <li>精简代码, 使用Javassist生成委托。</li>
+  <li>无锁容器。FastStatementList、ConcurrentBag</li>
+  <li>等等针对BoneCP的优化。(好针对BoneCP啊，o(∩_∩)o 哈哈)</li>
 </ol>
 
-<h2 id="section-1">4. 项目中使用</h2>
+<h2 id="druid">Druid</h2>
 
-<p>示例1: <a href="https://github.com/ogcs/Okra/wiki/Okra%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BAHTTP%E6%9C%8D%E5%8A%A1%E5%99%A8">Okra框架搭建HTTP服务器</a></p>
+<p><a href="https://github.com/alibaba/druid">Druid</a>是阿里巴巴开源的“为监控而生的数据库连接池！”。
+性能测试过程略低于HikariCP，但是提供了强大的监控和扩展功能。支持psCache。</p>
 
-<p>示例2: <a href="https://github.com/ogcs/Okra/wiki/Okra%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BASocket%E6%9C%8D%E5%8A%A1%E5%99%A8">Okra框架搭建Socket服务器</a></p>
+<p>有兴趣可以去GitHub查看。有中文文档。o(∩_∩)o 哈哈。阿里威武</p>
 
-<p>Java服务器Demo: <a href="https://github.com/ogcs/Okra/tree/master/okra-demo">okra-demo</a></p>
+<h2 id="section-3">结论</h2>
 
-<h2 id="section-2">5. 总结</h2>
-
-<p>本文旨在帮助初次接触Okra框架的用户，快速搭建基于Okra的网络服务器. 提供了两个简单的示例和一个相对来说比较完整的服务端demo.
-用户在实际开发过程中遇到问题或者BUG欢迎反馈到<strong><a href="https://github.com/ogcs/Okra/issues">issues</a></strong>.</p>
+<p>为什么使用HikariCP?
+首先它是一个优秀的数据库连接池，代码少，<strong>效率高</strong>。
+支持多种常见的数据库（包含但不限于：Oracle、MS SQL Server、<strong>MySQL</strong>、PostgreSQL）
+轻松<strong>集成Spring+Hibernate/Mybatis</strong>。
+而且笔者平时的业务内容不是特别需要<strong>监控</strong>这么“重度”的功能。有慢查询日志基本上就足够了。</p>
 
 
   </section>
