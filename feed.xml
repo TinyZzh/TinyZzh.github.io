@@ -5,8 +5,8 @@
     <description>专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。</description>
     <link>https://tinyzzh.github.io//</link>
     <atom:link href="https://tinyzzh.github.io//feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>2016-06-04</pubDate>
-    <lastBuildDate>2016-06-04</lastBuildDate>
+    <pubDate>2016-06-05</pubDate>
+    <lastBuildDate>2016-06-05</lastBuildDate>
     <generator>Jekyll v3.1.6</generator>
     
       <item>
@@ -337,6 +337,104 @@ O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
         
         
         <category>Other</category>
+        
+      </item>
+    
+      <item>
+        <title>使用Redis实现高实时性的排序</title>
+        <description>&lt;p&gt;一般应用或游戏都会有各种各样的排行榜。排行榜往往可以满足了用户互相攀比炫耀，刺激内消费等等好处。
+用户往往希望自己能在排行榜取得显著的位置。 那如何实现开销低实时性高的排行榜呢?&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;引言&lt;/h2&gt;
+
+&lt;p&gt;记得那年，笔者还刚入行的时候。需要为一款MMORPG实现一个玩家的等级排行榜。
+排序规则是优先根据等级排序，等级相同根据经验值排序，经验值相同根据满级时间排序。&lt;/p&gt;
+
+&lt;p&gt;那个时候能想到的做法就是数据库新增一个字段用于保存玩家到达满级的时间戳，配合当时在数据库中已经存在的保存玩家的经验和等级的字段，
+使用MySQL数据库的Select查询语句根据三个条件最终实现排序,
+排序之后将排名数据缓存到内存中,以减轻数据库的压力, 设定排行榜数据过期时间为3个小时，每当数据过期重新查询排序并更新缓存。&lt;/p&gt;
+
+&lt;p&gt;那个时候的业务量小，小区小服玩家不多，对实时性要求也不高，就这么算是实现了。O(∩_∩)O哈哈~。跑偏了。下面正题&lt;/p&gt;
+
+&lt;h2 id=&quot;sorted-set&quot;&gt;Sorted Set应用&lt;/h2&gt;
+
+&lt;p&gt;Redis提供基于跳跃表(skip list)实现的时间复杂度大致为(O(log(n)))的有序集合(Sorted Set)。
+本文讲的核心内容实现高实时性的排行榜，就是根据Redis的这一数据结构来的。&lt;/p&gt;
+
+&lt;p&gt;假若项目中未使用Redis, 未来也不准备引入Redis 的朋友。
+可以借鉴引用一下跳跃表的自己实现SortedSet或引用GitHub上其他网友的开源实现。&lt;/p&gt;
+
+&lt;p&gt;Redis中的SortedSet根据一个名为score的64位双精度浮点数的参数实现排序. 但是在实际应用中推荐将score当做64位长整型来使用.
+原因很简单: long的取值范围要大于double.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;blockquote&gt;
+    &lt;p&gt;double范围为[-(2^53), +(2^53)] long范围为[-(2^63), +(2^63) - 1]&lt;/p&gt;
+  &lt;/blockquote&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;当只有一个排序原则时，直接使用score排序即可。
+但是引言中的排序有三个条件，而SortedSet只提供一个参数而且还是数字，那该如何应用呢?&lt;/p&gt;
+
+&lt;p&gt;下面来正菜了。因为redis保存的数据是64位的，而我们需要的数据可能不需要64位这么多。
+既如此合理分析拆分这64位长度拼接并组合成我们需要的数据，就可以实现简单的多条件排序了。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;分析各部分数据的取值范围&lt;/h2&gt;
+
+&lt;p&gt;先普及一点基础知识.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;8位二进制: 有符号[-128, 127]， 无符号[0, 255]&lt;/li&gt;
+  &lt;li&gt;8位二进制: 有符号[-128, 127]， 无符号[0, 255]&lt;/li&gt;
+  &lt;li&gt;…&lt;/li&gt;
+  &lt;li&gt;32位二进制: 有符号[-2^31, 2^31 - 1]， 无符号[0, 2^32]&lt;/li&gt;
+  &lt;li&gt;…&lt;/li&gt;
+  &lt;li&gt;64位二进制: 有符号[-2^63, 2^63 - 1]， 无符号[0, 2^64]&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;64位二进制数，首先时间戳精确到秒 则需要32位，等级一般8位即可（根据需求扩展到9位、10位…）。
+这么拆分下来经验值最多使用剩余24位表示，有符号[-2^23, 2^23 - 1],也就800w+。
+对于一些小数值经验应该是足够了。但是假如是类似于暗黑三这种按E计算的咋办?&lt;/p&gt;
+
+&lt;p&gt;目前笔者能想到的就是通过降低数值规模。例如：
+每1w实际经验值转换为1点排序经验值。即20E实际经验 / 1w = 20w 排序经验.  20w完全足够24位二进制来表示了。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;示例&lt;/h2&gt;
+
+&lt;p&gt;实现优先等级排序，经验排序，满级时间。&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;level&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;60&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6000000&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;timestamp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;currentTimeMillis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redisScore&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;level&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xFFL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;56&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xFFFFFFL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xFFFFFFFFL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tempTime&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redisScore&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xFFFFFFFFL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tempExp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;redisScore&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xFFFFFFL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tempLevel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;redisScore&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;56&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xFFL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;详细可以查看Redis的&lt;a href=&quot;http://redis.io/commands#sorted_set&quot;&gt;官方命令说明文档&lt;/a&gt;
+或笔者在Okra框架的example包下的
+&lt;a href=&quot;https://github.com/ogcs/Okra/blob/master/okra-examples/src/main/java/org/ogcs/okra/example/rank/RedisRankMain.java&quot;&gt;示例代码&lt;/a&gt;
+。&lt;/p&gt;
+
+</description>
+        <pubDate>2016-05-26</pubDate>
+        <link>https://tinyzzh.github.io//database/2016/05/26/Redis_SortedSet_Implement_Rank.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//database/2016/05/26/Redis_SortedSet_Implement_Rank.html</guid>
+        
+        <category>Redis</category>
+        
+        <category>排行榜</category>
+        
+        
+        <category>Database</category>
         
       </item>
     
@@ -974,200 +1072,6 @@ Okra主要依赖如下：&lt;/p&gt;
         
         
         <category>GitHub</category>
-        
-      </item>
-    
-      <item>
-        <title>Netty4.x中文教程系列(七) UDP协议</title>
-        <description>&lt;p&gt;　　将近快一年时间没有更新Netty的博客。一方面原因是因为项目进度的问题。另外一方面是博主有一段时间去熟悉Unity3D引擎。&lt;/p&gt;
-&lt;p&gt;　　本章节主要记录博主自己Netty的UDP协议使用。&lt;/p&gt;
-
-&lt;h2&gt;　　1.　　构建UDP服务端&lt;/h2&gt;
-&lt;p&gt;　　首先我们应该清楚UDP协议是一种无连接状态的协议。所以Netty框架区别于一般的有链接协议服务端启动程序（ServerBootstrap）。&lt;/p&gt;
-&lt;p&gt;　　Netty开发基于UDP协议的服务端需要使用Bootstrap&lt;/p&gt;
-&lt;p&gt;　　&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot; onclick=&quot;cnblogs_code_show(&#39;848a7592-339a-4f5e-a73e-1a2031503b75&#39;)&quot;&gt;&lt;img id=&quot;code_img_closed_848a7592-339a-4f5e-a73e-1a2031503b75&quot; class=&quot;code_img_closed&quot; src=&quot;http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif&quot; alt=&quot;&quot; /&gt;&lt;img id=&quot;code_img_opened_848a7592-339a-4f5e-a73e-1a2031503b75&quot; class=&quot;code_img_opened&quot; style=&quot;display: none;&quot; onclick=&quot;cnblogs_code_hide(&#39;848a7592-339a-4f5e-a73e-1a2031503b75&#39;,event)&quot; src=&quot;http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif&quot; alt=&quot;&quot; /&gt;
-    &lt;div id=&quot;cnblogs_code_open_848a7592-339a-4f5e-a73e-1a2031503b75&quot; class=&quot;cnblogs_code_hide&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; dev.tinyz.game;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.bootstrap.Bootstrap;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.buffer.Unpooled;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt; io.netty.channel.*&lt;span style=&quot;color: #000000;&quot;&gt;;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.nio.NioEventLoopGroup;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.DatagramPacket;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.nio.NioDatagramChannel;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.MessageToMessageDecoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.net.InetSocketAddress;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.nio.charset.Charset;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.util.List;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;/**&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt; * &lt;/span&gt;&lt;span style=&quot;color: #808080;&quot;&gt;@author&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; TinyZ on 2015/6/8.
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;  &lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; GameMain {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; main(String[] args) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; InterruptedException {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;final&lt;/span&gt; NioEventLoopGroup nioEventLoopGroup = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; NioEventLoopGroup();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt;         Bootstrap bootstrap = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Bootstrap();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt;         bootstrap.channel(NioDatagramChannel.&lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;        bootstrap.group(nioEventLoopGroup);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt;         bootstrap.handler(&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; ChannelInitializer&amp;lt;NioDatagramChannel&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt;() {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;28&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;29&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;30&lt;/span&gt;             &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelActive(ChannelHandlerContext ctx) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;31&lt;/span&gt;                 &lt;span style=&quot;color: #0000ff;&quot;&gt;super&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;.channelActive(ctx);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;32&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;33&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;34&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;35&lt;/span&gt;             &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; initChannel(NioDatagramChannel ch) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;36&lt;/span&gt;                 ChannelPipeline cp =&lt;span style=&quot;color: #000000;&quot;&gt; ch.pipeline();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;37&lt;/span&gt;                 cp.addLast(&quot;framer&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; MessageToMessageDecoder&amp;lt;DatagramPacket&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt;() {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;38&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;39&lt;/span&gt;                     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; decode(ChannelHandlerContext ctx, DatagramPacket msg, List&amp;lt;Object&amp;gt; out) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;40&lt;/span&gt;                         out.add(msg.content().toString(Charset.forName(&quot;UTF-8&quot;&lt;span style=&quot;color: #000000;&quot;&gt;)));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;41&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;42&lt;/span&gt;                 }).addLast(&quot;handler&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; UdpHandler());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;43&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;44&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;        });
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;45&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 监听端口&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;46&lt;/span&gt;         ChannelFuture sync = bootstrap.bind(9009&lt;span style=&quot;color: #000000;&quot;&gt;).sync();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;47&lt;/span&gt;         Channel udpChannel =&lt;span style=&quot;color: #000000;&quot;&gt; sync.channel();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;48&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;49&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;        String data = &quot;我是大好人啊&quot;;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;50&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt;        udpChannel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(data.getBytes(Charset.forName(&quot;UTF-8&quot;))), new InetSocketAddress(&quot;192.168.2.29&quot;, 9008)));&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;51&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;52&lt;/span&gt;         Runtime.getRuntime().addShutdownHook(&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; Thread(&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Runnable() {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;53&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;54&lt;/span&gt;             &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; run() {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;55&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                nioEventLoopGroup.shutdownGracefully();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;56&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;57&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;        }));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;58&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;59&lt;/span&gt; }&lt;/pre&gt;
-    &lt;/div&gt;
-    &lt;span class=&quot;cnblogs_code_collapse&quot;&gt;View Code&lt;/span&gt;&lt;/div&gt;
-&lt;p&gt;　　于Tcp协议的客户端启动程序基本一样。唯一区别就在于，UDP服务器使用的是bind方法，来监听端口&lt;/p&gt;
-&lt;p&gt;　　在Netty的Bootstrap类中的注释，发现有如下注释内容：&lt;/p&gt;
-&lt;p&gt;　　&lt;img src=&quot;http://images0.cnblogs.com/blog2015/359548/201506/102039066766793.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;　　大意就是：bind()用于UDP， TCP连接使用connect()。&lt;/p&gt;
-&lt;p&gt;　　上面的源码监听的是端口9009，那么所有使用UDP协议的数据，发送到端口9009，就会被我们的Netty接收到了。&lt;/p&gt;
-&lt;p&gt;　　为了输出方便，博主在上面的代码中增加一个MessageToMessageDecoder将接收到的Datagram，排除其他信息，仅将字符串传递下去。并在UDPHandler中打印出来。&lt;/p&gt;
-&lt;h2&gt;　　2.　　构建UDP客户端&lt;/h2&gt;
-&lt;p&gt;　　UDP协议来说，其实没有客户端和服务端的区别啦。只是为了贴近TCP协议做的一点文字描述上面的区分。&lt;/p&gt;
-&lt;p&gt;　　简单来讲，上面的那段逻辑其实就可以作为UDP客户端来使用。注释掉的那行逻辑其实就是发送&amp;ldquo;我是大好人啊&amp;rdquo;这个字符串到ip地址为192.168.2.29的服务端的9008端口。代码如下：&lt;/p&gt;
-&lt;p&gt;　　&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot; onclick=&quot;cnblogs_code_show(&#39;4210e2fa-cc56-4728-8980-dfb43e870f6f&#39;)&quot;&gt;&lt;img id=&quot;code_img_closed_4210e2fa-cc56-4728-8980-dfb43e870f6f&quot; class=&quot;code_img_closed&quot; src=&quot;http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif&quot; alt=&quot;&quot; /&gt;&lt;img id=&quot;code_img_opened_4210e2fa-cc56-4728-8980-dfb43e870f6f&quot; class=&quot;code_img_opened&quot; style=&quot;display: none;&quot; onclick=&quot;cnblogs_code_hide(&#39;4210e2fa-cc56-4728-8980-dfb43e870f6f&#39;,event)&quot; src=&quot;http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif&quot; alt=&quot;&quot; /&gt;
-    &lt;div id=&quot;cnblogs_code_open_4210e2fa-cc56-4728-8980-dfb43e870f6f&quot; class=&quot;cnblogs_code_hide&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; dev.tinyz.game;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.bootstrap.Bootstrap;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.buffer.Unpooled;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt; io.netty.channel.*&lt;span style=&quot;color: #000000;&quot;&gt;;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.nio.NioEventLoopGroup;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.DatagramPacket;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.channel.socket.nio.NioDatagramChannel;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; io.netty.handler.codec.MessageToMessageDecoder;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.net.InetSocketAddress;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.nio.charset.Charset;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.util.List;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;/**&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt; * &lt;/span&gt;&lt;span style=&quot;color: #808080;&quot;&gt;@author&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; TinyZ on 2015/6/8.
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;  &lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; GameMain {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; main(String[] args) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; InterruptedException {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;final&lt;/span&gt; NioEventLoopGroup nioEventLoopGroup = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; NioEventLoopGroup();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;24&lt;/span&gt;         Bootstrap bootstrap = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Bootstrap();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;25&lt;/span&gt;         bootstrap.channel(NioDatagramChannel.&lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;26&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;        bootstrap.group(nioEventLoopGroup);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;27&lt;/span&gt;         bootstrap.handler(&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; ChannelInitializer&amp;lt;NioDatagramChannel&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt;() {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;28&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;29&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;30&lt;/span&gt;             &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; channelActive(ChannelHandlerContext ctx) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;31&lt;/span&gt;                 &lt;span style=&quot;color: #0000ff;&quot;&gt;super&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt;.channelActive(ctx);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;32&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;33&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;34&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;35&lt;/span&gt;             &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; initChannel(NioDatagramChannel ch) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;36&lt;/span&gt;                 ChannelPipeline cp =&lt;span style=&quot;color: #000000;&quot;&gt; ch.pipeline();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;37&lt;/span&gt;                 cp.addLast(&quot;framer&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; MessageToMessageDecoder&amp;lt;DatagramPacket&amp;gt;&lt;span style=&quot;color: #000000;&quot;&gt;() {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;38&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                    @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;39&lt;/span&gt;                     &lt;span style=&quot;color: #0000ff;&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; decode(ChannelHandlerContext ctx, DatagramPacket msg, List&amp;lt;Object&amp;gt; out) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Exception {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;40&lt;/span&gt;                         out.add(msg.content().toString(Charset.forName(&quot;UTF-8&quot;&lt;span style=&quot;color: #000000;&quot;&gt;)));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;41&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;42&lt;/span&gt;                 }).addLast(&quot;handler&quot;, &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; UdpHandler());
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;43&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;44&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;        });
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;45&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 监听端口&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;46&lt;/span&gt;         ChannelFuture sync = bootstrap.bind(0&lt;span style=&quot;color: #000000;&quot;&gt;).sync();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;47&lt;/span&gt;         Channel udpChannel =&lt;span style=&quot;color: #000000;&quot;&gt; sync.channel();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;48&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;49&lt;/span&gt;         String data = &quot;我是大好人啊&quot;&lt;span style=&quot;color: #000000;&quot;&gt;;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;50&lt;/span&gt;         udpChannel.writeAndFlush(&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; DatagramPacket(Unpooled.copiedBuffer(data.getBytes(Charset.forName(&quot;UTF-8&quot;))), &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; InetSocketAddress(&quot;192.168.2.29&quot;, 9008&lt;span style=&quot;color: #000000;&quot;&gt;)));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;51&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;52&lt;/span&gt;         Runtime.getRuntime().addShutdownHook(&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; Thread(&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; Runnable() {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;53&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            @Override
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;54&lt;/span&gt;             &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; run() {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;55&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;                nioEventLoopGroup.shutdownGracefully();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;56&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;            }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;57&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;        }));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;58&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;59&lt;/span&gt; }&lt;/pre&gt;
-    &lt;/div&gt;
-    &lt;span class=&quot;cnblogs_code_collapse&quot;&gt;View Code&lt;/span&gt;&lt;/div&gt;
-&lt;p&gt;　　和上面的&amp;ldquo;服务端&amp;rdquo;代码最大的差别就是，&lt;strong&gt;监听的端口号修改成0.&lt;/strong&gt;为&lt;/p&gt;
-&lt;p&gt;　　使用Netty的Channel发送DatagramPacket。写好目标地址，然后运行起来就可以自己测试一下了。&lt;/p&gt;
-&lt;h2&gt;　　3.　　JAVA原生UDP&lt;/h2&gt;
-&lt;p&gt;　　有朋友这个时候就会问：为什么不是有JAVA原生的UDP呢？&lt;/p&gt;
-&lt;p&gt;　　其实很简单。说白了Netty使用的也是Java底层的代码。只是做了一层封装，以便于使用。服务端使用Netty框架构建高性能，高扩展的UDP服务器。&lt;/p&gt;
-&lt;p&gt;　　客户端则使用JAVA或者任意其他的语言的API（遵循UDP协议即可）。&lt;/p&gt;
-&lt;p&gt;　　下面上一段博主使用的的JAVA&lt;/p&gt;
-&lt;p&gt;　　&lt;/p&gt;
-&lt;div class=&quot;cnblogs_code&quot; onclick=&quot;cnblogs_code_show(&#39;bc878d64-6d80-47f2-a713-211c09b9962d&#39;)&quot;&gt;&lt;img id=&quot;code_img_closed_bc878d64-6d80-47f2-a713-211c09b9962d&quot; class=&quot;code_img_closed&quot; src=&quot;http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif&quot; alt=&quot;&quot; /&gt;&lt;img id=&quot;code_img_opened_bc878d64-6d80-47f2-a713-211c09b9962d&quot; class=&quot;code_img_opened&quot; style=&quot;display: none;&quot; onclick=&quot;cnblogs_code_hide(&#39;bc878d64-6d80-47f2-a713-211c09b9962d&#39;,event)&quot; src=&quot;http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif&quot; alt=&quot;&quot; /&gt;
-    &lt;div id=&quot;cnblogs_code_open_bc878d64-6d80-47f2-a713-211c09b9962d&quot; class=&quot;cnblogs_code_hide&quot;&gt;
-&lt;pre&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 1&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;package&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; dev.tinyz.game;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 2&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 3&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.io.IOException;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 4&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.net.DatagramPacket;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 5&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.net.DatagramSocket;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 6&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.net.InetSocketAddress;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 7&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;import&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; java.nio.charset.Charset;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt; 8&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt; 9&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt;/**&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;10&lt;/span&gt; &lt;span style=&quot;color: #008000;&quot;&gt; * &lt;/span&gt;&lt;span style=&quot;color: #808080;&quot;&gt;@author&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; TinyZ on 2015/6/10.
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;11&lt;/span&gt;  &lt;span style=&quot;color: #008000;&quot;&gt;*/&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;12&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; UdpTest {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;13&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;14&lt;/span&gt;     &lt;span style=&quot;color: #0000ff;&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #0000ff;&quot;&gt;void&lt;/span&gt; main(String[] args) &lt;span style=&quot;color: #0000ff;&quot;&gt;throws&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; IOException {
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;15&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;final&lt;/span&gt; String data = &quot;博主邮箱:zou90512@126.com&quot;&lt;span style=&quot;color: #000000;&quot;&gt;;
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;16&lt;/span&gt;         &lt;span style=&quot;color: #0000ff;&quot;&gt;byte&lt;/span&gt;[] bytes = data.getBytes(Charset.forName(&quot;UTF-8&quot;&lt;span style=&quot;color: #000000;&quot;&gt;));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;17&lt;/span&gt;         InetSocketAddress targetHost = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; InetSocketAddress(&quot;192.168.2.29&quot;, 9009&lt;span style=&quot;color: #000000;&quot;&gt;);
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;18&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;19&lt;/span&gt;         &lt;span style=&quot;color: #008000;&quot;&gt;//&lt;/span&gt;&lt;span style=&quot;color: #008000;&quot;&gt; 发送udp内容&lt;/span&gt;
-&lt;span style=&quot;color: #008080;&quot;&gt;20&lt;/span&gt;         DatagramSocket socket = &lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt;&lt;span style=&quot;color: #000000;&quot;&gt; DatagramSocket();
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;21&lt;/span&gt;         socket.send(&lt;span style=&quot;color: #0000ff;&quot;&gt;new&lt;/span&gt; DatagramPacket(bytes, 0&lt;span style=&quot;color: #000000;&quot;&gt;, bytes.length, targetHost));
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;22&lt;/span&gt; &lt;span style=&quot;color: #000000;&quot;&gt;    }
-&lt;/span&gt;&lt;span style=&quot;color: #008080;&quot;&gt;23&lt;/span&gt; }&lt;/pre&gt;
-    &lt;/div&gt;
-    &lt;span class=&quot;cnblogs_code_collapse&quot;&gt;View Code&lt;/span&gt;&lt;/div&gt;
-&lt;p&gt;　　..&lt;/p&gt;
-&lt;p&gt;　　ps.UDP协议最大特点就是效率高，速度快。用于某些场合可以极大改善系统的性能。&lt;/p&gt;
-&lt;p&gt;&amp;nbsp;&lt;/p&gt;</description>
-        <pubDate>2015-06-10</pubDate>
-        <link>https://tinyzzh.github.io//netty/2015/06/10/Netty4.x_7.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//netty/2015/06/10/Netty4.x_7.html</guid>
-        
-        <category>Netty4.x中文教程系列</category>
-        
-        
-        <category>Netty</category>
         
       </item>
     
