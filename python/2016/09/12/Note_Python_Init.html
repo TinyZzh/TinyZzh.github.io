@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <title>TinyZ's Blog</title>
+  <title>Python - 安装py环境</title>
   <meta name="description" content="专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。">
   <meta name="author" content="TinyZ">
   <meta name="HandheldFriendly" content="True">
@@ -43,7 +43,7 @@
   <meta name="theme-color" content="#ffffff">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="https://tinyzzh.github.io//">
+  <link rel="canonical" href="https://tinyzzh.github.io//python/2016/09/12/Note_Python_Init.html">
   <link rel="alternate" type="application/rss+xml" title="TinyZ's Blog" href="/feed.xml">
 
 </head>
@@ -143,77 +143,90 @@
 
     <div class="content-wrapper">
       <div class="content-wrapper__inner">
-        <div class="main-post-list">
-  <ol class="post-list">
-    
-      <li>
-        <h2 class="post-list__post-title post-title"><a href="/python/2016/09/12/Note_Python_Init.html" title="Python - 安装py环境">Python - 安装py环境</a></h2>
-        <p class="excerpt">昨天帮同事从MySQL数据库统计查运营数据。越查越感觉到深深的恶意（要查的数据太多了，而且由于数据量问题，每一个SQL执行时间都比较长）。
-于是下定决心折腾一下Python。下次可以用脚本去完成查询操作。避免人工手动查询的作死。
+        <article class="post-container post-container--single">
 
-&hellip;</p>
-        <div class="post-list__meta"><time datetime="2016-09-12" class="post-list__meta--date date">2016-09-12</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Python">Python</a> </span></div>
-        <hr class="post-list__divider">
-      </li>
-    
-      <li>
-        <h2 class="post-list__post-title post-title"><a href="/other/2016/07/10/Date_Note_16_07_10.html" title="日志 - 20160710">日志 - 20160710</a></h2>
-        <p class="excerpt">不知不觉的已经入职半个多月。目前工作内容以熟悉代码，维护老项目的版本的更新发布为主。公司氛围轻松，加班文化基本没有。
-每天熟悉代码，熟悉发布更新流程，熟悉内部的各种工具和平台，熟悉项目架构日子就过得很快。
-晚上闲来无事，最近折腾起了Okra-LOG日志。上周五晚上算是基础功能已经完成。
+  <header class="post-header">
+    <h1 class="post-title">Python - 安装py环境</h1>
+  </header>
 
-&hellip;</p>
-        <div class="post-list__meta"><time datetime="2016-07-10" class="post-list__meta--date date">2016-07-10</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#生活">生活</a> </span></div>
-        <hr class="post-list__divider">
-      </li>
-    
-      <li>
-        <h2 class="post-list__post-title post-title"><a href="/other/2016/06/12/Last_Night_On_ShangHai.html" title="在上海的最后一夜">在上海的最后一夜</a></h2>
-        <p class="excerpt">2014年，孤身一人从杭州来到上海，不知不觉在这座城市已然生活了2年多了。
-将要离开这座国际大都市，离开我奋斗2年的地方，离开过去的喜悦、辛酸以及成就。
-感觉有些失落。
+  <section class="post">
+    <p>昨天帮同事从MySQL数据库统计查运营数据。越查越感觉到深深的恶意（要查的数据太多了，而且由于数据量问题，每一个SQL执行时间都比较长）。
+于是下定决心折腾一下Python。下次可以用脚本去完成查询操作。避免人工手动查询的作死。</p>
 
-&hellip;</p>
-        <div class="post-list__meta"><time datetime="2016-06-12" class="post-list__meta--date date">2016-06-12</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#生活">生活</a> </span></div>
-        <hr class="post-list__divider">
-      </li>
-    
-      <li>
-        <h2 class="post-list__post-title post-title"><a href="/database/2016/06/04/Why_Use_HikariCP.html" title="为什么使用HikariCP连接池?">为什么使用HikariCP连接池?</a></h2>
-        <p class="excerpt">笔者最近在换工作的时，被面试官问数据库和连接池相关的一些问题。
-下面从面试这块开始
+<p>第一天下午开始学习Python，折腾下载和安装相关的环境。今天搞定了记录一下。</p>
 
-&hellip;</p>
-        <div class="post-list__meta"><time datetime="2016-06-04" class="post-list__meta--date date">2016-06-04</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#HikariCP">HikariCP</a> </span></div>
-        <hr class="post-list__divider">
-      </li>
-    
-      <li>
-        <h2 class="post-list__post-title post-title"><a href="/other/2016/06/04/Interview_Next.html" title="面试笔试题 - 续">面试笔试题 - 续</a></h2>
-        <p class="excerpt">回顾一下之前的笔试题。<a href="/other/2016/06/03/Interview.html">URL地址</a>。
+<p>笔者从事网络游戏服务器开发，业务基本不需要Python脚本，感觉linux环境需要一个脚本语言，快速帮助自己开发一些小工具。
+且一般CentOS 6.5和7.0操作系统打交道比较多。 CentOS系统默认自带Python环境是2.x版本。最终选择学习python 2.x 而不是3.x。</p>
 
-&hellip;</p>
-        <div class="post-list__meta"><time datetime="2016-06-04" class="post-list__meta--date date">2016-06-04</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#生活">生活</a> </span></div>
-        <hr class="post-list__divider">
-      </li>
-    
-  </ol>
+<p>开发环境：Windows 10
+编辑器：PyCharm 2016 社区开源版</p>
 
-  <hr class="post-list__divider ">
+<h2 id="python">安装Python环境</h2>
 
-  
-      <nav class="pagination" role="navigation">
-  
+<p>下载python 2.7.12<a href="https://www.python.org/downloads/">官网下载地址</a>版本。选择<a href="https://www.python.org/ftp/python/2.7.12/python-2.7.12.msi">“Windows x86 MSI installer”</a>
+下载安装对应版本。</p>
 
-  <span class="pagination__page-number">Page 1 of 4</span>
+<h2 id="mysqldb">安装MySQLdb</h2>
 
-  
-    <a rel="next" class="posts older btn small" href="/page2/">下一页</a>
-  
-</nav>
-  
+<p>初次入门就直接选择mysql相关的内容作为切入口(新手不推荐这么做)，MySQL安装越到很多坑。</p>
 
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#&gt; pip install MySQL-python</span>
+</code></pre>
 </div>
+
+<p>提示缺少VC对Python的编译环境。</p>
+
+<p>下载和安装VCForPython27<a href="http://www.microsoft.com/en-us/download/details.aspx?id=44266">下载地址</a></p>
+
+<p>继续pip安装。依旧报错</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#&gt; ... Cannot open include file: 'config-win.h': .....</span>
+</code></pre>
+</div>
+
+<p>一番Google之后改用easy_install。easy_install默认在{$_PYTHON_HOME}/Scripts/目录下和pip同级。</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#&gt; easy_install MySQL-python</span>
+</code></pre>
+</div>
+
+<p>在公司采用这种方式顺利安装MySQL扩展完成。</p>
+
+<p>晚上回家之后重复走了一遍安装配置流程。网络不好的情况，会出现time out问题。
+一番尝试，最后没办法修改为从<a href="https://pypi.python.org/pypi/MySQL-python">MySQL-python</a>
+下载对应的版本<a href="https://pypi.python.org/packages/27/06/596ae3afeefc0cda5840036c42920222cb8136c101ec0f453f2e36df12a0/MySQL-python-1.2.5.win32-py2.7.exe#md5=6f43f42516ea26e79cfb100af69a925e">MySQL-python-1.2.5.win32-py2.7.exe (md5)</a></p>
+
+<h2 id="section">测试示例</h2>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="c">#!/usr/bin/python</span>
+<span class="c"># -*- coding: UTF-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">MySQLdb</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s">'host'</span><span class="p">:</span> <span class="s">'127.0.0.1'</span><span class="p">,</span> <span class="s">'db'</span><span class="p">:</span> <span class="s">'test_db'</span><span class="p">,</span> <span class="s">'user'</span><span class="p">:</span> <span class="s">'root'</span><span class="p">,</span> <span class="s">'passwd'</span><span class="p">:</span> <span class="s">'123456'</span><span class="p">}</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">MySQLdb</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s">'host'</span><span class="p">],</span> <span class="n">db</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s">'db'</span><span class="p">],</span> <span class="n">user</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s">'user'</span><span class="p">],</span> <span class="n">passwd</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s">'passwd'</span><span class="p">])</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">set_character_set</span><span class="p">(</span><span class="s">'utf8'</span><span class="p">)</span>
+
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">"show databases;"</span><span class="p">)</span>
+
+    <span class="n">cur</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="k">except</span> <span class="n">MySQLdb</span><span class="o">.</span><span class="n">Error</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">print</span> <span class="s">"Mysql Error </span><span class="si">%</span><span class="s">d: </span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="k">print</span> <span class="s">"endl"</span>
+</code></pre>
+</div>
+
+<h2 id="section-1">总结</h2>
+
+<p>至此, 完整的python环境就安装好了。enjoy it !</p>
+
+  </section>
+
+</article>
       </div>
 
       <footer class="footer">

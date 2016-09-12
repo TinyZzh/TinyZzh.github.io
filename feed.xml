@@ -5,9 +5,96 @@
     <description>专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。</description>
     <link>https://tinyzzh.github.io//</link>
     <atom:link href="https://tinyzzh.github.io//feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>2016-07-10</pubDate>
-    <lastBuildDate>2016-07-10</lastBuildDate>
+    <pubDate>2016-09-12</pubDate>
+    <lastBuildDate>2016-09-12</lastBuildDate>
     <generator>Jekyll v3.1.6</generator>
+    
+      <item>
+        <title>Python - 安装py环境</title>
+        <description>&lt;p&gt;昨天帮同事从MySQL数据库统计查运营数据。越查越感觉到深深的恶意（要查的数据太多了，而且由于数据量问题，每一个SQL执行时间都比较长）。
+于是下定决心折腾一下Python。下次可以用脚本去完成查询操作。避免人工手动查询的作死。&lt;/p&gt;
+
+&lt;p&gt;第一天下午开始学习Python，折腾下载和安装相关的环境。今天搞定了记录一下。&lt;/p&gt;
+
+&lt;p&gt;笔者从事网络游戏服务器开发，业务基本不需要Python脚本，感觉linux环境需要一个脚本语言，快速帮助自己开发一些小工具。
+且一般CentOS 6.5和7.0操作系统打交道比较多。 CentOS系统默认自带Python环境是2.x版本。最终选择学习python 2.x 而不是3.x。&lt;/p&gt;
+
+&lt;p&gt;开发环境：Windows 10
+编辑器：PyCharm 2016 社区开源版&lt;/p&gt;
+
+&lt;h2 id=&quot;python&quot;&gt;安装Python环境&lt;/h2&gt;
+
+&lt;p&gt;下载python 2.7.12&lt;a href=&quot;https://www.python.org/downloads/&quot;&gt;官网下载地址&lt;/a&gt;版本。选择&lt;a href=&quot;https://www.python.org/ftp/python/2.7.12/python-2.7.12.msi&quot;&gt;“Windows x86 MSI installer”&lt;/a&gt;
+下载安装对应版本。&lt;/p&gt;
+
+&lt;h2 id=&quot;mysqldb&quot;&gt;安装MySQLdb&lt;/h2&gt;
+
+&lt;p&gt;初次入门就直接选择mysql相关的内容作为切入口(新手不推荐这么做)，MySQL安装越到很多坑。&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#&amp;gt; pip install MySQL-python&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;提示缺少VC对Python的编译环境。&lt;/p&gt;
+
+&lt;p&gt;下载和安装VCForPython27&lt;a href=&quot;http://www.microsoft.com/en-us/download/details.aspx?id=44266&quot;&gt;下载地址&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;继续pip安装。依旧报错&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#&amp;gt; ... Cannot open include file: &#39;config-win.h&#39;: .....&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;一番Google之后改用easy_install。easy_install默认在{$_PYTHON_HOME}/Scripts/目录下和pip同级。&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#&amp;gt; easy_install MySQL-python&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;在公司采用这种方式顺利安装MySQL扩展完成。&lt;/p&gt;
+
+&lt;p&gt;晚上回家之后重复走了一遍安装配置流程。网络不好的情况，会出现time out问题。
+一番尝试，最后没办法修改为从&lt;a href=&quot;https://pypi.python.org/pypi/MySQL-python&quot;&gt;MySQL-python&lt;/a&gt;
+下载对应的版本&lt;a href=&quot;https://pypi.python.org/packages/27/06/596ae3afeefc0cda5840036c42920222cb8136c101ec0f453f2e36df12a0/MySQL-python-1.2.5.win32-py2.7.exe#md5=6f43f42516ea26e79cfb100af69a925e&quot;&gt;MySQL-python-1.2.5.win32-py2.7.exe (md5)&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;测试示例&lt;/h2&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/python&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# -*- coding: UTF-8 -*-&lt;/span&gt;
+
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;MySQLdb&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;host&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;127.0.0.1&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;db&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;test_db&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;user&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;root&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;passwd&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;123456&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MySQLdb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;host&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;db&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;user&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passwd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;passwd&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_character_set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;utf8&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;cur&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cur&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;show databases;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;cur&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;except&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MySQLdb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Mysql Error &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;d: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;endl&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;至此, 完整的python环境就安装好了。enjoy it !&lt;/p&gt;
+</description>
+        <pubDate>2016-09-12</pubDate>
+        <link>https://tinyzzh.github.io//python/2016/09/12/Note_Python_Init.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//python/2016/09/12/Note_Python_Init.html</guid>
+        
+        <category>Python</category>
+        
+        
+        <category>Python</category>
+        
+      </item>
     
       <item>
         <title>日志 - 20160710</title>
@@ -921,39 +1008,6 @@ O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
         <pubDate>2016-04-18</pubDate>
         <link>https://tinyzzh.github.io//okra/2016/04/18/Okra_Example_TCP.html</link>
         <guid isPermaLink="true">https://tinyzzh.github.io//okra/2016/04/18/Okra_Example_TCP.html</guid>
-        
-        <category>Okra框架</category>
-        
-        
-        <category>Okra</category>
-        
-      </item>
-    
-      <item>
-        <title>Okra框架(一) 简介</title>
-        <description>&lt;p&gt;Okra是一个构建在Netty框架和Disruptor框架之上轻量级JAVA服务器框架。
-使用Netty实现高性能，可灵活扩展的网络通信，使用Disruptor实现高吞吐量，低延迟的并发。
-Okra主要依赖如下：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;netty.io&quot;&gt;Netty 4.x 以上版本&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://lmax-exchange.github.io/disruptor/&quot;&gt;Disruptor 3.3.x 以上版本&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;JDK 1.8 above&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section&quot;&gt;相关资料:&lt;/h3&gt;
-&lt;p&gt;&lt;a href=&quot;https://github.com/ogcs/Okra/wiki&quot;&gt;GitHub Wiki&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;okragithub&quot;&gt;Okra开源在GitHub&lt;/h3&gt;
-&lt;p&gt;开源地址 : &lt;a href=&quot;https://github.com/ogcs/Okra/&quot;&gt;https://github.com/ogcs/Okra/&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;okra&quot;&gt;为什么叫Okra?&lt;/h3&gt;
-&lt;p&gt;Okra中文意思是秋葵。作者一直很想试试，但一直都没机会吃。所以就这么称呼，已提醒自己啥时候有机会要尝试一下。&lt;/p&gt;
-
-</description>
-        <pubDate>2016-04-18</pubDate>
-        <link>https://tinyzzh.github.io//okra/2016/04/18/Okra_Framework_Intruduce.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//okra/2016/04/18/Okra_Framework_Intruduce.html</guid>
         
         <category>Okra框架</category>
         
