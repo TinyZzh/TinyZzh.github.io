@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <title>TinyZ's Blog</title>
+  <title>并发和并行的区别</title>
   <meta name="description" content="专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。">
   <meta name="author" content="TinyZ">
   <meta name="HandheldFriendly" content="True">
@@ -43,7 +43,7 @@
   <meta name="theme-color" content="#ffffff">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="https://tinyzzh.github.io//page4/">
+  <link rel="canonical" href="https://tinyzzh.github.io//code/2016/09/16/Diff_Between_Concurrency_And__Parallesim.html">
   <link rel="alternate" type="application/rss+xml" title="TinyZ's Blog" href="/feed.xml">
 
 </head>
@@ -143,81 +143,24 @@
 
     <div class="content-wrapper">
       <div class="content-wrapper__inner">
-        <div class="main-post-list">
-  <ol class="post-list">
-    
-      <li>
-        <h2 class="post-list__post-title post-title"><a href="/netty/2015/06/10/Netty4.x_7.html" title="Netty4.x中文教程系列(七) UDP协议">Netty4.x中文教程系列(七) UDP协议</a></h2>
-        <p class="excerpt">　　将近快一年时间没有更新Netty的博客。一方面原因是因为项目进度的问题。另外一方面是博主有一段时间去熟悉Unity3D引擎。
-　　本章节主要记录博主自己Netty的UDP协议使用。
+        <article class="post-container post-container--single">
 
-&hellip;</p>
-        <div class="post-list__meta"><time datetime="2015-06-10" class="post-list__meta--date date">2015-06-10</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
-        <hr class="post-list__divider">
-      </li>
-    
-      <li>
-        <h2 class="post-list__post-title post-title"><a href="/netty/2014/08/12/Netty4.x_6.html" title="Netty4.x中文教程系列(六) 从头开始Bootstrap">Netty4.x中文教程系列(六) 从头开始Bootstrap</a></h2>
-        <p class="excerpt">&nbsp;&nbsp;&nbsp;&nbsp;其实自从中文教程系列（五）一直不知道自己到底想些什么。加上忙着工作上出现了一些问题。本来想就这么放弃维护了。没想到有朋友和我说百度搜索推荐了我的文章。瞬间有点小激动啊。决定自己要把这个教程系列完善下去。这里诚挚的想支持我的盆友们道歉。真的是让你们失望了。我居然有想放弃的这种丧心病狂的念头。以后绝对不会了。
-&nbsp;&nbsp;&nbsp;&nbsp;其实伴随着对Netty的逐步深入学习。感觉自己对netty的了解仍然有所欠缺。加上笔者语文课是美术老师教的。所以。。说多了都是泪啊。~~o(&gt;_&lt;)o ~~
-&nbsp;
+  <header class="post-header">
+    <h1 class="post-title">并发和并行的区别</h1>
+  </header>
 
-&hellip;</p>
-        <div class="post-list__meta"><time datetime="2014-08-12" class="post-list__meta--date date">2014-08-12</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
-        <hr class="post-list__divider">
-      </li>
-    
-      <li>
-        <h2 class="post-list__post-title post-title"><a href="/netty/2014/04/09/Netty4.x_5.html" title="Netty4.x中文教程系列(五) 编解码器Codec">Netty4.x中文教程系列(五) 编解码器Codec</a></h2>
-        <p class="excerpt">&nbsp;&nbsp;&nbsp; 上一篇文章详细解释了ChannelHandler的相关构架设计，版本和设计逻辑变更等等。
-&nbsp;&nbsp;&nbsp; 这篇文章主要在于讲述Handler里面的Codec，也就是相关的编解码器。原本想把编解码器写在上一篇文章里面的。后来想想Netty里面的编解码器太多了。想要一次写完比较困难。于是重新开了一篇文章来专门写这个。
+  <section class="post">
+    <p>一张图解释并发(Concurrency)和并行(Parallesim)的区别:</p>
 
-&hellip;</p>
-        <div class="post-list__meta"><time datetime="2014-04-09" class="post-list__meta--date date">2014-04-09</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
-        <hr class="post-list__divider">
-      </li>
-    
-      <li>
-        <h2 class="post-list__post-title post-title"><a href="/netty/2014/01/15/Netty4.x_4.html" title="Netty4.x中文教程系列(四) ChannelHandler">Netty4.x中文教程系列(四) ChannelHandler</a></h2>
-        <p class="excerpt">&nbsp;&nbsp;&nbsp; 上一篇文章详细解释了Hello World示例的代码。里面涉及了一些Netty框架的基础。
-&nbsp;&nbsp;&nbsp; 这篇文章用以解释ChannelHandler。笔者本身在以前写过文章<a href="http://www.cnblogs.com/zou90512/p/3421478.html">ChannelHandler改动及影响</a> 和 <a href="http://www.cnblogs.com/zou90512/p/3407192.html">ChannelInitializer 学习</a> 对Netty的.ChannelHandler做过阐述。里面主要描述了4.x版本相对于3.x版本的改动以及影响。并引用了一些文章。为大家详细的解释了ChannelHandler里面涉及架构。
+<p><img src="/images/2016-09/img_2016-09-16-1.jpg" alt="Alt text" /></p>
 
-&hellip;</p>
-        <div class="post-list__meta"><time datetime="2014-01-15" class="post-list__meta--date date">2014-01-15</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
-        <hr class="post-list__divider">
-      </li>
-    
-      <li>
-        <h2 class="post-list__post-title post-title"><a href="/netty/2014/01/06/Netty4.x_3.html" title="Netty4.x中文教程系列(三) Hello World ！详解">Netty4.x中文教程系列(三) Hello World ！详解</a></h2>
-        <p class="excerpt">&nbsp;&nbsp;&nbsp; 上一篇文章，笔者提供了一个Hello World 的Netty示例。
-&nbsp;&nbsp;&nbsp; 时间过去了这么久，准备解释一下示例代码。
+<p>并发:单核处理多个任务.
+并行:多核同时处理多个任务.</p>
 
-&hellip;</p>
-        <div class="post-list__meta"><time datetime="2014-01-06" class="post-list__meta--date date">2014-01-06</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
-        <hr class="post-list__divider">
-      </li>
-    
-  </ol>
 
-  <hr class="post-list__divider ">
+  </section>
 
-  
-      <nav class="pagination" role="navigation">
-  
-    
-      <a rel="prev" class="posts newer btn small" href="/page3/">上一页</a>
-    
-  
-
-  <span class="pagination__page-number">Page 4 of 5</span>
-
-  
-    <a rel="next" class="posts older btn small" href="/page5/">下一页</a>
-  
-</nav>
-  
-
-</div>
+</article>
       </div>
 
       <footer class="footer">
