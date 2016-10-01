@@ -197,14 +197,15 @@
 
 <p>对于InfluxDB相关的参数配置:</p>
 
-<pre><code class="language-INI">[influxdb]
-host=localhost
-port=8086
-user=root
-password=root
-db=glances  # InfluxDB中的数据库 - 启动Glances前要创建对应的数据库
-tags=foo:bar,spam:eggs
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="p">[</span><span class="nx">influxdb</span><span class="p">]</span>
+<span class="nx">host</span><span class="o">=</span><span class="nx">localhost</span>
+<span class="nx">port</span><span class="o">=</span><span class="mi">8086</span>
+<span class="nx">user</span><span class="o">=</span><span class="nx">root</span>
+<span class="nx">password</span><span class="o">=</span><span class="nx">root</span>
+<span class="nx">db</span><span class="o">=</span><span class="nx">glances</span>  <span class="err">#</span> <span class="nx">InfluxDB</span><span class="err">中的数据库</span> <span class="o">-</span> <span class="err">启动</span><span class="nx">Glances</span><span class="err">前要创建对应的数据库</span>
+<span class="nx">tags</span><span class="o">=</span><span class="nx">foo</span><span class="err">:</span><span class="nx">bar</span><span class="p">,</span><span class="nx">spam</span><span class="err">:</span><span class="nx">eggs</span>
 </code></pre>
+</div>
 
 <p>启动Glances：</p>
 
