@@ -18,51 +18,6 @@
   
     
     <url>
-      <loc>https://tinyzzh.github.io/python/2016/09/25/Note_Python_4.html</loc>
-      
-        <lastmod>2016-09-25T15:36:00+00:00</lastmod>
-      
-      
-        <changefreq>monthly</changefreq>
-      
-      
-        <priority>0.5</priority>
-      
-    </url>
-    
-  
-    
-    <url>
-      <loc>https://tinyzzh.github.io/python/2016/09/25/Note_Python_3.html</loc>
-      
-        <lastmod>2016-09-25T15:36:00+00:00</lastmod>
-      
-      
-        <changefreq>monthly</changefreq>
-      
-      
-        <priority>0.5</priority>
-      
-    </url>
-    
-  
-    
-    <url>
-      <loc>https://tinyzzh.github.io/code/2016/09/17/Diff_Between_Concurrency_And__Parallesim.html</loc>
-      
-        <lastmod>2016-09-17T14:55:00+00:00</lastmod>
-      
-      
-        <changefreq>monthly</changefreq>
-      
-      
-        <priority>0.5</priority>
-      
-    </url>
-    
-  
-    
-    <url>
       <loc>https://tinyzzh.github.io/code/2016/09/16/Diff_Between_Concurrency_And__Parallesim.html</loc>
       
         <lastmod>2016-09-16T14:55:00+00:00</lastmod>
@@ -411,7 +366,7 @@
     <url>
       <loc>https://tinyzzh.github.io/archives/</loc>
       
-        <lastmod>2016-10-01T17:05:24+00:00</lastmod>
+        <lastmod>2016-10-01T17:33:04+00:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -426,7 +381,7 @@
     <url>
       <loc>https://tinyzzh.github.io/categories/</loc>
       
-        <lastmod>2016-10-01T17:05:24+00:00</lastmod>
+        <lastmod>2016-10-01T17:33:04+00:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -441,7 +396,7 @@
     <url>
       <loc>https://tinyzzh.github.io/feed.xml</loc>
       
-        <lastmod>2016-10-01T17:05:24+00:00</lastmod>
+        <lastmod>2016-10-01T17:33:04+00:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -456,7 +411,7 @@
     <url>
       <loc>https://tinyzzh.github.io/</loc>
       
-        <lastmod>2016-10-01T17:05:24+00:00</lastmod>
+        <lastmod>2016-10-01T17:33:04+00:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -471,7 +426,7 @@
     <url>
       <loc>https://tinyzzh.github.io/js/main.js</loc>
       
-        <lastmod>2016-10-01T17:05:24+00:00</lastmod>
+        <lastmod>2016-10-01T17:33:04+00:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -488,7 +443,7 @@
     <url>
       <loc>https://tinyzzh.github.io/tags/</loc>
       
-        <lastmod>2016-10-01T17:05:24+00:00</lastmod>
+        <lastmod>2016-10-01T17:33:04+00:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -503,67 +458,7 @@
     <url>
       <loc>https://tinyzzh.github.io/page2/</loc>
       
-        <lastmod>2016-10-01T17:05:24+00:00</lastmod>
-      
-      
-        <changefreq>monthly</changefreq>
-      
-      
-        <priority>0.3</priority>
-      
-    </url>
-    
-  
-    
-    <url>
-      <loc>https://tinyzzh.github.io/page3/</loc>
-      
-        <lastmod>2016-10-01T17:05:24+00:00</lastmod>
-      
-      
-        <changefreq>monthly</changefreq>
-      
-      
-        <priority>0.3</priority>
-      
-    </url>
-    
-  
-    
-    <url>
-      <loc>https://tinyzzh.github.io/page4/</loc>
-      
-        <lastmod>2016-10-01T17:05:24+00:00</lastmod>
-      
-      
-        <changefreq>monthly</changefreq>
-      
-      
-        <priority>0.3</priority>
-      
-    </url>
-    
-  
-    
-    <url>
-      <loc>https://tinyzzh.github.io/page5/</loc>
-      
-        <lastmod>2016-10-01T17:05:24+00:00</lastmod>
-      
-      
-        <changefreq>monthly</changefreq>
-      
-      
-        <priority>0.3</priority>
-      
-    </url>
-    
-  
-    
-    <url>
-      <loc>https://tinyzzh.github.io/page6/</loc>
-      
-        <lastmod>2016-10-01T17:05:24+00:00</lastmod>
+        <lastmod>2016-10-01T17:33:04+00:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
