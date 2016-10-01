@@ -165,22 +165,22 @@
     <span class="kd">protected</span> <span class="n">Session</span> <span class="n">session</span><span class="o">;</span>
     <span class="kd">protected</span> <span class="n">Object</span> <span class="n">request</span><span class="o">;</span>
 
-    <span class="kd">public</span> <span class="n">ObjectExecutor</span><span class="o">(</span><span class="n">Session</span> <span class="n">session</span><span class="o">,</span> <span class="n">Object</span> <span class="n">request</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">ObjectExecutor</span><span class="o">(</span><span class="n">Session</span> <span class="n">session</span><span class="o">,</span> <span class="n">Object</span> <span class="n">request</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">this</span><span class="o">.</span><span class="na">session</span> <span class="o">=</span> <span class="n">session</span><span class="o">;</span>
         <span class="k">this</span><span class="o">.</span><span class="na">request</span> <span class="o">=</span> <span class="n">request</span><span class="o">;</span>
     <span class="o">}</span>
 
     <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="n">onExecute</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onExecute</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">request</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">throw</span> <span class="k">new</span> <span class="n">NullPointerException</span><span class="o">(</span><span class="s">"request"</span><span class="o">);</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">NullPointerException</span><span class="o">(</span><span class="s">"request"</span><span class="o">);</span>
         <span class="o">}</span>
         <span class="c1">// TODO: Just send message back, do some logic on real</span>
         <span class="n">session</span><span class="o">.</span><span class="na">writeAndFlush</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">request</span><span class="o">));</span>
     <span class="o">}</span>
 
     <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="n">release</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">release</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">this</span><span class="o">.</span><span class="na">session</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
         <span class="k">this</span><span class="o">.</span><span class="na">request</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
     <span class="o">}</span>
@@ -192,8 +192,8 @@
 
 <div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ExampleSocketHandler</span> <span class="kd">extends</span> <span class="n">DisruptorAdapterBy41xHandler</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="o">{</span>
     <span class="nd">@Override</span>
-    <span class="kd">protected</span> <span class="n">Executor</span> <span class="n">newExecutor</span><span class="o">(</span><span class="n">Session</span> <span class="n">session</span><span class="o">,</span> <span class="n">Object</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="k">new</span> <span class="n">ObjectExecutor</span><span class="o">(</span><span class="n">session</span><span class="o">,</span> <span class="n">msg</span><span class="o">);</span>
+    <span class="kd">protected</span> <span class="n">Executor</span> <span class="nf">newExecutor</span><span class="o">(</span><span class="n">Session</span> <span class="n">session</span><span class="o">,</span> <span class="n">Object</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">ObjectExecutor</span><span class="o">(</span><span class="n">session</span><span class="o">,</span> <span class="n">msg</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre>
@@ -205,17 +205,17 @@
 
 <div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TcpServer</span> <span class="kd">extends</span> <span class="n">TcpProtocolServer</span> <span class="o">{</span>
 
-    <span class="kd">public</span> <span class="n">TcpServer</span><span class="o">(</span><span class="kt">int</span> <span class="n">port</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">TcpServer</span><span class="o">(</span><span class="kt">int</span> <span class="n">port</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">setPort</span><span class="o">(</span><span class="n">port</span><span class="o">);</span>
     <span class="o">}</span>
 
     <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">ChannelHandler</span> <span class="n">FRAME_PREPENDER</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LengthFieldPrepender</span><span class="o">(</span><span class="mi">4</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
 
     <span class="nd">@Override</span>
-    <span class="kd">protected</span> <span class="n">ChannelHandler</span> <span class="n">newChannelInitializer</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">protected</span> <span class="n">ChannelHandler</span> <span class="nf">newChannelInitializer</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">return</span> <span class="k">new</span> <span class="n">ChannelInitializer</span><span class="o">&lt;</span><span class="n">NioSocketChannel</span><span class="o">&gt;()</span> <span class="o">{</span>
             <span class="nd">@Override</span>
-            <span class="kd">protected</span> <span class="kt">void</span> <span class="n">initChannel</span><span class="o">(</span><span class="n">NioSocketChannel</span> <span class="n">ch</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+            <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">initChannel</span><span class="o">(</span><span class="n">NioSocketChannel</span> <span class="n">ch</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
                 <span class="n">ChannelPipeline</span> <span class="n">cp</span> <span class="o">=</span> <span class="n">ch</span><span class="o">.</span><span class="na">pipeline</span><span class="o">();</span>
                 <span class="n">cp</span><span class="o">.</span><span class="na">addLast</span><span class="o">(</span><span class="s">"frame"</span><span class="o">,</span> <span class="k">new</span> <span class="n">LengthFieldBasedFrameDecoder</span><span class="o">(</span><span class="n">Integer</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">2</span><span class="o">));</span>
                 <span class="n">cp</span><span class="o">.</span><span class="na">addLast</span><span class="o">(</span><span class="s">"prepender"</span><span class="o">,</span> <span class="n">FRAME_PREPENDER</span><span class="o">);</span>

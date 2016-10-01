@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <title>TinyZ's Blog</title>
+  <title>Glances监控服务器状态</title>
   <meta name="description" content="专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。">
   <meta name="author" content="TinyZ">
   <meta name="HandheldFriendly" content="True">
@@ -43,7 +43,7 @@
   <meta name="theme-color" content="#ffffff">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="https://tinyzzh.github.io//page5/">
+  <link rel="canonical" href="https://tinyzzh.github.io//centos/python/2016/10/01/Glances_Monitor_Centos_InfluxDB_Grafana.html">
   <link rel="alternate" type="application/rss+xml" title="TinyZ's Blog" href="/feed.xml">
 
 </head>
@@ -143,81 +143,97 @@
 
     <div class="content-wrapper">
       <div class="content-wrapper__inner">
-        <div class="main-post-list">
-  <ol class="post-list">
-    
-      <li>
-        <h2 class="post-list__post-title post-title"><a href="/netty/2014/08/12/Netty4.x_6.html" title="Netty4.x中文教程系列(六) 从头开始Bootstrap">Netty4.x中文教程系列(六) 从头开始Bootstrap</a></h2>
-        <p class="excerpt">&nbsp;&nbsp;&nbsp;&nbsp;其实自从中文教程系列（五）一直不知道自己到底想些什么。加上忙着工作上出现了一些问题。本来想就这么放弃维护了。没想到有朋友和我说百度搜索推荐了我的文章。瞬间有点小激动啊。决定自己要把这个教程系列完善下去。这里诚挚的想支持我的盆友们道歉。真的是让你们失望了。我居然有想放弃的这种丧心病狂的念头。以后绝对不会了。
-&nbsp;&nbsp;&nbsp;&nbsp;其实伴随着对Netty的逐步深入学习。感觉自己对netty的了解仍然有所欠缺。加上笔者语文课是美术老师教的。所以。。说多了都是泪啊。~~o(&gt;_&lt;)o ~~
-&nbsp;
+        <article class="post-container post-container--single">
 
-&hellip;</p>
-        <div class="post-list__meta"><time datetime="2014-08-12" class="post-list__meta--date date">2014-08-12</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
-        <hr class="post-list__divider">
-      </li>
-    
-      <li>
-        <h2 class="post-list__post-title post-title"><a href="/netty/2014/04/09/Netty4.x_5.html" title="Netty4.x中文教程系列(五) 编解码器Codec">Netty4.x中文教程系列(五) 编解码器Codec</a></h2>
-        <p class="excerpt">&nbsp;&nbsp;&nbsp; 上一篇文章详细解释了ChannelHandler的相关构架设计，版本和设计逻辑变更等等。
-&nbsp;&nbsp;&nbsp; 这篇文章主要在于讲述Handler里面的Codec，也就是相关的编解码器。原本想把编解码器写在上一篇文章里面的。后来想想Netty里面的编解码器太多了。想要一次写完比较困难。于是重新开了一篇文章来专门写这个。
+  <header class="post-header">
+    <h1 class="post-title">Glances监控服务器状态</h1>
+  </header>
 
-&hellip;</p>
-        <div class="post-list__meta"><time datetime="2014-04-09" class="post-list__meta--date date">2014-04-09</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
-        <hr class="post-list__divider">
-      </li>
-    
-      <li>
-        <h2 class="post-list__post-title post-title"><a href="/netty/2014/01/15/Netty4.x_4.html" title="Netty4.x中文教程系列(四) ChannelHandler">Netty4.x中文教程系列(四) ChannelHandler</a></h2>
-        <p class="excerpt">&nbsp;&nbsp;&nbsp; 上一篇文章详细解释了Hello World示例的代码。里面涉及了一些Netty框架的基础。
-&nbsp;&nbsp;&nbsp; 这篇文章用以解释ChannelHandler。笔者本身在以前写过文章<a href="http://www.cnblogs.com/zou90512/p/3421478.html">ChannelHandler改动及影响</a> 和 <a href="http://www.cnblogs.com/zou90512/p/3407192.html">ChannelInitializer 学习</a> 对Netty的.ChannelHandler做过阐述。里面主要描述了4.x版本相对于3.x版本的改动以及影响。并引用了一些文章。为大家详细的解释了ChannelHandler里面涉及架构。
+  <section class="post">
+    <p>Glances是Python编写的基于curses的跨平台系统监控工具。</p>
 
-&hellip;</p>
-        <div class="post-list__meta"><time datetime="2014-01-15" class="post-list__meta--date date">2014-01-15</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
-        <hr class="post-list__divider">
-      </li>
-    
-      <li>
-        <h2 class="post-list__post-title post-title"><a href="/netty/2014/01/06/Netty4.x_3.html" title="Netty4.x中文教程系列(三) Hello World ！详解">Netty4.x中文教程系列(三) Hello World ！详解</a></h2>
-        <p class="excerpt">&nbsp;&nbsp;&nbsp; 上一篇文章，笔者提供了一个Hello World 的Netty示例。
-&nbsp;&nbsp;&nbsp; 时间过去了这么久，准备解释一下示例代码。
+<p>最近leader引入了InfluxDB + Grafana做服务状态监控，主要监控用户在线，队列IO，线程状态等服务端服务有关性能指标和参数。
+笔者在服务监控这块接触的并不是特别多。所以打算花点业余时间研究记录学习一下。</p>
 
-&hellip;</p>
-        <div class="post-list__meta"><time datetime="2014-01-06" class="post-list__meta--date date">2014-01-06</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
-        <hr class="post-list__divider">
-      </li>
-    
-      <li>
-        <h2 class="post-list__post-title post-title"><a href="/netty/2013/12/26/Netty4.x_2.html" title="Netty4.x中文教程系列(二) Hello World !">Netty4.x中文教程系列(二) Hello World !</a></h2>
-        <p class="excerpt">　　在中国程序界。我们都是学着Hello World !慢慢成长起来的。逐渐从一无所知到熟悉精通的。
-　　第二章就从Hello World 开始讲述Netty的中文教程。
+<p>在这个过程中想到是否可以利用Python脚本解析(top, iostat)等工具的监控数据，汇总并上报信息到InfluxDB，在Grafana显示，
+实现对服务器机器状态的监控。</p>
 
-&hellip;</p>
-        <div class="post-list__meta"><time datetime="2013-12-26" class="post-list__meta--date date">2013-12-26</time> &#8226; <span class="post-meta__tags">on <a href="/tags/#Netty4.x中文教程系列">Netty4.x中文教程系列</a> </span></div>
-        <hr class="post-list__divider">
-      </li>
-    
-  </ol>
+<p>万事先Google，看看是否有前辈已经造轮子，避免重复制造垃圾轮子。o(∩_∩)o 哈哈</p>
 
-  <hr class="post-list__divider ">
+<p>Google发现了Glances项目，使用Python开发并且直接支持InfluxDB+Grafana输出显示。</p>
 
-  
-      <nav class="pagination" role="navigation">
-  
-    
-      <a rel="prev" class="posts newer btn small" href="/page4/">上一页</a>
-    
-  
+<h2 id="glances">从Glances安装开始</h2>
 
-  <span class="pagination__page-number">Page 5 of 6</span>
+<p>Glances提供多系统的多种安装途径。本文只记录笔者安装流程和遇到的问题。</p>
 
-  
-    <a rel="next" class="posts older btn small" href="/page6/">下一页</a>
-  
-</nav>
-  
+<p>依赖：</p>
 
+<ol>
+  <li><code class="highlighter-rouge">python 2.7,&gt;=3.3</code></li>
+  <li><code class="highlighter-rouge">psutil&gt;=2.0.0</code></li>
+  <li><code class="highlighter-rouge">setuptools</code></li>
+</ol>
+
+<p>可选依赖:</p>
+
+<p><img src="/images/2016-10/img_2016-10-01-1.png" alt="Alt text" /></p>
+
+<p>有兴趣可以参见官网<a href="https://github.com/nicolargo/glances">说明文档</a></p>
+
+<p>环境：</p>
+
+<ol>
+  <li>操作系统 : CentOS 7-x64</li>
+  <li>Python版本 : 2.7.8(系统自带)</li>
+</ol>
+
+<p>值得一提的是，安装过程中<strong>庆幸也是不幸</strong>的事情是 : 安装过程笔者没遇到啥问题。</p>
+
+<p>我只能攒一句Glances官方提供的自动安装初始化脚本 <a href="https://bit.ly/glances">下载地址</a>支持的太好了。</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">&gt; </span>curl -L https://bit.ly/glances | /bin/bash
+</code></pre>
 </div>
+
+<p>对于InfluxDB相关的参数配置:</p>
+
+<pre><code class="language-INI">[influxdb]
+host=localhost
+port=8086
+user=root
+password=root
+db=glances  # InfluxDB中的数据库 - 启动Glances前要创建对应的数据库
+tags=foo:bar,spam:eggs
+</code></pre>
+
+<p>启动Glances：</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">&gt; </span>glances --export-influxdb
+</code></pre>
+</div>
+
+<h2 id="grafana">配置Grafana数据源</h2>
+
+<p>同样庆幸也是不幸的是：Glances提供了便捷的模板配置。官网模板配置:<a href="https://github.com/nicolargo/glances/blob/master/conf/glances-grafana.json">下载地址</a></p>
+
+<p>在Grafana中选择”Import” -&gt; glances-grafana.json文件</p>
+
+<p><img src="/images/2016-10/img_2016-10-01-2.png" alt="Alt text" /></p>
+
+<p><strong>Grafana导入的*.json文件中的datasource配置必须对应InfluxDB中的db，否则无法找到数据源</strong></p>
+
+<h2 id="section">总结</h2>
+
+<p>至此，整个环境就安装好了。看一下效果：</p>
+
+<p><img src="/images/2016-10/img_2016-10-01-3.png" alt="Alt text" /></p>
+
+<p>Glances监控包括CPU，IO，网络，磁盘等等。Enjoy it!!!</p>
+
+
+  </section>
+
+</article>
       </div>
 
       <footer class="footer">
