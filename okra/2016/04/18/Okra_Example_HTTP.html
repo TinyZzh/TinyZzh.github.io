@@ -167,15 +167,15 @@
     <span class="kd">protected</span> <span class="n">Session</span> <span class="n">session</span><span class="o">;</span>
     <span class="kd">protected</span> <span class="n">FullHttpRequest</span> <span class="n">request</span><span class="o">;</span>
 
-    <span class="kd">public</span> <span class="n">HttpRequestExecutor</span><span class="o">(</span><span class="n">Session</span> <span class="n">session</span><span class="o">,</span> <span class="n">FullHttpRequest</span> <span class="n">request</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">HttpRequestExecutor</span><span class="o">(</span><span class="n">Session</span> <span class="n">session</span><span class="o">,</span> <span class="n">FullHttpRequest</span> <span class="n">request</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">this</span><span class="o">.</span><span class="na">session</span> <span class="o">=</span> <span class="n">session</span><span class="o">;</span>
         <span class="k">this</span><span class="o">.</span><span class="na">request</span> <span class="o">=</span> <span class="n">request</span><span class="o">;</span>
     <span class="o">}</span>
 
     <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="n">onExecute</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onExecute</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">request</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">throw</span> <span class="k">new</span> <span class="n">NullPointerException</span><span class="o">(</span><span class="s">"request"</span><span class="o">);</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">NullPointerException</span><span class="o">(</span><span class="s">"request"</span><span class="o">);</span>
         <span class="o">}</span>
         <span class="k">try</span> <span class="o">{</span>
             <span class="n">QueryStringDecoder</span> <span class="n">decoder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">QueryStringDecoder</span><span class="o">(</span><span class="n">request</span><span class="o">.</span><span class="na">getUri</span><span class="o">());</span>
@@ -193,12 +193,12 @@
         <span class="o">}</span>
     <span class="o">}</span>
 
-    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">simple</span><span class="o">(</span><span class="n">Channel</span> <span class="n">channel</span><span class="o">,</span> <span class="n">HttpResponseStatus</span> <span class="n">status</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">simple</span><span class="o">(</span><span class="n">Channel</span> <span class="n">channel</span><span class="o">,</span> <span class="n">HttpResponseStatus</span> <span class="n">status</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">ChannelFuture</span> <span class="n">channelFuture</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="na">writeAndFlush</span><span class="o">(</span><span class="k">new</span> <span class="n">DefaultFullHttpResponse</span><span class="o">(</span><span class="n">HttpVersion</span><span class="o">.</span><span class="na">HTTP_1_1</span><span class="o">,</span> <span class="n">status</span><span class="o">));</span>
         <span class="n">channelFuture</span><span class="o">.</span><span class="na">addListener</span><span class="o">(</span><span class="n">ChannelFutureListener</span><span class="o">.</span><span class="na">CLOSE</span><span class="o">);</span>
     <span class="o">}</span>
 
-    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">response</span><span class="o">(</span><span class="n">ChannelHandlerContext</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">String</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">response</span><span class="o">(</span><span class="n">ChannelHandlerContext</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">String</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">HttpResponse</span> <span class="n">response</span><span class="o">;</span>
         <span class="k">if</span> <span class="o">(</span><span class="n">msg</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
             <span class="n">ByteBuf</span> <span class="n">byteBuf</span> <span class="o">=</span> <span class="n">Unpooled</span><span class="o">.</span><span class="na">wrappedBuffer</span><span class="o">(</span><span class="n">msg</span><span class="o">.</span><span class="na">getBytes</span><span class="o">());</span>
@@ -211,7 +211,7 @@
     <span class="o">}</span>
 
     <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="n">release</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">release</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">this</span><span class="o">.</span><span class="na">session</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
         <span class="k">this</span><span class="o">.</span><span class="na">request</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
     <span class="o">}</span>
@@ -224,8 +224,8 @@
 
 <div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ExampleApiHandler</span> <span class="kd">extends</span> <span class="n">DisruptorAdapterBy41xHandler</span><span class="o">&lt;</span><span class="n">FullHttpRequest</span><span class="o">&gt;</span> <span class="o">{</span>
     <span class="nd">@Override</span>
-    <span class="kd">protected</span> <span class="n">Executor</span> <span class="n">newExecutor</span><span class="o">(</span><span class="n">Session</span> <span class="n">session</span><span class="o">,</span> <span class="n">FullHttpRequest</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="k">new</span> <span class="n">HttpRequestExecutor</span><span class="o">(</span><span class="n">session</span><span class="o">,</span> <span class="n">msg</span><span class="o">);</span>
+    <span class="kd">protected</span> <span class="n">Executor</span> <span class="nf">newExecutor</span><span class="o">(</span><span class="n">Session</span> <span class="n">session</span><span class="o">,</span> <span class="n">FullHttpRequest</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">HttpRequestExecutor</span><span class="o">(</span><span class="n">session</span><span class="o">,</span> <span class="n">msg</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre>
@@ -237,15 +237,15 @@
 
 <div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HttpServer</span> <span class="kd">extends</span> <span class="n">TcpProtocolServer</span> <span class="o">{</span>
 
-    <span class="kd">public</span> <span class="n">HttpServer</span><span class="o">(</span><span class="kt">int</span> <span class="n">port</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">HttpServer</span><span class="o">(</span><span class="kt">int</span> <span class="n">port</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">setPort</span><span class="o">(</span><span class="n">port</span><span class="o">);</span>
     <span class="o">}</span>
 
     <span class="nd">@Override</span>
-    <span class="kd">protected</span> <span class="n">ChannelHandler</span> <span class="n">newChannelInitializer</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">protected</span> <span class="n">ChannelHandler</span> <span class="nf">newChannelInitializer</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">return</span> <span class="k">new</span> <span class="n">ChannelInitializer</span><span class="o">&lt;</span><span class="n">NioSocketChannel</span><span class="o">&gt;()</span> <span class="o">{</span>
             <span class="nd">@Override</span>
-            <span class="kd">protected</span> <span class="kt">void</span> <span class="n">initChannel</span><span class="o">(</span><span class="n">NioSocketChannel</span> <span class="n">ch</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+            <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">initChannel</span><span class="o">(</span><span class="n">NioSocketChannel</span> <span class="n">ch</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
                 <span class="n">ChannelPipeline</span> <span class="n">cp</span> <span class="o">=</span> <span class="n">ch</span><span class="o">.</span><span class="na">pipeline</span><span class="o">();</span>
                 <span class="n">cp</span><span class="o">.</span><span class="na">addLast</span><span class="o">(</span><span class="s">"decoder"</span><span class="o">,</span> <span class="k">new</span> <span class="n">HttpRequestDecoder</span><span class="o">());</span>
                 <span class="n">cp</span><span class="o">.</span><span class="na">addLast</span><span class="o">(</span><span class="s">"encoder"</span><span class="o">,</span> <span class="k">new</span> <span class="n">HttpResponseEncoder</span><span class="o">());</span>
