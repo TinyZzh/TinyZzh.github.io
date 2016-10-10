@@ -5,9 +5,90 @@
     <description>专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。</description>
     <link>https://tinyzzh.github.io//</link>
     <atom:link href="https://tinyzzh.github.io//feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>2016-10-01</pubDate>
-    <lastBuildDate>2016-10-01</lastBuildDate>
+    <pubDate>2016-10-10</pubDate>
+    <lastBuildDate>2016-10-10</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>搭建自己的GitHub Pages(二) - 升级Jekyll到3.2</title>
+        <description>&lt;p&gt;4月份的时候博文记录搭建3.0的环境&lt;a href=&quot;/github/2016/04/13/Build_GitHub_Pages.html&quot;&gt;搭建自己的GitHub Pages&lt;/a&gt;。
+最近升级Jekyll到最新版本(&lt;strong&gt;3.2&lt;/strong&gt;)。&lt;/p&gt;
+
+&lt;p&gt;博主之前为了方便写了一个简单的批处理用于快速启动Jekyll本地服务器。升级Jekyll之后发现批处理启动不起来，批处理脚本报错。
+于是去官网查看一下原因。 发现版本变更貌似影响还比较大. 记录一下升级过程:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://jekyllrb.com/&quot;&gt;官网&lt;/a&gt;引导如下:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;~ &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&amp;gt;gem install jekyll bundler
+~ &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&amp;gt;jekyll new my-awesome-site
+~ &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&amp;gt;cd my-awesome-site
+~/my-awesome-site &amp;gt;bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;jekyll serve
+&lt;span class=&quot;c&quot;&gt;# =&amp;gt; Now browse to http://localhost:4000   (现在浏览器打开http://localhost:4000)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;博主对ruby了解甚少，假如不是Jekyll的话，可能都不会和ruby产生交集。所以…不要苛求&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Jekyll引入的Bundler，博主从未接触过，从纯新人角度跟着官网的示例一行一行的执行命令记录自己踩的坑。&lt;/p&gt;
+
+&lt;h2 id=&quot;step-1-gemsslconnect&quot;&gt;Step 1: 遇到gem报SSL_connect错误&lt;/h2&gt;
+
+&lt;p&gt;win7系统电脑, 使用ruby installer安装完ruby环境.&lt;/p&gt;
+
+&lt;p&gt;当时不知道因为啥引发的，但是根据错误输出知道是SSL引发的问题。增加http的gem仓库解决。&lt;/p&gt;
+
+&lt;p&gt;默认的gem是&lt;strong&gt;https://rubygems.org/&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;gem sources --add http://rubygems.org/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;step-2-bundle-install&quot;&gt;Step 2: bundle install&lt;/h2&gt;
+
+&lt;p&gt;首先安装完bundler之后，进入jekyll目录(Gemfile)文件所在目录, 执行:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&amp;gt; &lt;/span&gt;bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;jekyll serve
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;输出一段英文. 大意是需要bundle install先执行一次。&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;~ &lt;span class=&quot;nv&quot;&gt;$&amp;gt;&lt;/span&gt; bundle install
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;win10电脑很顺利的安装完成了bundle install的各种安装下载等等巴拉巴拉….
+但是在win7电脑的时候，
+cmd中执行之后中途会因为各种各样的问题停下来。请按照输出的提示安装相对于的库? 等等还是蛮多的。&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;~$&amp;gt; &lt;/span&gt;gem install execjs -v &lt;span class=&quot;s1&quot;&gt;'2.7.0'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;当时没注意，直接无脑的按照提示命令进行手动安装，居然手动安装成功了。也是感觉怪怪的，不知道啥原因也。
+紧跟着手动处理了两三次，感觉有点不正常，于是下决定查一下原因，
+仔细看输出信息，发现都是因为SSL连接引发，再跟着注意到Gemfile中gem仓库使用的是https
+修改为http之后，在执行install，一步到底。解决&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;脱坑&lt;/h2&gt;
+
+&lt;p&gt;隔了几天再去查SSL_connect错误原因，发现下面的文章&lt;a href=&quot;https://github.com/ruby-china/rubygems-mirror/wiki&quot;&gt;脱坑办法&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;感觉还是直接http算了。折腾。反正博主基本上除了GitHub pages基本上也不用ruby&lt;/p&gt;
+
+</description>
+        <pubDate>2016-10-09</pubDate>
+        <link>https://tinyzzh.github.io//github/2016/10/09/Build_GitHub_Pages_Update.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//github/2016/10/09/Build_GitHub_Pages_Update.html</guid>
+        
+        <category>GitHub</category>
+        
+        <category>Blog</category>
+        
+        
+        <category>GitHub</category>
+        
+      </item>
     
       <item>
         <title>Glances监控服务器状态</title>
@@ -58,14 +139,15 @@
 
 &lt;p&gt;对于InfluxDB相关的参数配置:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&quot;language-INI&quot;&gt;[influxdb]
-host=localhost
-port=8086
-user=root
-password=root
-db=glances  # InfluxDB中的数据库 - 启动Glances前要创建对应的数据库
-tags=foo:bar,spam:eggs
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;influxdb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;localhost&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8086&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;root&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;root&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;glances&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;InfluxDB&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;中的数据库&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;启动&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Glances&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;前要创建对应的数据库&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;tags&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;spam&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;eggs&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;启动Glances：&lt;/p&gt;
 
@@ -808,104 +890,6 @@ O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
         
         
         <category>Other</category>
-        
-      </item>
-    
-      <item>
-        <title>使用Redis实现高实时性的排序</title>
-        <description>&lt;p&gt;一般应用或游戏都会有各种各样的排行榜。排行榜往往可以满足了用户互相攀比炫耀，刺激内消费等等好处。
-用户往往希望自己能在排行榜取得显著的位置。 那如何实现开销低实时性高的排行榜呢?&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;引言&lt;/h2&gt;
-
-&lt;p&gt;记得那年，笔者还刚入行的时候。需要为一款MMORPG实现一个玩家的等级排行榜。
-排序规则是优先根据等级排序，等级相同根据经验值排序，经验值相同根据满级时间排序。&lt;/p&gt;
-
-&lt;p&gt;那个时候能想到的做法就是数据库新增一个字段用于保存玩家到达满级的时间戳，配合当时在数据库中已经存在的保存玩家的经验和等级的字段，
-使用MySQL数据库的Select查询语句根据三个条件最终实现排序,
-排序之后将排名数据缓存到内存中,以减轻数据库的压力, 设定排行榜数据过期时间为3个小时，每当数据过期重新查询排序并更新缓存。&lt;/p&gt;
-
-&lt;p&gt;那个时候的业务量小，小区小服玩家不多，对实时性要求也不高，就这么算是实现了。O(∩_∩)O哈哈~。跑偏了。下面正题&lt;/p&gt;
-
-&lt;h2 id=&quot;sorted-set&quot;&gt;Sorted Set应用&lt;/h2&gt;
-
-&lt;p&gt;Redis提供基于跳跃表(skip list)实现的时间复杂度大致为(O(log(n)))的有序集合(Sorted Set)。
-本文讲的核心内容实现高实时性的排行榜，就是根据Redis的这一数据结构来的。&lt;/p&gt;
-
-&lt;p&gt;假若项目中未使用Redis, 未来也不准备引入Redis 的朋友。
-可以借鉴引用一下跳跃表的自己实现SortedSet或引用GitHub上其他网友的开源实现。&lt;/p&gt;
-
-&lt;p&gt;Redis中的SortedSet根据一个名为score的64位双精度浮点数的参数实现排序. 但是在实际应用中推荐将score当做64位长整型来使用.
-原因很简单: long的取值范围要大于double.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;blockquote&gt;
-    &lt;p&gt;double范围为[-(2^53), +(2^53)] long范围为[-(2^63), +(2^63) - 1]&lt;/p&gt;
-  &lt;/blockquote&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;当只有一个排序原则时，直接使用score排序即可。
-但是引言中的排序有三个条件，而SortedSet只提供一个参数而且还是数字，那该如何应用呢?&lt;/p&gt;
-
-&lt;p&gt;下面来正菜了。因为redis保存的数据是64位的，而我们需要的数据可能不需要64位这么多。
-既如此合理分析拆分这64位长度拼接并组合成我们需要的数据，就可以实现简单的多条件排序了。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;分析各部分数据的取值范围&lt;/h2&gt;
-
-&lt;p&gt;先普及一点基础知识.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;8位二进制: 有符号[-128, 127]， 无符号[0, 255]&lt;/li&gt;
-  &lt;li&gt;8位二进制: 有符号[-128, 127]， 无符号[0, 255]&lt;/li&gt;
-  &lt;li&gt;…&lt;/li&gt;
-  &lt;li&gt;32位二进制: 有符号[-2^31, 2^31 - 1]， 无符号[0, 2^32]&lt;/li&gt;
-  &lt;li&gt;…&lt;/li&gt;
-  &lt;li&gt;64位二进制: 有符号[-2^63, 2^63 - 1]， 无符号[0, 2^64]&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;64位二进制数，首先时间戳精确到秒 则需要32位，等级一般8位即可（根据需求扩展到9位、10位…）。
-这么拆分下来经验值最多使用剩余24位表示，有符号[-2^23, 2^23 - 1],也就800w+。
-对于一些小数值经验应该是足够了。但是假如是类似于暗黑三这种按E计算的咋办?&lt;/p&gt;
-
-&lt;p&gt;目前笔者能想到的就是通过降低数值规模。例如：
-每1w实际经验值转换为1点排序经验值。即20E实际经验 / 1w = 20w 排序经验.  20w完全足够24位二进制来表示了。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;示例&lt;/h2&gt;
-
-&lt;p&gt;实现优先等级排序，经验排序，满级时间。&lt;/p&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;level&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;60&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6000000&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;timestamp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;currentTimeMillis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-
-&lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redisScore&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;level&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xFFL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;56&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xFFFFFFL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xFFFFFFFFL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tempTime&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redisScore&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xFFFFFFFFL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tempExp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;redisScore&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xFFFFFFL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tempLevel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;redisScore&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;56&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xFFL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;详细可以查看Redis的&lt;a href=&quot;http://redis.io/commands#sorted_set&quot;&gt;官方命令说明文档&lt;/a&gt;
-或笔者在Okra框架的example包下的
-&lt;a href=&quot;https://github.com/ogcs/Okra/blob/master/okra-examples/src/main/java/org/ogcs/okra/example/rank/RedisRankMain.java&quot;&gt;示例代码&lt;/a&gt;
-。&lt;/p&gt;
-
-</description>
-        <pubDate>2016-05-26</pubDate>
-        <link>https://tinyzzh.github.io//database/2016/05/26/Redis_SortedSet_Implement_Rank.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//database/2016/05/26/Redis_SortedSet_Implement_Rank.html</guid>
-        
-        <category>Redis</category>
-        
-        <category>排行榜</category>
-        
-        
-        <category>Database</category>
         
       </item>
     
