@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <title>使用Redis实现高实时性的排序</title>
+  <title>2017年旅行记录(上海 - 熊本)</title>
   <meta name="description" content="专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。">
   <meta name="author" content="TinyZ">
   <meta name="HandheldFriendly" content="True">
@@ -43,7 +43,7 @@
   <meta name="theme-color" content="#ffffff">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="https://tinyzzh.github.io//database/2016/05/26/Redis_SortedSet_Implement_Rank.html">
+  <link rel="canonical" href="https://tinyzzh.github.io//travel/2017/06/03/Travel_Kumamoto_Japan.html">
   <link rel="alternate" type="application/rss+xml" title="TinyZ's Blog" href="/feed.xml">
 
 </head>
@@ -144,91 +144,67 @@
         <article class="post-container post-container--single">
 
   <header class="post-header">
-    <h1 class="post-title">使用Redis实现高实时性的排序</h1>
+    <h1 class="post-title">2017年旅行记录(上海 - 熊本)</h1>
   </header>
 
   <section class="post">
-    <p>一般应用或游戏都会有各种各样的排行榜。排行榜往往可以满足了用户互相攀比炫耀，刺激内消费等等好处。
-用户往往希望自己能在排行榜取得显著的位置。 那如何实现开销低实时性高的排行榜呢?</p>
+    <p>2017年旅行记录(上海 - 熊本)</p>
 
-<h2 id="section">引言</h2>
+<h1 id="section">概述</h1>
 
-<p>记得那年，笔者还刚入行的时候。需要为一款MMORPG实现一个玩家的等级排行榜。
-排序规则是优先根据等级排序，等级相同根据经验值排序，经验值相同根据满级时间排序。</p>
+<p>(皇家加勒比·海洋量子号)6天5夜(2017-05-30 - 2017-06-04)日本游轮旅行. 
+笔者第一次出国，所以记录一下旅游行程纪念一下.</p>
 
-<p>那个时候能想到的做法就是数据库新增一个字段用于保存玩家到达满级的时间戳，配合当时在数据库中已经存在的保存玩家的经验和等级的字段，
-使用MySQL数据库的Select查询语句根据三个条件最终实现排序,
-排序之后将排名数据缓存到内存中,以减轻数据库的压力, 设定排行榜数据过期时间为3个小时，每当数据过期重新查询排序并更新缓存。</p>
+<p>最开始以为出国很简单，带上护照和钞票走到哪里就算那里. 但是…. 
+理想很丰满，现实很骨感。</p>
 
-<p>那个时候的业务量小，小区小服玩家不多，对实时性要求也不高，就这么算是实现了。O(∩_∩)O哈哈~。跑偏了。下面正题</p>
+<p>不过整体来说旅行还是蛮不错的. 无忧无虑, 吃了睡睡了吃, 而且不用上班. o(∩_∩)o 哈哈</p>
 
-<h2 id="sorted-set">Sorted Set应用</h2>
+<p>本次旅行留下不少深刻的印象，大概如下：</p>
 
-<p>Redis提供基于跳跃表(skip list)实现的时间复杂度大致为(O(log(n)))的有序集合(Sorted Set)。
-本文讲的核心内容实现高实时性的排行榜，就是根据Redis的这一数据结构来的。</p>
+<ol>
+  <li>上海吴淞口的海水很脏，很浑浊。和八代的清澈海水形成鲜明对比.</li>
+  <li>日本的小孩子很独立. 登船日第二天7点+在熊本火车站遇到3个小孩儿自己过地下过道, 旁边完全木有大人.</li>
+  <li>TAXI很贵, 在新八代港口到八代火车站(2700日元左右≈180rmb).</li>
+  <li>海上看日出日落, 真的必有一番风味.</li>
+  <li>在国外, 人生地不熟的地方, 语言不通的情况下, 要慎重选择自由行. 起码掌握日常英语口语.</li>
+  <li>日本老人超多. 大型商场全是老头老太太在逛街. 导游说:日本的老人都是有钱人</li>
+  <li>游轮的特色表演节目《星海传奇》很不错, 去看了两次.</li>
+</ol>
 
-<p>假若项目中未使用Redis, 未来也不准备引入Redis 的朋友。
-可以借鉴引用一下跳跃表的自己实现SortedSet或引用GitHub上其他网友的开源实现。</p>
+<h1 id="detail">Detail</h1>
 
-<p>Redis中的SortedSet根据一个名为score的64位双精度浮点数的参数实现排序. 但是在实际应用中推荐将score当做64位长整型来使用.
-原因很简单: long的取值范围要大于double.</p>
+<h2 id="day-1">Day 1</h2>
 
-<blockquote>
-  <blockquote>
-    <p>double范围为[-(2^53), +(2^53)] long范围为[-(2^63), +(2^63) - 1]</p>
-  </blockquote>
-</blockquote>
+<p>5月30号7点从杭州出发坐大巴车前往上海宝山区吴淞口港口码头。到达码头后, 经过行李托运(下午1点后可以进房间, 行李在走廊),
+海关检查等等. 11:50准时开始登船. 拿护照原件换取船卡(船卡可以用于活动预定, 消费, 下船等等). 
+上船享受完第一顿午餐后, 在多功能玩了碰碰车(登船的旅客还不算多, 不需要排队)</p>
 
-<p>当只有一个排序原则时，直接使用score排序即可。
-但是引言中的排序有三个条件，而SortedSet只提供一个参数而且还是数字，那该如何应用呢?</p>
+<h2 id="day-2">Day 2</h2>
 
-<p>下面来正菜了。因为redis保存的数据是64位的，而我们需要的数据可能不需要64位这么多。
-既如此合理分析拆分这64位长度拼接并组合成我们需要的数据，就可以实现简单的多条件排序了。</p>
+<p>登船第二天，游轮海上巡航。游轮上活动超多, 每天都安排得很满. 不过笔者是后来才知道的. 第一天睡过去了就.</p>
 
-<h2 id="section-1">分析各部分数据的取值范围</h2>
+<h2 id="day-3">Day 3</h2>
 
-<p>先普及一点基础知识.</p>
+<p>早上6-7点游轮停靠在日本新八代港口（非熊本港）。参与免费的观光团. 事实证明便宜没好货, 古人诚不我欺</p>
 
-<ul>
-  <li>8位二进制: 有符号[-128, 127]， 无符号[0, 255]</li>
-  <li>8位二进制: 有符号[-128, 127]， 无符号[0, 255]</li>
-  <li>…</li>
-  <li>32位二进制: 有符号[-2^31, 2^31 - 1]， 无符号[0, 2^32]</li>
-  <li>…</li>
-  <li>64位二进制: 有符号[-2^63, 2^63 - 1]， 无符号[0, 2^64]</li>
-</ul>
+<h2 id="day-4">Day 4</h2>
 
-<p>64位二进制数，首先时间戳精确到秒 则需要32位，等级一般8位即可（根据需求扩展到9位、10位…）。
-这么拆分下来经验值最多使用剩余24位表示，有符号[-2^23, 2^23 - 1],也就800w+。
-对于一些小数值经验应该是足够了。但是假如是类似于暗黑三这种按E计算的咋办?</p>
+<p>日本熊本岸上观光第二天. 体验自由行独立前往熊本市, 体验和感受一下另外一座日本城市.</p>
 
-<p>目前笔者能想到的就是通过降低数值规模。例如：
-每1w实际经验值转换为1点排序经验值。即20E实际经验 / 1w = 20w 排序经验.  20w完全足够24位二进制来表示了。</p>
+<h2 id="day-5">Day 5</h2>
 
-<h2 id="section-2">示例</h2>
+<p>游轮回上海的海上巡航日。</p>
 
-<p>实现优先等级排序，经验排序，满级时间。</p>
+<h2 id="day-6">Day 6</h2>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code>
-<span class="kt">int</span> <span class="n">level</span> <span class="o">=</span> <span class="mi">60</span><span class="o">;</span>
-<span class="kt">int</span> <span class="n">exp</span> <span class="o">=</span> <span class="mi">6000000</span><span class="o">;</span>
-<span class="kt">int</span> <span class="n">timestamp</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">/</span> <span class="mi">1000</span><span class="o">);</span>
+<p>清晨到达吴淞口港口, 在帆船自助餐厅吃完早餐, 会船舱收拾行李准备下船. 
+要托运行李的根据时间表下船, 由于笔者不托运， 可以提早下船(8:15). 在码头坐大巴回杭州. 自此结束整个行程</p>
 
-<span class="kt">long</span> <span class="n">redisScore</span> <span class="o">=</span> <span class="o">((</span><span class="n">level</span> <span class="o">&amp;</span> <span class="mi">0</span><span class="n">xFFL</span><span class="o">)</span> <span class="o">&lt;&lt;</span> <span class="mi">56</span><span class="o">)</span> <span class="o">|</span> <span class="o">((</span><span class="n">exp</span> <span class="o">&amp;</span> <span class="mi">0</span><span class="n">xFFFFFFL</span><span class="o">)</span> <span class="o">&lt;&lt;</span> <span class="mi">32</span><span class="o">)</span> <span class="o">|</span> <span class="o">(</span><span class="n">timestamp</span> <span class="o">&amp;</span> <span class="mi">0</span><span class="n">xFFFFFFFFL</span><span class="o">);</span>
+<h2 id="section-1">总结</h2>
 
-<span class="kt">int</span> <span class="n">tempTime</span> <span class="o">=</span> <span class="n">redisScore</span> <span class="o">&amp;</span> <span class="mi">0</span><span class="n">xFFFFFFFFL</span><span class="o">;</span>
-<span class="kt">int</span> <span class="n">tempExp</span> <span class="o">=</span> <span class="o">(</span><span class="n">redisScore</span> <span class="o">&gt;&gt;</span> <span class="mi">32</span><span class="o">)</span> <span class="o">&amp;</span> <span class="mi">0</span><span class="n">xFFFFFFL</span><span class="o">;</span>
-<span class="kt">int</span> <span class="n">tempLevel</span> <span class="o">=</span> <span class="o">(</span><span class="n">redisScore</span> <span class="o">&gt;&gt;</span> <span class="mi">56</span><span class="o">)</span> <span class="o">&amp;</span> <span class="mi">0</span><span class="n">xFFL</span><span class="o">;</span>
-
-</code></pre>
-</div>
-
-<h2 id="section-3">总结</h2>
-
-<p>详细可以查看Redis的<a href="http://redis.io/commands#sorted_set">官方命令说明文档</a>
-或笔者在Okra框架的example包下的
-<a href="https://github.com/ogcs/Okra/blob/master/okra-examples/src/main/java/org/ogcs/okra/example/rank/RedisRankMain.java">示例代码</a>
-。</p>
+<p>本来还想写点详细干货的。 写到一半感觉也是蛮枯燥的。
+有兴趣的盆友直接点开<a href="https://tieba.baidu.com/p/3919094550">大神的游后感传送门</a>.</p>
 
 
   </section>
