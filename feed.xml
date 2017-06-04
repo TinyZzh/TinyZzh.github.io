@@ -5,9 +5,90 @@
     <description>专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。</description>
     <link>https://tinyzzh.github.io//</link>
     <atom:link href="https://tinyzzh.github.io//feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>2016-10-01</pubDate>
-    <lastBuildDate>2016-10-01</lastBuildDate>
+    <pubDate>2017-06-04</pubDate>
+    <lastBuildDate>2017-06-04</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>搭建自己的GitHub Pages(二) - 升级Jekyll到3.2</title>
+        <description>&lt;p&gt;4月份的时候博文记录搭建3.0的环境&lt;a href=&quot;/github/2016/04/13/Build_GitHub_Pages.html&quot;&gt;搭建自己的GitHub Pages&lt;/a&gt;。
+最近升级Jekyll到最新版本(&lt;strong&gt;3.2&lt;/strong&gt;)。&lt;/p&gt;
+
+&lt;p&gt;博主之前为了方便写了一个简单的批处理用于快速启动Jekyll本地服务器。升级Jekyll之后发现批处理启动不起来，批处理脚本报错。
+于是去官网查看一下原因。 发现版本变更貌似影响还比较大. 记录一下升级过程:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://jekyllrb.com/&quot;&gt;官网&lt;/a&gt;引导如下:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;~ &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&amp;gt;gem install jekyll bundler
+~ &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&amp;gt;jekyll new my-awesome-site
+~ &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&amp;gt;cd my-awesome-site
+~/my-awesome-site &amp;gt;bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;jekyll serve
+&lt;span class=&quot;c&quot;&gt;# =&amp;gt; Now browse to http://localhost:4000   (现在浏览器打开http://localhost:4000)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;博主对ruby了解甚少，假如不是Jekyll的话，可能都不会和ruby产生交集。所以…不要苛求&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Jekyll引入的Bundler，博主从未接触过，从纯新人角度跟着官网的示例一行一行的执行命令记录自己踩的坑。&lt;/p&gt;
+
+&lt;h2 id=&quot;step-1-gemsslconnect&quot;&gt;Step 1: 遇到gem报SSL_connect错误&lt;/h2&gt;
+
+&lt;p&gt;win7系统电脑, 使用ruby installer安装完ruby环境.&lt;/p&gt;
+
+&lt;p&gt;当时不知道因为啥引发的，但是根据错误输出知道是SSL引发的问题。增加http的gem仓库解决。&lt;/p&gt;
+
+&lt;p&gt;默认的gem是&lt;strong&gt;https://rubygems.org/&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;gem sources --add http://rubygems.org/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;step-2-bundle-install&quot;&gt;Step 2: bundle install&lt;/h2&gt;
+
+&lt;p&gt;首先安装完bundler之后，进入jekyll目录(Gemfile)文件所在目录, 执行:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&amp;gt; &lt;/span&gt;bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;jekyll serve
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;输出一段英文. 大意是需要bundle install先执行一次。&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;~ &lt;span class=&quot;nv&quot;&gt;$&amp;gt;&lt;/span&gt; bundle install
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;win10电脑很顺利的安装完成了bundle install的各种安装下载等等巴拉巴拉….
+但是在win7电脑的时候，
+cmd中执行之后中途会因为各种各样的问题停下来。请按照输出的提示安装相对于的库? 等等还是蛮多的。&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;~$&amp;gt; &lt;/span&gt;gem install execjs -v &lt;span class=&quot;s1&quot;&gt;'2.7.0'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;当时没注意，直接无脑的按照提示命令进行手动安装，居然手动安装成功了。也是感觉怪怪的，不知道啥原因也。
+紧跟着手动处理了两三次，感觉有点不正常，于是下决定查一下原因，
+仔细看输出信息，发现都是因为SSL连接引发，再跟着注意到Gemfile中gem仓库使用的是https
+修改为http之后，在执行install，一步到底。解决&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;脱坑&lt;/h2&gt;
+
+&lt;p&gt;隔了几天再去查SSL_connect错误原因，发现下面的文章&lt;a href=&quot;https://github.com/ruby-china/rubygems-mirror/wiki&quot;&gt;脱坑办法&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;感觉还是直接http算了。折腾。反正博主基本上除了GitHub pages基本上也不用ruby&lt;/p&gt;
+
+</description>
+        <pubDate>2016-10-09</pubDate>
+        <link>https://tinyzzh.github.io//github/2016/10/09/Build_GitHub_Pages_Update.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//github/2016/10/09/Build_GitHub_Pages_Update.html</guid>
+        
+        <category>GitHub</category>
+        
+        <category>Blog</category>
+        
+        
+        <category>GitHub</category>
+        
+      </item>
     
       <item>
         <title>Glances监控服务器状态</title>
@@ -58,14 +139,15 @@
 
 &lt;p&gt;对于InfluxDB相关的参数配置:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&quot;language-INI&quot;&gt;[influxdb]
-host=localhost
-port=8086
-user=root
-password=root
-db=glances  # InfluxDB中的数据库 - 启动Glances前要创建对应的数据库
-tags=foo:bar,spam:eggs
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;influxdb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;localhost&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8086&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;root&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;root&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;glances&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;InfluxDB&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;中的数据库&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;启动&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Glances&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;前要创建对应的数据库&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;tags&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;spam&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;eggs&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;启动Glances：&lt;/p&gt;
 
@@ -102,6 +184,91 @@ tags=foo:bar,spam:eggs
         
         
         <category>CentOS</category>
+        
+        <category>Python</category>
+        
+      </item>
+    
+      <item>
+        <title>InfluxDB - 安装</title>
+        <description>&lt;p&gt;本篇文章记录CentOS 7-x64操作系统，安装InfluxDB时序数据库。&lt;/p&gt;
+
+&lt;p&gt;环境:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;系统 : CentOS 7-x64&lt;/li&gt;
+  &lt;li&gt;InfluxDB : 1.0.0&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.influxdata.com/downloads/&quot;&gt;InfluxDB下载页&lt;/a&gt;
+笔者下载&lt;a href=&quot;https://dl.influxdata.com/influxdb/releases/influxdb-1.0.0.x86_64.rpm&quot;&gt;1.0.0版本&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;CentOS&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wget https://dl.influxdata.com/influxdb/releases/influxdb-1.0.0.x86_64.rpm
+sudo yum localinstall influxdb-1.0.0.x86_64.rpm
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;启动influxdb&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;systemctl start influxdb
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;创建配置文件influxdb配置文件:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;influxd config &amp;gt; influxdb.generated.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;8083端口用于后台管理界面, 8086端口用于HTTP API接口&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;笔者使用的是下载rpm之后安装的办法。
+各位看官可以使用官网示例的安装过程&lt;a href=&quot;https://docs.influxdata.com/influxdb/v1.0/introduction/installation/&quot;&gt;官方安装示例&lt;/a&gt;&lt;/p&gt;
+
+</description>
+        <pubDate>2016-09-30</pubDate>
+        <link>https://tinyzzh.github.io//database/2016/09/30/InfluxDB_Init.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//database/2016/09/30/InfluxDB_Init.html</guid>
+        
+        <category>Database</category>
+        
+        <category>InfluxDB</category>
+        
+        
+        <category>Database</category>
+        
+      </item>
+    
+      <item>
+        <title>Python - SSH及SSH隧道相关</title>
+        <description>&lt;p&gt;在&lt;a href=&quot;https://pypi.python.org/pypi?%3Aaction=search&amp;amp;term=ssh&amp;amp;submit=search&quot;&gt;Python类库仓库 - PyPI&lt;/a&gt;中搜索SSH关键字.&lt;/p&gt;
+
+</description>
+        <pubDate>2016-09-25</pubDate>
+        <link>https://tinyzzh.github.io//python/2016/09/25/Note_Python_4.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//python/2016/09/25/Note_Python_4.html</guid>
+        
+        <category>Python</category>
+        
+        
+        <category>Python</category>
+        
+      </item>
+    
+      <item>
+        <title>Python - 常见类型文件的读写操作(Excel, CSV, Txt等)</title>
+        <description>
+</description>
+        <pubDate>2016-09-25</pubDate>
+        <link>https://tinyzzh.github.io//python/2016/09/25/Note_Python_3.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//python/2016/09/25/Note_Python_3.html</guid>
+        
+        <category>Python</category>
+        
         
         <category>Python</category>
         
@@ -367,6 +534,26 @@ tags=foo:bar,spam:eggs
       </item>
     
       <item>
+        <title>杂记 - 20160909</title>
+        <description>&lt;p&gt;从8月15号开始到现在,被杭州G20折腾将近一个月。总算是过去了。&lt;/p&gt;
+
+&lt;p&gt;笔者住主城区从8月15号开始，房东的房子不允许住了。被安排到城站边上凑活住了半个月。&lt;/p&gt;
+
+&lt;p&gt;8月31号从杭州到天津，4号转北京，9月8号回杭州。&lt;/p&gt;
+
+</description>
+        <pubDate>2016-09-09</pubDate>
+        <link>https://tinyzzh.github.io//other/2016/09/09/Date_Note_16_09_09.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//other/2016/09/09/Date_Note_16_09_09.html</guid>
+        
+        <category>生活</category>
+        
+        
+        <category>Other</category>
+        
+      </item>
+    
+      <item>
         <title>日志 - 20160710</title>
         <description>&lt;p&gt;不知不觉的已经入职半个多月。目前工作内容以熟悉代码，维护老项目的版本的更新发布为主。公司氛围轻松，加班文化基本没有。
 每天熟悉代码，熟悉发布更新流程，熟悉内部的各种工具和平台，熟悉项目架构日子就过得很快。
@@ -415,497 +602,6 @@ tags=foo:bar,spam:eggs
         
         
         <category>Other</category>
-        
-      </item>
-    
-      <item>
-        <title>在上海的最后一夜</title>
-        <description>&lt;p&gt;2014年，孤身一人从杭州来到上海，不知不觉在这座城市已然生活了2年多了。
-将要离开这座国际大都市，离开我奋斗2年的地方，离开过去的喜悦、辛酸以及成就。
-感觉有些失落。&lt;/p&gt;
-
-&lt;p&gt;我是一个有点感性的IT程序员。喜欢时不时感慨。o(∩_∩)o 哈哈&lt;/p&gt;
-
-&lt;p&gt;14年，YS公司从100+的规模，扩张失败，情况急转直下，
-公司核心技术离职，资方挖人，最终面临解散。&lt;/p&gt;
-
-&lt;p&gt;在那时，恰好朋友（客户端主程序）在的LJ公司的研发部刚刚成立没多久需要服务器，于是就这么进了LJ公司负责网络游戏的服务端研发。
-在我加入的时候，公司已经实现了一个游戏的demo，准备开始不断的完善玩法，活动、找运营等等。&lt;/p&gt;
-
-&lt;p&gt;于是，大家都懂的剧情来了。开始一段很凶残的加班生活（远超996的水平），现在回想那个时候就是靠着有梦想，坚信产品会成功的希望坚持下来，
-虽然我们人少，但是我们一直在努力的按计划完成各个版本的开发。&lt;/p&gt;
-
-&lt;p&gt;后来上了腾讯的大船(几轮测试后评级是5星产品，国内独家代理)。这是一个振奋人心的消息（业内你懂的，用户量那个biangbiang的多，项目前途稍微有保障）。
-同样的，腾讯的严格要求,公司项目组研发人员少，我“更苦的日子”也开始了。留存数据测试，版本迭代变更。
-为了赶版本进度，曾经一度周五上班，周一回家休息的节奏（直接住公司，吃饭叫外卖）。&lt;/p&gt;
-
-&lt;p&gt;国内由于是腾讯独家代理，按照规定我们组团去深圳腾讯互娱进行了1个多月的上线前开发，每天都加班到深夜，记得那个时候，恰逢元旦，于是大家放了一天假。
-独自一个人休闲爬山（大南山），隔江(海?)可以看到对面的香港。&lt;/p&gt;
-
-&lt;p&gt;那整整一年过的真的很累，很辛苦，一度曾经想到放弃，但是最终坚持了下来。现在回想一切都是值的的。
-一方面从事的是自己喜欢的事业，另外一方面产品准备腾讯的微信和应用宝上线，内心期盼产品被世人知晓，
-这是一种荣誉感，成就感。当然还有就是比较不错的项目奖金（总计3个月的薪水，后面因为被发现的bug问题，数据下滑比较快，也就没多少奖金了）。&lt;/p&gt;
-
-&lt;p&gt;项目的“成功”，以及海外市场的扩展的需求。
-最终公司拆分了部门，我也进阶成为其中一个研发部门的服务端主程序，一方面维护老项目，另外一方面负责新项目的架构和研发。&lt;/p&gt;
-
-&lt;p&gt;和之前做“主程序”不同(负责维护项目为主)，LJ使用PHP做服务器的逻辑开发，Java负责推送，定时任务，日志，数据落地等等。
-因为要拓展海外业务(当时代码级的接入了腾讯的tlog系统)，为了减少代码变更，我搞了一套eos日志(仿tlog)兼容。
-海外版本的跨服等等版本需求。
-再后来负责研发一款手游的服务端，公司又加了一个小伙伴帮我，那段时间，基本上每天都睡不好，晚上躺床上想着各种事情直到睡着。第二天按照睡着前的思路去整理优化。
-那段时间压力大，但也懂职责越大，任务越重，收获越多。熬过去了，能轻车熟路的驾驭技术了，就会轻松啦。
-那段时间根据上线的项目为根基，吸取经验和教训，不断的优化，改进。最终取得算是不错的优化成果（响应时间减少50+%，通信量减少30+%）。
-可惜公司最终没采取我的方案。可惜，可惜。&lt;/p&gt;
-
-&lt;p&gt;在后面被小伙伴拉去搞VR的研究和开发。我们的设想是开发一个VR平台，一个VR世界。分布式服务器架构。前前后后6-7版服务器变更，终于完成了Okra-Ax。
-后面考虑像Okra一样剥离出来开源。值得一提的是：我终于吃到秋葵了，口感真心感觉不怎么样。&lt;/p&gt;
-
-&lt;p&gt;不知不觉写了这么多。都1点多了。准备休息。期待未来能顺利入职。&lt;/p&gt;
-
-&lt;p&gt;写在最后。&lt;/p&gt;
-
-&lt;p&gt;衷心的感谢一起奋斗努力的小伙伴。感谢小伙伴的支持、包容、谅解。也感谢公司给机会我展示自我。
-世界这么大，生活如此艰辛，这一去，也不知何时才能再相聚。
-&lt;strong&gt;朋友！珍重！再见！&lt;/strong&gt;&lt;/p&gt;
-
-</description>
-        <pubDate>2016-06-12</pubDate>
-        <link>https://tinyzzh.github.io//other/2016/06/12/Last_Night_On_ShangHai.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//other/2016/06/12/Last_Night_On_ShangHai.html</guid>
-        
-        <category>生活</category>
-        
-        
-        <category>Other</category>
-        
-      </item>
-    
-      <item>
-        <title>为什么使用HikariCP连接池?</title>
-        <description>&lt;p&gt;笔者最近在换工作的时，被面试官问数据库和连接池相关的一些问题。
-下面从面试这块开始&lt;/p&gt;
-
-&lt;p&gt;简单介绍一下笔者项目中数据库的使用情况。项目中使用MySQL做数据存储，Redis做数据缓存。读写数据流程如下：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;读&lt;/strong&gt;数据：先查询Redis中是否存在，存在直接取出数据，不存在从MySQL查询并保存包Redis中缓存起来。&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;写&lt;/strong&gt;数据：先写入Redis，然后异步提交到MySQL写入线程，实现数据落地。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;问题1：如何保证数据读写的“原子性”?如何解决脏数据?&lt;/h2&gt;
-
-&lt;p&gt;众所周知，当使用数据库跨表操作时，利用数据库引擎提供的事务和回滚机制，可以保证数据库跨表操作的原子性。&lt;/p&gt;
-
-&lt;p&gt;一方面在项目中引入数据缓存层也是一种常见的减轻数据库压力的做法。另一方面引入了缓存增加了数据操作的复杂度。&lt;/p&gt;
-
-&lt;p&gt;如何解决缓存中和数据库中数据不一致的问题?
-笔者以线上项目为例简单的说了说。在线上的代码，主要以缓存层数据为主，数据不统一的情况，会在下一次落地时覆盖数据库的数据，实现同步。&lt;/p&gt;
-
-&lt;p&gt;假如是因为版本迭代数据库字段变更导致数据库落地错误时，由于Redis缓存的有效期是7天，在&lt;strong&gt;缓存失效前手动&lt;/strong&gt;执行脚本将数据重新落地。&lt;/p&gt;
-
-&lt;p&gt;由于面试官一再强调是&lt;strong&gt;自动修复&lt;/strong&gt;脏数据。
-说实话笔者在保证Redis和MySQL两者数据操作的原子性这块没有什么涉猎。也没想出什么好的办法。
-由于面试官一再询问，笔者就稍微讲了讲一个思路回答：也许是否可以使用数据库的原子性，回滚的时候回退数据?&lt;/p&gt;
-
-&lt;p&gt;当然事实证明一时的想法总是有漏洞的。数据回退涉及到数据回退前多次被修改的复杂情况。显得不是很合适。&lt;/p&gt;
-
-&lt;p&gt;最后引发尴尬的是面试官的总结：(大意如下)
-在修改数据前，尽可能多的判定用户是否满足操作的条件，以便于提早发现问题并退出, 以避免数据操作。同时避免异步操作数据库，同步操作及早出现问题并退出。&lt;/p&gt;
-
-&lt;p&gt;wtf…  当时一下子感觉自己有点懵逼的。才发现整个就理解错了。瞬间也是好尴尬。&lt;/p&gt;
-
-&lt;h2 id=&quot;hikaricp&quot;&gt;问题2：HikariCP是什么?&lt;/h2&gt;
-
-&lt;p&gt;HikariCP是一个高性能的JDBC连接池。Hikari是日语“光”的意思。可能是目前java业界最快的数据库连接池（BoneCP因此停止维护，其作者推荐HikariCP）。
-面试官说项目用的c3p0作为数据库连接池，也没接触过HikariCP。还问了何时连接池会关闭数据库的连接。&lt;/p&gt;
-
-&lt;p&gt;说实在的，当时笔者没回答好，一般数据库连接池会自动管理数据库连接建立、复用和关闭。一般情况下不会关闭已经建立的数据库连接。
-连接池关闭连接方面，其他连接池竞品不清楚，HikariCP会在设置的最大生命周期后，最大空闲时间后等多个条件作用下自动关闭释放连接。&lt;/p&gt;
-
-&lt;p&gt;下面是总结&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;数据库连接池技术&lt;/h2&gt;
-
-&lt;p&gt;数据库连接池负责分配、管理和释放数据库的连接。&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;数据库连接复用。重复使用现有的数据库连接，可以避免连接频繁建立、关闭的开销。&lt;/li&gt;
-  &lt;li&gt;统一的连接管理。释放空闲时间超过最大空闲时间的数据库连接，避免因为没有释放数据库连接而引起的数据库连接泄漏。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;一些数据库连接池的对比&lt;/h2&gt;
-
-&lt;p&gt;首先明确：无论任何形式的数据库连接复用（数据库连接池技术）都避免了频繁建立、关闭数据库连接带来的开销。性能相对于没有连接池有质的提升。
-另外一点需要明确：数据库连接池一般不会成为整个程序的性能瓶颈。更多的出现在数据库读写，带宽，cpu等方面（开始人云亦云模式，o(∩_∩)o 哈哈）。&lt;/p&gt;
-
-&lt;p&gt;下面引入正文，先来一个对比。
-文章&lt;a href=&quot;http://freeman1.iteye.com/blog/2268874&quot;&gt;数据库连接池性能比对&lt;/a&gt;很早之前看到过，但一直没找到原帖。
-皇天不负有心人，今天总算是挖出来了原帖（鄙视一下盗链和转帖不挂源地址的）。&lt;/p&gt;
-
-&lt;h2 id=&quot;hikaricp-1&quot;&gt;HikariCP&lt;/h2&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/brettwooldridge/HikariCP&quot;&gt;HikariCP&lt;/a&gt;可能是目前业内最快的数据库连接池。&lt;/p&gt;
-
-&lt;p&gt;说到HikariCP就不得不说BoneCP。笔者之前是BoneCP的使用者。突然那么一天（忘记具体是哪天了）想看看BoneCP是否有新版本。
-然后发现BoneCP作者在项目主页的描述说不再更新BoneCP并且推荐了HikariCP。&lt;/p&gt;
-
-&lt;p&gt;笔者也有段时间没关注这个类库了，面试的时候因为也好久没看了，所以讲的也不是很清楚。于是就抽空复习总结一下。
-笔者之前在&lt;strong&gt;博客园&lt;/strong&gt;发表过一篇关于HikariCP的文章&lt;a href=&quot;http://www.cnblogs.com/zou90512/p/4044818.html&quot;&gt;从BoneCP到HikariCP&lt;/a&gt;，
-简单讲了Spring+Mybatis+HikariCP的配合使用。
-那时候刚接触HikariCP，被官方的测试数据所吸引，毕竟BoneCP停产了，而且在代码基本上不需要改动的情况下就能获得更好的性能，何乐而不为呢? 所以决定试试这个“新家伙”&lt;/p&gt;
-
-&lt;p&gt;HikariCP的官方Wiki中提到的为什么HikariCP是如何实现这么高效率。详细见:
-&lt;a href=&quot;https://github.com/brettwooldridge/HikariCP/wiki/Down-the-Rabbit-Hole&quot;&gt;Down the Rabbit Hole&lt;/a&gt;
-掉进兔子洞? 反正我是不懂这是什么谚语。o(∩_∩)o 哈哈。
-大概内容如下：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;优化字节码（JVM内联），减少生成的机器码&lt;/li&gt;
-  &lt;li&gt;精简代码, 使用Javassist生成委托。&lt;/li&gt;
-  &lt;li&gt;无锁容器。FastStatementList、ConcurrentBag&lt;/li&gt;
-  &lt;li&gt;等等针对BoneCP的优化。(好针对BoneCP啊，o(∩_∩)o 哈哈)&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;druid&quot;&gt;Druid&lt;/h2&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/alibaba/druid&quot;&gt;Druid&lt;/a&gt;是阿里巴巴开源的“为监控而生的数据库连接池！”。
-性能测试过程略低于HikariCP，但是提供了强大的监控和扩展功能。支持psCache。&lt;/p&gt;
-
-&lt;p&gt;有兴趣可以去GitHub查看。有中文文档。o(∩_∩)o 哈哈。阿里威武&lt;/p&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;结论&lt;/h2&gt;
-
-&lt;p&gt;为什么使用HikariCP?
-首先它是一个优秀的数据库连接池，代码少，&lt;strong&gt;效率高&lt;/strong&gt;。
-支持多种常见的数据库（包含但不限于：Oracle、MS SQL Server、&lt;strong&gt;MySQL&lt;/strong&gt;、PostgreSQL）
-轻松&lt;strong&gt;集成Spring+Hibernate/Mybatis&lt;/strong&gt;。
-而且笔者平时的业务内容不是特别需要&lt;strong&gt;监控&lt;/strong&gt;这么“重度”的功能。有慢查询日志基本上就足够了。&lt;/p&gt;
-
-</description>
-        <pubDate>2016-06-04</pubDate>
-        <link>https://tinyzzh.github.io//database/2016/06/04/Why_Use_HikariCP.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//database/2016/06/04/Why_Use_HikariCP.html</guid>
-        
-        <category>HikariCP</category>
-        
-        
-        <category>Database</category>
-        
-      </item>
-    
-      <item>
-        <title>面试笔试题 - 续</title>
-        <description>&lt;p&gt;回顾一下之前的笔试题。&lt;a href=&quot;/other/2016/06/03/Interview.html&quot;&gt;URL地址&lt;/a&gt;。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;blockquote&gt;
-    &lt;p&gt;问题：有一个数组a，有一个变量n，大于变量n的放到数组的前面，小于变量n的放到数组的后面（不需要排序）。&lt;/p&gt;
-  &lt;/blockquote&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;解决思路：
-数组a从0开始向后遍历，检查到小于n的元素k1，那么从队尾指针tail处向前遍历，检查到大于n的元素k2停止，并k1和k2互换位置。
-在从k1处继续向后遍历直至k1位置大于队尾指针位置（遍历结束）。&lt;/p&gt;
-
-&lt;p&gt;测试用例:&lt;/p&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ary&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;};&lt;/span&gt;
-    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;逻辑代码如下:&lt;/p&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;obj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;];&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;];&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-                    &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-                &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;延伸版本，当n改为n1，n2…nx数组时如何实现?&lt;/p&gt;
-
-&lt;p&gt;晚上洗澡的时候想起了这么一个问题。决定折腾一下解决这个问题。
-最开始有点钻进死胡同。想通过一次遍历实现相应的拆分功能（效率最高的情况）。感觉情况略微有点复杂。
-考虑十几分钟后感觉可能需要向效率妥协，转变思路。&lt;/p&gt;
-
-&lt;p&gt;解决思路：根据n1, n2… nx分隔数组array，先将n的数组从大到小排序。再将分隔问题简化成x个拆分n的连续小问题。&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;按照n1和其他拆分&lt;/li&gt;
-  &lt;li&gt;在n1和其他的分界点为起始点, 按照n2和其他拆分&lt;/li&gt;
-  &lt;li&gt;重复步骤2，直至起始点到达数组终点，退出循环.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;算法根据数据的复杂度，时间复杂度最小是(O(n)), 最大是O(n(n+1)/2)。&lt;/p&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;sortn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ns&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;// 这里的排序保证n的数组是从大到小有序的， 当然可以自己设置，以避免排序的损耗&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Arrays&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ns&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Comparator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-        &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;compare&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;o1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;o2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;o2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;o1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;});&lt;/span&gt;
-    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ns&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ns&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;obj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;];&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;];&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-                    &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-                &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;ok。解决问题。以后想到更高效的算法逻辑了。再继续优化。目前可能就这样啦。各位晚安&lt;/p&gt;
-
-</description>
-        <pubDate>2016-06-04</pubDate>
-        <link>https://tinyzzh.github.io//other/2016/06/04/Interview_Next.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//other/2016/06/04/Interview_Next.html</guid>
-        
-        <category>生活</category>
-        
-        
-        <category>Other</category>
-        
-      </item>
-    
-      <item>
-        <title>2016年离职总结</title>
-        <description>&lt;p&gt;最近忙着离职的事情，O(∩_∩)O哈哈~，自我总结一下。&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;离职原因&lt;/h2&gt;
-
-&lt;p&gt;从业四年，先后在3家公司任职，在最近一家公司工作两年，主要从事网络游戏服务端(后端)开发相关的工作。
-也算是一步一步从的“打杂”过度到项目组服务端主程序，领导一个小中型项目的后端的设计和研发。&lt;/p&gt;
-
-&lt;p&gt;任职的三家公司都不算是大公司（最大的规模，公司技术人员也就30-40人左右），技术氛围一般，所以很多时候都需要自己去尝试和摸索道路来（传说中的野路子?）。踩过了很多坑，也填了很多坑。
-感觉假如自己想在技术道路上走的更远，真的需要一个技术氛围良好的团队或公司。闭门造成终归是成就有限。于是就有了离职和这篇文字。(*^__^*) 嘻嘻……&lt;/p&gt;
-
-&lt;p&gt;游戏行业，游戏研发团队往往都是人员比较少的小规模团队。项目组人员一般不超过20个，前后端研发占一半策划占一半，可能会捎带几个美术。
-服务端人数往往也略少于客户端。后端同学往往都需要肩负一部分运维的职责（例如部署服务器运行环境，调优等等）。因此在某种程度上讲，相比于其他行业的后端，更辛苦。
-当然，付出和收获是成正比的。做得越多对搞技术的来说是能学习到更多的东西。跑题跑得有点远诶。O(∩_∩)O哈哈~&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;面试收获&lt;/h2&gt;
-
-&lt;p&gt;最近一段时间东跑西跑的面试，虽然很辛苦（刮风下雨的啊），但收获满满。主要分为下面两个方面：&lt;/p&gt;
-
-&lt;p&gt;一方面参加一些行业内公司的面试，有了和技术主管/技术牛人有面对面沟通的机会。O(∩_∩)O哈哈~。
-和资深程序聊天，往往很快就能知道了自身的问题和不足。总结一下自己的不足：~~&lt;del&gt;(&amp;gt;_&amp;lt;)&lt;/del&gt;~~)&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;理论基础知识不算特别扎实。多看些技术书籍，补充扩展自己的知识面&lt;/li&gt;
-  &lt;li&gt;缺乏实践。多动手测试，不能人云亦云，尝试实践分析后端的技术。准备好好读读 &lt;strong&gt;《JAVA性能优化权威指南》&lt;/strong&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;虽然知道自己的缺点和不足是一件很打击人的事情，但是很感谢这些大牛能抽时间，给我一个面试聊聊的机会（窃喜）。
-O(∩_∩)O哈哈~。后面要慢慢花时间补足自己的短板。&lt;/p&gt;
-
-&lt;p&gt;另外一方面和业内的朋友聊聊天，谈谈人生理想，未来规划。和这些过来人的聊天。开阔了视野，增长了见识。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;分享&lt;/h2&gt;
-
-&lt;p&gt;一个最近面试遇到的唯一一个代码题。嘿嘿&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;blockquote&gt;
-    &lt;p&gt;问题：有一个数组a，有一个变量n，大于变量n的放到数组的前面，小于变量n的放到数组的后面（不需要排序）。&lt;/p&gt;
-  &lt;/blockquote&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;解决思路：
-数组a从0开始向后遍历，检查到小于n的元素k1，那么从队尾指针tail处向前遍历，检查到大于n的元素k2停止，并k1和k2互换位置。
-在从k1处继续向后遍历直至k1位置大于队尾指针位置（遍历结束）。&lt;/p&gt;
-
-&lt;p&gt;后面还有延伸版本，当n改为n1，n2…nx数组时如何实现，后面有空就整一个。&lt;/p&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;SimpleSort&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ary&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;};&lt;/span&gt;
-        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-
-        &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;tail&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-                    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;obj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;];&lt;/span&gt;
-                        &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;];&lt;/span&gt;
-                        &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-                        &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-                    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-                &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;补充于2016-06-04
-&lt;a href=&quot;/other/2016/06/04/Interview_Next.html&quot;&gt;延伸试题解决&lt;/a&gt;&lt;/p&gt;
-
-</description>
-        <pubDate>2016-06-03</pubDate>
-        <link>https://tinyzzh.github.io//other/2016/06/03/Interview.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//other/2016/06/03/Interview.html</guid>
-        
-        <category>生活</category>
-        
-        
-        <category>Other</category>
-        
-      </item>
-    
-      <item>
-        <title>使用Redis实现高实时性的排序</title>
-        <description>&lt;p&gt;一般应用或游戏都会有各种各样的排行榜。排行榜往往可以满足了用户互相攀比炫耀，刺激内消费等等好处。
-用户往往希望自己能在排行榜取得显著的位置。 那如何实现开销低实时性高的排行榜呢?&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;引言&lt;/h2&gt;
-
-&lt;p&gt;记得那年，笔者还刚入行的时候。需要为一款MMORPG实现一个玩家的等级排行榜。
-排序规则是优先根据等级排序，等级相同根据经验值排序，经验值相同根据满级时间排序。&lt;/p&gt;
-
-&lt;p&gt;那个时候能想到的做法就是数据库新增一个字段用于保存玩家到达满级的时间戳，配合当时在数据库中已经存在的保存玩家的经验和等级的字段，
-使用MySQL数据库的Select查询语句根据三个条件最终实现排序,
-排序之后将排名数据缓存到内存中,以减轻数据库的压力, 设定排行榜数据过期时间为3个小时，每当数据过期重新查询排序并更新缓存。&lt;/p&gt;
-
-&lt;p&gt;那个时候的业务量小，小区小服玩家不多，对实时性要求也不高，就这么算是实现了。O(∩_∩)O哈哈~。跑偏了。下面正题&lt;/p&gt;
-
-&lt;h2 id=&quot;sorted-set&quot;&gt;Sorted Set应用&lt;/h2&gt;
-
-&lt;p&gt;Redis提供基于跳跃表(skip list)实现的时间复杂度大致为(O(log(n)))的有序集合(Sorted Set)。
-本文讲的核心内容实现高实时性的排行榜，就是根据Redis的这一数据结构来的。&lt;/p&gt;
-
-&lt;p&gt;假若项目中未使用Redis, 未来也不准备引入Redis 的朋友。
-可以借鉴引用一下跳跃表的自己实现SortedSet或引用GitHub上其他网友的开源实现。&lt;/p&gt;
-
-&lt;p&gt;Redis中的SortedSet根据一个名为score的64位双精度浮点数的参数实现排序. 但是在实际应用中推荐将score当做64位长整型来使用.
-原因很简单: long的取值范围要大于double.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;blockquote&gt;
-    &lt;p&gt;double范围为[-(2^53), +(2^53)] long范围为[-(2^63), +(2^63) - 1]&lt;/p&gt;
-  &lt;/blockquote&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;当只有一个排序原则时，直接使用score排序即可。
-但是引言中的排序有三个条件，而SortedSet只提供一个参数而且还是数字，那该如何应用呢?&lt;/p&gt;
-
-&lt;p&gt;下面来正菜了。因为redis保存的数据是64位的，而我们需要的数据可能不需要64位这么多。
-既如此合理分析拆分这64位长度拼接并组合成我们需要的数据，就可以实现简单的多条件排序了。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;分析各部分数据的取值范围&lt;/h2&gt;
-
-&lt;p&gt;先普及一点基础知识.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;8位二进制: 有符号[-128, 127]， 无符号[0, 255]&lt;/li&gt;
-  &lt;li&gt;8位二进制: 有符号[-128, 127]， 无符号[0, 255]&lt;/li&gt;
-  &lt;li&gt;…&lt;/li&gt;
-  &lt;li&gt;32位二进制: 有符号[-2^31, 2^31 - 1]， 无符号[0, 2^32]&lt;/li&gt;
-  &lt;li&gt;…&lt;/li&gt;
-  &lt;li&gt;64位二进制: 有符号[-2^63, 2^63 - 1]， 无符号[0, 2^64]&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;64位二进制数，首先时间戳精确到秒 则需要32位，等级一般8位即可（根据需求扩展到9位、10位…）。
-这么拆分下来经验值最多使用剩余24位表示，有符号[-2^23, 2^23 - 1],也就800w+。
-对于一些小数值经验应该是足够了。但是假如是类似于暗黑三这种按E计算的咋办?&lt;/p&gt;
-
-&lt;p&gt;目前笔者能想到的就是通过降低数值规模。例如：
-每1w实际经验值转换为1点排序经验值。即20E实际经验 / 1w = 20w 排序经验.  20w完全足够24位二进制来表示了。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;示例&lt;/h2&gt;
-
-&lt;p&gt;实现优先等级排序，经验排序，满级时间。&lt;/p&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;level&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;60&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6000000&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;timestamp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;currentTimeMillis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-
-&lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redisScore&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;level&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xFFL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;56&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xFFFFFFL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xFFFFFFFFL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tempTime&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redisScore&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xFFFFFFFFL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tempExp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;redisScore&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xFFFFFFL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tempLevel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;redisScore&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;56&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xFFL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;详细可以查看Redis的&lt;a href=&quot;http://redis.io/commands#sorted_set&quot;&gt;官方命令说明文档&lt;/a&gt;
-或笔者在Okra框架的example包下的
-&lt;a href=&quot;https://github.com/ogcs/Okra/blob/master/okra-examples/src/main/java/org/ogcs/okra/example/rank/RedisRankMain.java&quot;&gt;示例代码&lt;/a&gt;
-。&lt;/p&gt;
-
-</description>
-        <pubDate>2016-05-26</pubDate>
-        <link>https://tinyzzh.github.io//database/2016/05/26/Redis_SortedSet_Implement_Rank.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//database/2016/05/26/Redis_SortedSet_Implement_Rank.html</guid>
-        
-        <category>Redis</category>
-        
-        <category>排行榜</category>
-        
-        
-        <category>Database</category>
         
       </item>
     
