@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <title>Archives</title>
+  <title>Unity3D的JsonUtility使用</title>
   <meta name="description" content="专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。">
   <meta name="author" content="TinyZ">
   <meta name="HandheldFriendly" content="True">
@@ -43,7 +43,7 @@
   <meta name="theme-color" content="#ffffff">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="https://tinyzzh.github.io//archives/">
+  <link rel="canonical" href="https://tinyzzh.github.io//unity3d/2017/09/02/Unity3D_JsonUtility_1.html">
   <link rel="alternate" type="application/rss+xml" title="TinyZ's Blog" href="/feed.xml">
 
 </head>
@@ -141,159 +141,76 @@
 
 <div class="content-wrapper">
     <div class="content-wrapper__inner">
-        <ul class="posts">
-    
-    <li>
-        <span class="post-date">2017-09-02</span>
-        <a class="post-link" href="/unity3d/2017/09/02/Unity3D_JsonUtility_1.html">Unity3D的JsonUtility使用</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2017-06-03</span>
-        <a class="post-link" href="/travel/2017/06/03/Travel_Kumamoto_Japan.html">2017年旅行记录(上海 - 熊本)</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-10-09</span>
-        <a class="post-link" href="/github/2016/10/09/Build_GitHub_Pages_Update.html">搭建自己的GitHub Pages(二) - 升级Jekyll到3.2</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-10-01</span>
-        <a class="post-link" href="/centos/python/2016/10/01/Glances_Monitor_Centos_InfluxDB_Grafana.html">Glances监控服务器状态</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-09-30</span>
-        <a class="post-link" href="/database/2016/09/30/InfluxDB_Init.html">InfluxDB - 安装</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-09-25</span>
-        <a class="post-link" href="/python/2016/09/25/Note_Python_4.html">Python - SSH及SSH隧道相关</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-09-25</span>
-        <a class="post-link" href="/python/2016/09/25/Note_Python_3.html">Python - 常见类型文件的读写操作(Excel, CSV, Txt等)</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-09-16</span>
-        <a class="post-link" href="/code/2016/09/16/Diff_Between_Concurrency_And__Parallesim.html">并发和并行的区别</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-09-15</span>
-        <a class="post-link" href="/python/2016/09/15/Note_Python_2.html">Python - 语法基础</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-09-12</span>
-        <a class="post-link" href="/python/2016/09/12/Note_Python_Init.html">Python - 安装py环境</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-09-09</span>
-        <a class="post-link" href="/other/2016/09/09/Date_Note_16_09_09.html">杂记 - 20160909</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-07-10</span>
-        <a class="post-link" href="/other/2016/07/10/Date_Note_16_07_10.html">日志 - 20160710</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-06-12</span>
-        <a class="post-link" href="/other/2016/06/12/Last_Night_On_ShangHai.html">在上海的最后一夜</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-06-04</span>
-        <a class="post-link" href="/database/2016/06/04/Why_Use_HikariCP.html">为什么使用HikariCP连接池?</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-06-04</span>
-        <a class="post-link" href="/other/2016/06/04/Interview_Next.html">面试笔试题 - 续</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-06-03</span>
-        <a class="post-link" href="/other/2016/06/03/Interview.html">2016年离职总结</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-05-26</span>
-        <a class="post-link" href="/database/2016/05/26/Redis_SortedSet_Implement_Rank.html">使用Redis实现高实时性的排序</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-05-19</span>
-        <a class="post-link" href="/okra/2016/05/19/Okra_Get_Started.html">Okra框架(四) 使用引导说明</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-04-18</span>
-        <a class="post-link" href="/okra/2016/04/18/Okra_Example_HTTP.html">Okra框架(三) 搭建HTTP服务器</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-04-18</span>
-        <a class="post-link" href="/okra/2016/04/18/Okra_Example_TCP.html">Okra框架(二) 搭建Socket服务器</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-04-18</span>
-        <a class="post-link" href="/okra/2016/04/18/Okra_Framework_Intruduce.html">Okra框架(一) 简介</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-04-15</span>
-        <a class="post-link" href="/rust/2016/04/15/Rust_Note_1.html">Rust笔记(一) 搭建开发环境</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2016-04-13</span>
-        <a class="post-link" href="/github/2016/04/13/Build_GitHub_Pages.html">搭建自己的GitHub Pages</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2015-06-10</span>
-        <a class="post-link" href="/netty/2015/06/10/Netty4.x_7.html">Netty4.x中文教程系列(七) UDP协议</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2014-08-12</span>
-        <a class="post-link" href="/netty/2014/08/12/Netty4.x_6.html">Netty4.x中文教程系列(六) 从头开始Bootstrap</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2014-04-09</span>
-        <a class="post-link" href="/netty/2014/04/09/Netty4.x_5.html">Netty4.x中文教程系列(五) 编解码器Codec</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2014-01-15</span>
-        <a class="post-link" href="/netty/2014/01/15/Netty4.x_4.html">Netty4.x中文教程系列(四) ChannelHandler</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2014-01-06</span>
-        <a class="post-link" href="/netty/2014/01/06/Netty4.x_3.html">Netty4.x中文教程系列(三) Hello World ！详解</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2013-12-26</span>
-        <a class="post-link" href="/netty/2013/12/26/Netty4.x_2.html">Netty4.x中文教程系列(二) Hello World !</a>
-    </li>
-    
-    <li>
-        <span class="post-date">2013-12-26</span>
-        <a class="post-link" href="/netty/2013/12/26/Netty4.x_1.html">Netty4.x中文教程系列(一) 目录及概述</a>
-    </li>
-    
-</ul>
+        <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <h1 class="post-title">Unity3D的JsonUtility使用</h1>
+  </header>
+
+  <section class="post">
+    <p>记录一下使用JsonUtility遇到的坑.</p>
+
+<h2 id="section">1. 类或字段必须是可序列化的</h2>
+
+<ol>
+  <li>class必须是public或者带[Serializable]的Attribute.</li>
+  <li>field必须是public或带[SerializeField]的Attribute.</li>
+</ol>
+
+<p>[SerializeField]属性, 有UnityEngine提供, 表示序列化时需要强制序列化这个字段.</p>
+
+<div class="language-csharp highlighter-rouge"><pre class="highlight"><code><span class="na">[Serializable]</span>
+<span class="k">internal</span> <span class="k">class</span> <span class="nc">CfgBuild</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">int</span> <span class="n">Id</span><span class="p">;</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span><span class="p">;</span>
+    <span class="p">[</span><span class="n">SerializeField</span><span class="p">]</span>
+    <span class="k">private</span> <span class="kt">int</span> <span class="n">Age</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h2 id="jsonarray">2. 不支持解析Json的Array</h2>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="w">    </span><span class="p">[</span><span class="w">  </span><span class="p">{</span><span class="nt">"ID"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"Name"</span><span class="p">:</span><span class="s2">"n1"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="nt">"ID"</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">"Name"</span><span class="p">:</span><span class="s2">"n2"</span><span class="p">}</span><span class="w"> </span><span class="p">]</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>上面的JSON会直接反序列化失败.  但是支持JSON中包含Array, 如下所示:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="w">    </span><span class="p">{</span><span class="nt">"list"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">  </span><span class="p">{</span><span class="nt">"ID"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"Name"</span><span class="p">:</span><span class="s2">"n1"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="nt">"ID"</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">"Name"</span><span class="p">:</span><span class="s2">"n2"</span><span class="p">}</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>目前笔者搜索的解决方案也是在外部封装一层.</p>
+
+<h2 id="getset">3. 不支持get和set</h2>
+
+<div class="language-csharp highlighter-rouge"><pre class="highlight"><code><span class="c1">//  get和set不支持
+//  public int ret { get; set; }
+</span></code></pre>
+</div>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>不会报错，不影响代码执行。但是会导致反序列化后的bean没有赋值. 
+</code></pre>
+</div>
+
+<h2 id="section-1">4. 其他</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>笔者使用还比较少, 没有详细去处理异常的状态. 扩展信息可以从参考资料中查看
+</code></pre>
+</div>
+
+<h2 id="section-2">5. 参考资料</h2>
+
+<ol>
+  <li><a href="http://www.cnblogs.com/zhaoqingqing/p/3995304.html">SerializeField和Serializable</a>.</li>
+</ol>
+
+
+  </section>
+
+</article>
     </div>
     <footer class="footer">
   <span class="footer__copyright">&copy; 2017 - TinyZ版权所有 .</span>
