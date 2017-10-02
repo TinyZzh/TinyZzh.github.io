@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <title>Python - 安装py环境</title>
+  <title>Unity3D的JsonUtility使用</title>
   <meta name="description" content="专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。">
   <meta name="author" content="TinyZ">
   <meta name="HandheldFriendly" content="True">
@@ -43,7 +43,7 @@
   <meta name="theme-color" content="#ffffff">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="https://tinyzzh.github.io//python/2016/09/12/Note_Python_Init.html">
+  <link rel="canonical" href="https://tinyzzh.github.io//unity3d/2017/09/02/Unity3D_JsonUtility_1.html">
   <link rel="alternate" type="application/rss+xml" title="TinyZ's Blog" href="/feed.xml">
 
 </head>
@@ -145,83 +145,69 @@
         <article class="post-container post-container--single">
 
   <header class="post-header">
-    <h1 class="post-title">Python - 安装py环境</h1>
+    <h1 class="post-title">Unity3D的JsonUtility使用</h1>
   </header>
 
   <section class="post">
-    <p>昨天帮同事从MySQL数据库统计查运营数据。越查越感觉到深深的恶意（要查的数据太多了，而且由于数据量问题，每一个SQL执行时间都比较长）。
-于是下定决心折腾一下Python。下次可以用脚本去完成查询操作。避免人工手动查询的作死。</p>
+    <p>记录一下使用JsonUtility遇到的坑.</p>
 
-<p>第一天下午开始学习Python，折腾下载和安装相关的环境。今天搞定了记录一下。</p>
+<h2 id="section">1. 类或字段必须是可序列化的</h2>
 
-<p>笔者从事网络游戏服务器开发，业务基本不需要Python脚本，感觉linux环境需要一个脚本语言，快速帮助自己开发一些小工具。
-且一般CentOS 6.5和7.0操作系统打交道比较多。 CentOS系统默认自带Python环境是2.x版本。最终选择学习python 2.x 而不是3.x。</p>
+<ol>
+  <li>class必须是public或者带[Serializable]的Attribute.</li>
+  <li>field必须是public或带[SerializeField]的Attribute.</li>
+</ol>
 
-<p>开发环境：Windows 10
-编辑器：PyCharm 2016 社区开源版</p>
+<p>[SerializeField]属性, 有UnityEngine提供, 表示序列化时需要强制序列化这个字段.</p>
 
-<h2 id="python">安装Python环境</h2>
-
-<p>下载python 2.7.12<a href="https://www.python.org/downloads/">官网下载地址</a>版本。选择<a href="https://www.python.org/ftp/python/2.7.12/python-2.7.12.msi">“Windows x86 MSI installer”</a>
-下载安装对应版本。</p>
-
-<h2 id="mysqldb">安装MySQLdb</h2>
-
-<p>初次入门就直接选择mysql相关的内容作为切入口(新手不推荐这么做)，MySQL安装遇到很多坑。</p>
-
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#&gt; pip install MySQL-python</span>
+<div class="language-csharp highlighter-rouge"><pre class="highlight"><code><span class="na">[Serializable]</span>
+<span class="k">internal</span> <span class="k">class</span> <span class="nc">CfgBuild</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">int</span> <span class="n">Id</span><span class="p">;</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span><span class="p">;</span>
+    <span class="p">[</span><span class="n">SerializeField</span><span class="p">]</span>
+    <span class="k">private</span> <span class="kt">int</span> <span class="n">Age</span><span class="p">;</span>
+<span class="p">}</span>
 </code></pre>
 </div>
 
-<p>提示缺少VC对Python的编译环境。</p>
+<h2 id="jsonarray">2. 不支持解析Json的Array</h2>
 
-<p>下载和安装VCForPython27<a href="http://www.microsoft.com/en-us/download/details.aspx?id=44266">下载地址</a></p>
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="w">    </span><span class="p">[</span><span class="w">  </span><span class="p">{</span><span class="nt">"ID"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"Name"</span><span class="p">:</span><span class="s2">"n1"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="nt">"ID"</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">"Name"</span><span class="p">:</span><span class="s2">"n2"</span><span class="p">}</span><span class="w"> </span><span class="p">]</span><span class="w">
+</span></code></pre>
+</div>
 
-<p>继续pip安装。依旧报错</p>
+<p>上面的JSON会直接反序列化失败.  但是支持JSON中包含Array, 如下所示:</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#&gt; ... Cannot open include file: 'config-win.h': .....</span>
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="w">    </span><span class="p">{</span><span class="nt">"list"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">  </span><span class="p">{</span><span class="nt">"ID"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"Name"</span><span class="p">:</span><span class="s2">"n1"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="nt">"ID"</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">"Name"</span><span class="p">:</span><span class="s2">"n2"</span><span class="p">}</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>目前笔者搜索的解决方案也是在外部封装一层.</p>
+
+<h2 id="getset">3. 不支持get和set</h2>
+
+<div class="language-csharp highlighter-rouge"><pre class="highlight"><code><span class="c1">//  get和set不支持
+//  public int ret { get; set; }
+</span></code></pre>
+</div>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>不会报错，不影响代码执行。但是会导致反序列化后的bean没有赋值. 
 </code></pre>
 </div>
 
-<p>一番Google之后改用easy_install。easy_install默认在{$_PYTHON_HOME}/Scripts/目录下和pip同级。</p>
+<h2 id="section-1">4. 其他</h2>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#&gt; easy_install MySQL-python</span>
+<div class="highlighter-rouge"><pre class="highlight"><code>笔者使用还比较少, 没有详细去处理异常的状态. 扩展信息可以从参考资料中查看
 </code></pre>
 </div>
 
-<p>在公司采用这种方式顺利安装MySQL扩展完成。</p>
+<h2 id="section-2">5. 参考资料</h2>
 
-<p>晚上回家之后重复走了一遍安装配置流程。网络不好的情况，会出现time out问题。
-一番尝试，最后没办法修改为从<a href="https://pypi.python.org/pypi/MySQL-python">MySQL-python</a>
-下载对应的版本<a href="https://pypi.python.org/packages/27/06/596ae3afeefc0cda5840036c42920222cb8136c101ec0f453f2e36df12a0/MySQL-python-1.2.5.win32-py2.7.exe#md5=6f43f42516ea26e79cfb100af69a925e">MySQL-python-1.2.5.win32-py2.7.exe (md5)</a></p>
+<ol>
+  <li><a href="http://www.cnblogs.com/zhaoqingqing/p/3995304.html">SerializeField和Serializable</a>.</li>
+</ol>
 
-<h2 id="section">测试示例</h2>
-
-<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="c">#!/usr/bin/python</span>
-<span class="c"># -*- coding: UTF-8 -*-</span>
-
-<span class="kn">import</span> <span class="nn">MySQLdb</span>
-
-<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s">'host'</span><span class="p">:</span> <span class="s">'127.0.0.1'</span><span class="p">,</span> <span class="s">'db'</span><span class="p">:</span> <span class="s">'test_db'</span><span class="p">,</span> <span class="s">'user'</span><span class="p">:</span> <span class="s">'root'</span><span class="p">,</span> <span class="s">'passwd'</span><span class="p">:</span> <span class="s">'123456'</span><span class="p">}</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="n">conn</span> <span class="o">=</span> <span class="n">MySQLdb</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s">'host'</span><span class="p">],</span> <span class="n">db</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s">'db'</span><span class="p">],</span> <span class="n">user</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s">'user'</span><span class="p">],</span> <span class="n">passwd</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s">'passwd'</span><span class="p">])</span>
-    <span class="n">conn</span><span class="o">.</span><span class="n">set_character_set</span><span class="p">(</span><span class="s">'utf8'</span><span class="p">)</span>
-
-    <span class="n">cur</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">"show databases;"</span><span class="p">)</span>
-
-    <span class="n">cur</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-<span class="k">except</span> <span class="n">MySQLdb</span><span class="o">.</span><span class="n">Error</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
-    <span class="k">print</span> <span class="s">"Mysql Error </span><span class="si">%</span><span class="s">d: </span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-
-<span class="k">print</span> <span class="s">"endl"</span>
-</code></pre>
-</div>
-
-<h2 id="section-1">总结</h2>
-
-<p>至此, 完整的python环境就安装好了。enjoy it !</p>
 
   </section>
 

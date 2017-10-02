@@ -5,9 +5,200 @@
     <description>专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。</description>
     <link>https://tinyzzh.github.io//</link>
     <atom:link href="https://tinyzzh.github.io//feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>2017-06-04</pubDate>
-    <lastBuildDate>2017-06-04</lastBuildDate>
+    <pubDate>2017-10-02</pubDate>
+    <lastBuildDate>2017-10-02</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>Okra-Ax设计说明</title>
+        <description>&lt;p&gt;Okra是一个构建在Netty框架和Disruptor框架之上轻量级JAVA服务器框架。
+使用Netty实现高性能，可灵活扩展的网络通信，使用Disruptor实现高吞吐量，低延迟的并发。&lt;/p&gt;
+
+&lt;p&gt;如何将Okra应用到实际开发中?&lt;/p&gt;
+
+&lt;p&gt;本文旨在帮助初次接触Okra框架的用户上手使用Okra框架.&lt;/p&gt;
+
+&lt;h2 id=&quot;okra-xyzjar&quot;&gt;1. 下载Okra-x.y.z.jar&lt;/h2&gt;
+
+&lt;p&gt;首先我们需要下载Okra框架最新的稳定版本.Jar:&lt;a href=&quot;https://github.com/ogcs/Okra/releases&quot;&gt;下载地址&lt;/a&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;目前Okra没有推送到Maven仓库,使用Okra-x.y.z.jar需要手动添加类库引用.&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;2. 导入工程&lt;/h2&gt;
+
+&lt;p&gt;本文以Intellij IDEA 2016.1.2为例. IDEA提供多种多样的添加类库的途径. 本段只做简单的举例示范.&lt;/p&gt;
+
+&lt;p&gt;方法一: 设置通用类库导入&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;打开工程设置. “File” -&amp;gt; “Project Structure…” 或者使用快捷键(Ctrl + Alt + + Shift + S).&lt;/li&gt;
+  &lt;li&gt;选择”Global Libraries”, 点击符号”+”，添加Okra-x.y.z.jar为通用类库.&lt;/li&gt;
+  &lt;li&gt;添加Okra到工程中, 选中新添加的Okra-x.y.z.jar点击鼠标右键 -&amp;gt; “Add to Modules” 选中对应的模块, 最终”Ok”, 完成导入&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;方法二: 在Modules界面设置导入&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;打开工程设置. “File” -&amp;gt; “Project Structure…” 或者使用快捷键(Ctrl + Alt + + Shift + S).&lt;/li&gt;
+  &lt;li&gt;选择”Modules”， 选中需要添加Okra的模块, 点击”Dependencies”, 点击符号”+”.&lt;/li&gt;
+  &lt;li&gt;点击”JARs or directories”选择Okra文件或所在目录按照提示完成添加&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;okra&quot;&gt;3. Okra框架的依赖&lt;/h2&gt;
+&lt;p&gt;Okra核心是整合Netty和Disruptor两个框架. 以便于快速开发高并发, 低延迟，高吞吐量， 灵活可扩展的网络服务器.&lt;/p&gt;
+
+&lt;p&gt;(required) :&lt;/p&gt;
+
+&lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;io.netty&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;netty-all&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;4.0.36.Final&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;com.lmax&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;disruptor&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;3.3.2&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;(optional) :&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Spring框架支持&lt;/p&gt;
+
+    &lt;p&gt;使用Spring框架, 除了Spring框架自身带来的IOC等便利之外, 还可以快速集成大量优秀的类库, 例如: Hibernate, Mybatis, BoneCP, HikariCP等等.&lt;/p&gt;
+
+    &lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-context&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;4.2.2.RELEASE&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Flex通信支持&lt;/p&gt;
+
+    &lt;p&gt;Flex客户端和Java服务端的通信支持依赖于&lt;strong&gt;BlazeDS&lt;/strong&gt;类库.&lt;/p&gt;
+
+    &lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.apache.flex.blazeds&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;flex-messaging-core&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;4.7.2&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.apache.flex.blazeds&lt;span class=&quot;nt&quot;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;flex-messaging-common&lt;span class=&quot;nt&quot;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;4.7.2&lt;span class=&quot;nt&quot;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;4. 项目中使用&lt;/h2&gt;
+
+&lt;p&gt;示例1: &lt;a href=&quot;https://github.com/ogcs/Okra/wiki/Okra%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BAHTTP%E6%9C%8D%E5%8A%A1%E5%99%A8&quot;&gt;Okra框架搭建HTTP服务器&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;示例2: &lt;a href=&quot;https://github.com/ogcs/Okra/wiki/Okra%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BASocket%E6%9C%8D%E5%8A%A1%E5%99%A8&quot;&gt;Okra框架搭建Socket服务器&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Java服务器Demo: &lt;a href=&quot;https://github.com/ogcs/Okra/tree/master/okra-demo&quot;&gt;okra-demo&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;5. 总结&lt;/h2&gt;
+
+&lt;p&gt;本文旨在帮助初次接触Okra框架的用户，快速搭建基于Okra的网络服务器. 提供了两个简单的示例和一个相对来说比较完整的服务端demo.
+用户在实际开发过程中遇到问题或者BUG欢迎反馈到&lt;strong&gt;&lt;a href=&quot;https://github.com/ogcs/Okra/issues&quot;&gt;issues&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+</description>
+        <pubDate>2017-09-23</pubDate>
+        <link>https://tinyzzh.github.io//okra-ax/okra/2017/09/23/Okra_Ax_Design_Description.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//okra-ax/okra/2017/09/23/Okra_Ax_Design_Description.html</guid>
+        
+        <category>Okra-Ax</category>
+        
+        
+        <category>Okra-Ax</category>
+        
+        <category>Okra</category>
+        
+      </item>
+    
+      <item>
+        <title>Unity3D的JsonUtility使用</title>
+        <description>&lt;p&gt;记录一下使用JsonUtility遇到的坑.&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;1. 类或字段必须是可序列化的&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;class必须是public或者带[Serializable]的Attribute.&lt;/li&gt;
+  &lt;li&gt;field必须是public或带[SerializeField]的Attribute.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;[SerializeField]属性, 有UnityEngine提供, 表示序列化时需要强制序列化这个字段.&lt;/p&gt;
+
+&lt;div class=&quot;language-csharp highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;[Serializable]&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;internal&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;CfgBuild&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SerializeField&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;jsonarray&quot;&gt;2. 不支持解析Json的Array&lt;/h2&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;w&quot;&gt;    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;ID&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;n1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;ID&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;n2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;上面的JSON会直接反序列化失败.  但是支持JSON中包含Array, 如下所示:&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;w&quot;&gt;    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;list&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;ID&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;n1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;ID&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;n2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;目前笔者搜索的解决方案也是在外部封装一层.&lt;/p&gt;
+
+&lt;h2 id=&quot;getset&quot;&gt;3. 不支持get和set&lt;/h2&gt;
+
+&lt;div class=&quot;language-csharp highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;//  get和set不支持
+//  public int ret { get; set; }
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;不会报错，不影响代码执行。但是会导致反序列化后的bean没有赋值. 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;4. 其他&lt;/h2&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;笔者使用还比较少, 没有详细去处理异常的状态. 扩展信息可以从参考资料中查看
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;5. 参考资料&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/zhaoqingqing/p/3995304.html&quot;&gt;SerializeField和Serializable&lt;/a&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+
+</description>
+        <pubDate>2017-09-02</pubDate>
+        <link>https://tinyzzh.github.io//unity3d/2017/09/02/Unity3D_JsonUtility_1.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//unity3d/2017/09/02/Unity3D_JsonUtility_1.html</guid>
+        
+        <category>Unity3D</category>
+        
+        
+        <category>Unity3D</category>
+        
+      </item>
     
       <item>
         <title>2017年旅行记录(上海 - 熊本)</title>
@@ -515,113 +706,6 @@ sudo yum localinstall influxdb-1.0.0.x86_64.rpm
         
         
         <category>Python</category>
-        
-      </item>
-    
-      <item>
-        <title>Python - 安装py环境</title>
-        <description>&lt;p&gt;昨天帮同事从MySQL数据库统计查运营数据。越查越感觉到深深的恶意（要查的数据太多了，而且由于数据量问题，每一个SQL执行时间都比较长）。
-于是下定决心折腾一下Python。下次可以用脚本去完成查询操作。避免人工手动查询的作死。&lt;/p&gt;
-
-&lt;p&gt;第一天下午开始学习Python，折腾下载和安装相关的环境。今天搞定了记录一下。&lt;/p&gt;
-
-&lt;p&gt;笔者从事网络游戏服务器开发，业务基本不需要Python脚本，感觉linux环境需要一个脚本语言，快速帮助自己开发一些小工具。
-且一般CentOS 6.5和7.0操作系统打交道比较多。 CentOS系统默认自带Python环境是2.x版本。最终选择学习python 2.x 而不是3.x。&lt;/p&gt;
-
-&lt;p&gt;开发环境：Windows 10
-编辑器：PyCharm 2016 社区开源版&lt;/p&gt;
-
-&lt;h2 id=&quot;python&quot;&gt;安装Python环境&lt;/h2&gt;
-
-&lt;p&gt;下载python 2.7.12&lt;a href=&quot;https://www.python.org/downloads/&quot;&gt;官网下载地址&lt;/a&gt;版本。选择&lt;a href=&quot;https://www.python.org/ftp/python/2.7.12/python-2.7.12.msi&quot;&gt;“Windows x86 MSI installer”&lt;/a&gt;
-下载安装对应版本。&lt;/p&gt;
-
-&lt;h2 id=&quot;mysqldb&quot;&gt;安装MySQLdb&lt;/h2&gt;
-
-&lt;p&gt;初次入门就直接选择mysql相关的内容作为切入口(新手不推荐这么做)，MySQL安装遇到很多坑。&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#&amp;gt; pip install MySQL-python&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;提示缺少VC对Python的编译环境。&lt;/p&gt;
-
-&lt;p&gt;下载和安装VCForPython27&lt;a href=&quot;http://www.microsoft.com/en-us/download/details.aspx?id=44266&quot;&gt;下载地址&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;继续pip安装。依旧报错&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#&amp;gt; ... Cannot open include file: 'config-win.h': .....&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;一番Google之后改用easy_install。easy_install默认在{$_PYTHON_HOME}/Scripts/目录下和pip同级。&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#&amp;gt; easy_install MySQL-python&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;在公司采用这种方式顺利安装MySQL扩展完成。&lt;/p&gt;
-
-&lt;p&gt;晚上回家之后重复走了一遍安装配置流程。网络不好的情况，会出现time out问题。
-一番尝试，最后没办法修改为从&lt;a href=&quot;https://pypi.python.org/pypi/MySQL-python&quot;&gt;MySQL-python&lt;/a&gt;
-下载对应的版本&lt;a href=&quot;https://pypi.python.org/packages/27/06/596ae3afeefc0cda5840036c42920222cb8136c101ec0f453f2e36df12a0/MySQL-python-1.2.5.win32-py2.7.exe#md5=6f43f42516ea26e79cfb100af69a925e&quot;&gt;MySQL-python-1.2.5.win32-py2.7.exe (md5)&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;测试示例&lt;/h2&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/python&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# -*- coding: UTF-8 -*-&lt;/span&gt;
-
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;MySQLdb&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'host'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'127.0.0.1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'db'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'test_db'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'user'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'root'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'passwd'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'123456'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MySQLdb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'host'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'db'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'user'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passwd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'passwd'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_character_set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'utf8'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;cur&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;cur&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;show databases;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;cur&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;except&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MySQLdb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Mysql Error &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;d: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;endl&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;至此, 完整的python环境就安装好了。enjoy it !&lt;/p&gt;
-</description>
-        <pubDate>2016-09-12</pubDate>
-        <link>https://tinyzzh.github.io//python/2016/09/12/Note_Python_Init.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//python/2016/09/12/Note_Python_Init.html</guid>
-        
-        <category>Python</category>
-        
-        
-        <category>Python</category>
-        
-      </item>
-    
-      <item>
-        <title>杂记 - 20160909</title>
-        <description>&lt;p&gt;从8月15号开始到现在,被杭州G20折腾将近一个月。总算是过去了。&lt;/p&gt;
-
-&lt;p&gt;笔者住主城区从8月15号开始，房东的房子不允许住了。被安排到城站边上凑活住了半个月。&lt;/p&gt;
-
-&lt;p&gt;8月31号从杭州到天津，4号转北京，9月8号回杭州。&lt;/p&gt;
-
-</description>
-        <pubDate>2016-09-09</pubDate>
-        <link>https://tinyzzh.github.io//other/2016/09/09/Date_Note_16_09_09.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//other/2016/09/09/Date_Note_16_09_09.html</guid>
-        
-        <category>生活</category>
-        
-        
-        <category>Other</category>
         
       </item>
     
