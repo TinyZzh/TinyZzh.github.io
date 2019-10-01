@@ -43,7 +43,7 @@
   <meta name="theme-color" content="#ffffff">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="https://tinyzzh.github.io//okra/2016/04/18/Okra_Example_TCP.html">
+  <link rel="canonical" href="http://localhost:4000//okra/2016/04/18/Okra_Example_TCP.html">
   <link rel="alternate" type="application/rss+xml" title="TinyZ's Blog" href="/feed.xml">
 
 </head>
@@ -153,13 +153,38 @@
 博主接触的网络游戏（包含但不限于网页, 手机）的服务端通信使用的协议基本上就Socket，Http或是WebSocket三种方式。
 本系列教程将介绍利用Okra框架这三种通信方式的示例。</p>
 
-<h3 id="executor">1. 创建Executor</h3>
+<h3 id="1-创建executor">1. 创建Executor</h3>
 
 <p>在通信过程中，我们可以把每一个消息可以当做是一个任务。Executor则是Okra中负责处理每一条消息的任务执行者。
 同时，每一个Executor都是一个并发线程。
 如下代码实现一个简单的示例ObjectExecutor:</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ObjectExecutor</span> <span class="kd">implements</span> <span class="n">Executor</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+</pre></td><td class="rouge-code"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ObjectExecutor</span> <span class="kd">implements</span> <span class="n">Executor</span> <span class="o">{</span>
 
     <span class="kd">protected</span> <span class="n">Session</span> <span class="n">session</span><span class="o">;</span>
     <span class="kd">protected</span> <span class="n">Object</span> <span class="n">request</span><span class="o">;</span>
@@ -184,25 +209,51 @@
         <span class="k">this</span><span class="o">.</span><span class="na">request</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
-</div>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>Okra提供了封装好的Disruptor桥用于Netty结合Disruptor。Okra通过Executor工厂让用户可以便捷灵活的定制特殊的处理者.</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ExampleSocketHandler</span> <span class="kd">extends</span> <span class="n">DisruptorAdapterBy41xHandler</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ExampleSocketHandler</span> <span class="kd">extends</span> <span class="n">DisruptorAdapterBy41xHandler</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="o">{</span>
     <span class="nd">@Override</span>
     <span class="kd">protected</span> <span class="n">Executor</span> <span class="nf">newExecutor</span><span class="o">(</span><span class="n">Session</span> <span class="n">session</span><span class="o">,</span> <span class="n">Object</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">return</span> <span class="k">new</span> <span class="nf">ObjectExecutor</span><span class="o">(</span><span class="n">session</span><span class="o">,</span> <span class="n">msg</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
-</div>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
-<h3 id="server">2. 创建Server</h3>
+<h3 id="2-创建server">2. 创建Server</h3>
 
 <p>然后创建一个Server继承TcpProtocolServer实现自己的服务器类. 增加Handler处理</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TcpServer</span> <span class="kd">extends</span> <span class="n">TcpProtocolServer</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+</pre></td><td class="rouge-code"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TcpServer</span> <span class="kd">extends</span> <span class="n">TcpProtocolServer</span> <span class="o">{</span>
 
     <span class="kd">public</span> <span class="nf">TcpServer</span><span class="o">(</span><span class="kt">int</span> <span class="n">port</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">setPort</span><span class="o">(</span><span class="n">port</span><span class="o">);</span>
@@ -224,30 +275,33 @@
         <span class="o">};</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
-</div>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
-<h3 id="section">3. 启动服务器</h3>
+<h3 id="3-启动服务器">3. 启动服务器</h3>
 
 <p>假如你的项目中使用了Spring框架，那么只需要在配置如下bean就可以启动:</p>
 
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="c">&lt;!-- Tcp server --&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="c">&lt;!-- Tcp server --&gt;</span>
 <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"tcpServer"</span> <span class="na">class=</span><span class="s">"org.ogcs.okra.example.socket.TcpServer"</span> <span class="na">init-method=</span><span class="s">"start"</span> <span class="na">destroy-method=</span><span class="s">"stop"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;constructor-arg</span> <span class="na">name=</span><span class="s">"port"</span> <span class="na">value=</span><span class="s">"${tcp.port}"</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/bean&gt;</span>
-</code></pre>
-</div>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>普通Java程序:</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">TcpServer</span> <span class="n">server</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TcpServer</span><span class="o">(</span><span class="mi">9005</span><span class="o">);</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="n">TcpServer</span> <span class="n">server</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TcpServer</span><span class="o">(</span><span class="mi">9005</span><span class="o">);</span>
 <span class="n">server</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
-</code></pre>
-</div>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>只需要简短的两行代码就可以启动服务器了。</p>
 
-<h3 id="section-1">4. 总结</h3>
+<h3 id="4-总结">4. 总结</h3>
 <p>本文介绍了使用Okra快速搭建高可用，高性能，可扩展，高并发服务器的示例。Okra通过封装，简化了服务器搭建过程。</p>
 
 
@@ -256,7 +310,7 @@
 </article>
     </div>
     <footer class="footer">
-  <span class="footer__copyright">&copy; 2017 - TinyZ版权所有 .</span>
+  <span class="footer__copyright">&copy; 2019 - TinyZ版权所有 .</span>
 </footer> 
 
 <script type="text/javascript" src="/js/jquery-1.12.3.min.js"></script>

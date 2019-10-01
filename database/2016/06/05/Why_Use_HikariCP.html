@@ -43,7 +43,7 @@
   <meta name="theme-color" content="#ffffff">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="https://tinyzzh.github.io//database/2016/06/04/Why_Use_HikariCP.html">
+  <link rel="canonical" href="http://localhost:4000//database/2016/06/05/Why_Use_HikariCP.html">
   <link rel="alternate" type="application/rss+xml" title="TinyZ's Blog" href="/feed.xml">
 
 </head>
@@ -159,7 +159,7 @@
   <li><strong>写</strong>数据：先写入Redis，然后异步提交到MySQL写入线程，实现数据落地。</li>
 </ol>
 
-<h2 id="section">问题1：如何保证数据读写的“原子性”?如何解决脏数据?</h2>
+<h2 id="问题1如何保证数据读写的原子性如何解决脏数据">问题1：如何保证数据读写的“原子性”?如何解决脏数据?</h2>
 
 <p>众所周知，当使用数据库跨表操作时，利用数据库引擎提供的事务和回滚机制，可以保证数据库跨表操作的原子性。</p>
 
@@ -181,7 +181,7 @@
 
 <p>wtf…  当时一下子感觉自己有点懵逼的。才发现整个就理解错了。瞬间也是好尴尬。</p>
 
-<h2 id="hikaricp">问题2：HikariCP是什么?</h2>
+<h2 id="问题2hikaricp是什么">问题2：HikariCP是什么?</h2>
 
 <p>HikariCP是一个高性能的JDBC连接池。Hikari是日语“光”的意思。可能是目前java业界最快的数据库连接池（BoneCP因此停止维护，其作者推荐HikariCP）。
 面试官说项目用的c3p0作为数据库连接池，也没接触过HikariCP。还问了何时连接池会关闭数据库的连接。</p>
@@ -191,7 +191,7 @@
 
 <p>下面是总结</p>
 
-<h2 id="section-1">数据库连接池技术</h2>
+<h2 id="数据库连接池技术">数据库连接池技术</h2>
 
 <p>数据库连接池负责分配、管理和释放数据库的连接。</p>
 
@@ -200,7 +200,7 @@
   <li>统一的连接管理。释放空闲时间超过最大空闲时间的数据库连接，避免因为没有释放数据库连接而引起的数据库连接泄漏。</li>
 </ol>
 
-<h2 id="section-2">一些数据库连接池的对比</h2>
+<h2 id="一些数据库连接池的对比">一些数据库连接池的对比</h2>
 
 <p>首先明确：无论任何形式的数据库连接复用（数据库连接池技术）都避免了频繁建立、关闭数据库连接带来的开销。性能相对于没有连接池有质的提升。
 另外一点需要明确：数据库连接池一般不会成为整个程序的性能瓶颈。更多的出现在数据库读写，带宽，cpu等方面（开始人云亦云模式，o(∩_∩)o 哈哈）。</p>
@@ -209,7 +209,7 @@
 文章<a href="http://freeman1.iteye.com/blog/2268874">数据库连接池性能比对</a>很早之前看到过，但一直没找到原帖。
 皇天不负有心人，今天总算是挖出来了原帖（鄙视一下盗链和转帖不挂源地址的）。</p>
 
-<h2 id="hikaricp-1">HikariCP</h2>
+<h2 id="hikaricp">HikariCP</h2>
 
 <p><a href="https://github.com/brettwooldridge/HikariCP">HikariCP</a>可能是目前业内最快的数据库连接池。</p>
 
@@ -240,7 +240,7 @@
 
 <p>有兴趣可以去GitHub查看。有中文文档。o(∩_∩)o 哈哈。阿里威武</p>
 
-<h2 id="section-3">结论</h2>
+<h2 id="结论">结论</h2>
 
 <p>为什么使用HikariCP?
 首先它是一个优秀的数据库连接池，代码少，<strong>效率高</strong>。
@@ -254,7 +254,7 @@
 </article>
     </div>
     <footer class="footer">
-  <span class="footer__copyright">&copy; 2017 - TinyZ版权所有 .</span>
+  <span class="footer__copyright">&copy; 2019 - TinyZ版权所有 .</span>
 </footer> 
 
 <script type="text/javascript" src="/js/jquery-1.12.3.min.js"></script>

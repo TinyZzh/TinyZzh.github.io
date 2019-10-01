@@ -43,7 +43,7 @@
   <meta name="theme-color" content="#ffffff">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="https://tinyzzh.github.io//database/2016/05/26/Redis_SortedSet_Implement_Rank.html">
+  <link rel="canonical" href="http://localhost:4000//database/2016/05/26/Redis_SortedSet_Implement_Rank.html">
   <link rel="alternate" type="application/rss+xml" title="TinyZ's Blog" href="/feed.xml">
 
 </head>
@@ -152,7 +152,7 @@
     <p>一般应用或游戏都会有各种各样的排行榜。排行榜往往可以满足了用户互相攀比炫耀，刺激内消费等等好处。
 用户往往希望自己能在排行榜取得显著的位置。 那如何实现开销低实时性高的排行榜呢?</p>
 
-<h2 id="section">引言</h2>
+<h2 id="引言">引言</h2>
 
 <p>记得那年，笔者还刚入行的时候。需要为一款MMORPG实现一个玩家的等级排行榜。
 排序规则是优先根据等级排序，等级相同根据经验值排序，经验值相同根据满级时间排序。</p>
@@ -163,7 +163,7 @@
 
 <p>那个时候的业务量小，小区小服玩家不多，对实时性要求也不高，就这么算是实现了。O(∩_∩)O哈哈~。跑偏了。下面正题</p>
 
-<h2 id="sorted-set">Sorted Set应用</h2>
+<h2 id="sorted-set应用">Sorted Set应用</h2>
 
 <p>Redis提供基于跳跃表(skip list)实现的时间复杂度大致为(O(log(n)))的有序集合(Sorted Set)。
 本文讲的核心内容实现高实时性的排行榜，就是根据Redis的这一数据结构来的。</p>
@@ -186,7 +186,7 @@
 <p>下面来正菜了。因为redis保存的数据是64位的，而我们需要的数据可能不需要64位这么多。
 既如此合理分析拆分这64位长度拼接并组合成我们需要的数据，就可以实现简单的多条件排序了。</p>
 
-<h2 id="section-1">分析各部分数据的取值范围</h2>
+<h2 id="分析各部分数据的取值范围">分析各部分数据的取值范围</h2>
 
 <p>先普及一点基础知识.</p>
 
@@ -206,25 +206,35 @@
 <p>目前笔者能想到的就是通过降低数值规模。例如：
 每1w实际经验值转换为1点排序经验值。即20E实际经验 / 1w = 20w 排序经验.  20w完全足够24位二进制来表示了。</p>
 
-<h2 id="section-2">示例</h2>
+<h2 id="示例">示例</h2>
 
 <p>实现优先等级排序，经验排序，满级时间。</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="rouge-code"><pre>
 <span class="kt">int</span> <span class="n">level</span> <span class="o">=</span> <span class="mi">60</span><span class="o">;</span>
 <span class="kt">int</span> <span class="n">exp</span> <span class="o">=</span> <span class="mi">6000000</span><span class="o">;</span>
 <span class="kt">int</span> <span class="n">timestamp</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">/</span> <span class="mi">1000</span><span class="o">);</span>
 
-<span class="kt">long</span> <span class="n">redisScore</span> <span class="o">=</span> <span class="o">((</span><span class="n">level</span> <span class="o">&amp;</span> <span class="mi">0</span><span class="n">xFFL</span><span class="o">)</span> <span class="o">&lt;&lt;</span> <span class="mi">56</span><span class="o">)</span> <span class="o">|</span> <span class="o">((</span><span class="n">exp</span> <span class="o">&amp;</span> <span class="mi">0</span><span class="n">xFFFFFFL</span><span class="o">)</span> <span class="o">&lt;&lt;</span> <span class="mi">32</span><span class="o">)</span> <span class="o">|</span> <span class="o">(</span><span class="n">timestamp</span> <span class="o">&amp;</span> <span class="mi">0</span><span class="n">xFFFFFFFFL</span><span class="o">);</span>
+<span class="kt">long</span> <span class="n">redisScore</span> <span class="o">=</span> <span class="o">((</span><span class="n">level</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="n">L</span><span class="o">)</span> <span class="o">&lt;&lt;</span> <span class="mi">56</span><span class="o">)</span> <span class="o">|</span> <span class="o">((</span><span class="n">exp</span> <span class="o">&amp;</span> <span class="mh">0xFFFFFF</span><span class="n">L</span><span class="o">)</span> <span class="o">&lt;&lt;</span> <span class="mi">32</span><span class="o">)</span> <span class="o">|</span> <span class="o">(</span><span class="n">timestamp</span> <span class="o">&amp;</span> <span class="mh">0xFFFFFFFF</span><span class="n">L</span><span class="o">);</span>
 
-<span class="kt">int</span> <span class="n">tempTime</span> <span class="o">=</span> <span class="n">redisScore</span> <span class="o">&amp;</span> <span class="mi">0</span><span class="n">xFFFFFFFFL</span><span class="o">;</span>
-<span class="kt">int</span> <span class="n">tempExp</span> <span class="o">=</span> <span class="o">(</span><span class="n">redisScore</span> <span class="o">&gt;&gt;</span> <span class="mi">32</span><span class="o">)</span> <span class="o">&amp;</span> <span class="mi">0</span><span class="n">xFFFFFFL</span><span class="o">;</span>
-<span class="kt">int</span> <span class="n">tempLevel</span> <span class="o">=</span> <span class="o">(</span><span class="n">redisScore</span> <span class="o">&gt;&gt;</span> <span class="mi">56</span><span class="o">)</span> <span class="o">&amp;</span> <span class="mi">0</span><span class="n">xFFL</span><span class="o">;</span>
+<span class="kt">int</span> <span class="n">tempTime</span> <span class="o">=</span> <span class="n">redisScore</span> <span class="o">&amp;</span> <span class="mh">0xFFFFFFFF</span><span class="n">L</span><span class="o">;</span>
+<span class="kt">int</span> <span class="n">tempExp</span> <span class="o">=</span> <span class="o">(</span><span class="n">redisScore</span> <span class="o">&gt;&gt;</span> <span class="mi">32</span><span class="o">)</span> <span class="o">&amp;</span> <span class="mh">0xFFFFFF</span><span class="n">L</span><span class="o">;</span>
+<span class="kt">int</span> <span class="n">tempLevel</span> <span class="o">=</span> <span class="o">(</span><span class="n">redisScore</span> <span class="o">&gt;&gt;</span> <span class="mi">56</span><span class="o">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="n">L</span><span class="o">;</span>
 
-</code></pre>
-</div>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
-<h2 id="section-3">总结</h2>
+<h2 id="总结">总结</h2>
 
 <p>详细可以查看Redis的<a href="http://redis.io/commands#sorted_set">官方命令说明文档</a>
 或笔者在Okra框架的example包下的
@@ -237,7 +247,7 @@
 </article>
     </div>
     <footer class="footer">
-  <span class="footer__copyright">&copy; 2017 - TinyZ版权所有 .</span>
+  <span class="footer__copyright">&copy; 2019 - TinyZ版权所有 .</span>
 </footer> 
 
 <script type="text/javascript" src="/js/jquery-1.12.3.min.js"></script>

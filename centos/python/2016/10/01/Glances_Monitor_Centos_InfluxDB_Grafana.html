@@ -43,7 +43,7 @@
   <meta name="theme-color" content="#ffffff">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="https://tinyzzh.github.io//centos/python/2016/10/01/Glances_Monitor_Centos_InfluxDB_Grafana.html">
+  <link rel="canonical" href="http://localhost:4000//centos/python/2016/10/01/Glances_Monitor_Centos_InfluxDB_Grafana.html">
   <link rel="alternate" type="application/rss+xml" title="TinyZ's Blog" href="/feed.xml">
 
 </head>
@@ -161,16 +161,19 @@
 
 <p>Google发现了Glances项目，使用Python开发并且直接支持InfluxDB+Grafana输出显示。</p>
 
-<h2 id="glances">从Glances安装开始</h2>
+<h2 id="从glances安装开始">从Glances安装开始</h2>
 
 <p>Glances提供多系统的多种安装途径。本文只记录笔者安装流程和遇到的问题。</p>
 
 <p>依赖：</p>
 
 <ol>
-  <li><code class="highlighter-rouge">python 2.7,&gt;=3.3</code></li>
-  <li><code class="highlighter-rouge">psutil&gt;=2.0.0</code></li>
-  <li><code class="highlighter-rouge">setuptools</code></li>
+  <li><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>python 2.7,&gt;=3.3</pre></td></tr></tbody></table></code></li>
+  <li><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>psutil&gt;=2.0.0</pre></td></tr></tbody></table></code></li>
+  <li><code class="highlighter-rouge"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>setuptools</pre></td></tr></tbody></table></code></li>
 </ol>
 
 <p>可选依赖:</p>
@@ -190,29 +193,35 @@
 
 <p>我只能攒一句Glances官方提供的自动安装初始化脚本 <a href="https://bit.ly/glances">下载地址</a>支持的太好了。</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">&gt; </span>curl -L https://bit.ly/glances | /bin/bash
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="o">&gt;</span> curl <span class="nt">-L</span> https://bit.ly/glances | /bin/bash
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>对于InfluxDB相关的参数配置:</p>
 
-<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="p">[</span><span class="nx">influxdb</span><span class="p">]</span>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="p">[</span><span class="nx">influxdb</span><span class="p">]</span>
 <span class="nx">host</span><span class="o">=</span><span class="nx">localhost</span>
 <span class="nx">port</span><span class="o">=</span><span class="mi">8086</span>
 <span class="nx">user</span><span class="o">=</span><span class="nx">root</span>
 <span class="nx">password</span><span class="o">=</span><span class="nx">root</span>
 <span class="nx">db</span><span class="o">=</span><span class="nx">glances</span>  <span class="err">#</span> <span class="nx">InfluxDB</span><span class="err">中的数据库</span> <span class="o">-</span> <span class="err">启动</span><span class="nx">Glances</span><span class="err">前要创建对应的数据库</span>
-<span class="nx">tags</span><span class="o">=</span><span class="nx">foo</span><span class="err">:</span><span class="nx">bar</span><span class="p">,</span><span class="nx">spam</span><span class="err">:</span><span class="nx">eggs</span>
-</code></pre>
-</div>
+<span class="nx">tags</span><span class="o">=</span><span class="nx">foo</span><span class="p">:</span><span class="nx">bar</span><span class="p">,</span><span class="nx">spam</span><span class="p">:</span><span class="nx">eggs</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>启动Glances：</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">&gt; </span>glances --export-influxdb
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="o">&gt;</span> glances <span class="nt">--export-influxdb</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
-<h2 id="grafana">配置Grafana数据源</h2>
+<h2 id="配置grafana数据源">配置Grafana数据源</h2>
 
 <p>同样庆幸也是不幸的是：Glances提供了便捷的模板配置。官网模板配置:<a href="https://github.com/nicolargo/glances/blob/master/conf/glances-grafana.json">下载地址</a></p>
 
@@ -222,7 +231,7 @@
 
 <p><strong>Grafana导入的*.json文件中的datasource配置必须对应InfluxDB中的db，否则无法找到数据源</strong></p>
 
-<h2 id="section">总结</h2>
+<h2 id="总结">总结</h2>
 
 <p>至此，整个环境就安装好了。看一下效果：</p>
 
@@ -236,7 +245,7 @@
 </article>
     </div>
     <footer class="footer">
-  <span class="footer__copyright">&copy; 2017 - TinyZ版权所有 .</span>
+  <span class="footer__copyright">&copy; 2019 - TinyZ版权所有 .</span>
 </footer> 
 
 <script type="text/javascript" src="/js/jquery-1.12.3.min.js"></script>

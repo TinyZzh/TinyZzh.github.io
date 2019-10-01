@@ -43,7 +43,7 @@
   <meta name="theme-color" content="#ffffff">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="https://tinyzzh.github.io//other/2016/06/04/Interview_Next.html">
+  <link rel="canonical" href="http://localhost:4000//other/2016/06/04/Interview_Next.html">
   <link rel="alternate" type="application/rss+xml" title="TinyZ's Blog" href="/feed.xml">
 
 </head>
@@ -163,19 +163,44 @@
 
 <p>测试用例:</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
     <span class="kt">int</span><span class="o">[]</span> <span class="n">ary</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[]</span> <span class="o">{</span> <span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">,</span><span class="mi">4</span><span class="o">,</span><span class="mi">5</span><span class="o">,</span><span class="mi">6</span><span class="o">,</span><span class="mi">8</span><span class="o">,</span><span class="mi">5</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">1</span><span class="o">,</span><span class="mi">3</span><span class="o">,</span><span class="mi">9</span><span class="o">,</span><span class="mi">5</span><span class="o">};</span>
     <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
     <span class="n">sort</span><span class="o">(</span><span class="n">ary</span><span class="o">,</span> <span class="n">n</span><span class="o">);</span>
 
     <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
 <span class="o">}</span>
-</code></pre>
-</div>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>逻辑代码如下:</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">array</span><span class="o">,</span> <span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="rouge-code"><pre><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">array</span><span class="o">,</span> <span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
     <span class="kt">int</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="na">length</span> <span class="o">-</span> <span class="mi">1</span><span class="o">;</span>
     <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">h</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">h</span> <span class="o">&lt;</span> <span class="n">array</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">h</span><span class="o">++)</span> <span class="o">{</span>
         <span class="k">if</span> <span class="o">(</span><span class="n">h</span> <span class="o">&gt;</span> <span class="n">tail</span><span class="o">){</span>
@@ -194,8 +219,7 @@
         <span class="o">}</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
-</div>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>延伸版本，当n改为n1，n2…nx数组时如何实现?</p>
 
@@ -213,7 +237,45 @@
 
 <p>算法根据数据的复杂度，时间复杂度最小是(O(n)), 最大是O(n(n+1)/2)。</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+</pre></td><td class="rouge-code"><pre>
 <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">sortn</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">array</span><span class="o">,</span> <span class="n">Integer</span><span class="o">...</span> <span class="n">ns</span><span class="o">)</span> <span class="o">{</span>
     <span class="c1">// 这里的排序保证n的数组是从大到小有序的， 当然可以自己设置，以避免排序的损耗</span>
     <span class="n">Arrays</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">ns</span><span class="o">,</span> <span class="k">new</span> <span class="n">Comparator</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;()</span> <span class="o">{</span>
@@ -251,8 +313,7 @@
     <span class="o">}</span>
     <span class="k">return</span> <span class="n">tail</span><span class="o">;</span>
 <span class="o">}</span>
-</code></pre>
-</div>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>ok。解决问题。以后想到更高效的算法逻辑了。再继续优化。目前可能就这样啦。各位晚安</p>
 
@@ -262,7 +323,7 @@
 </article>
     </div>
     <footer class="footer">
-  <span class="footer__copyright">&copy; 2017 - TinyZ版权所有 .</span>
+  <span class="footer__copyright">&copy; 2019 - TinyZ版权所有 .</span>
 </footer> 
 
 <script type="text/javascript" src="/js/jquery-1.12.3.min.js"></script>

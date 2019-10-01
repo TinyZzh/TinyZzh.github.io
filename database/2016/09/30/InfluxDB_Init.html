@@ -43,7 +43,7 @@
   <meta name="theme-color" content="#ffffff">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="https://tinyzzh.github.io//database/2016/09/30/InfluxDB_Init.html">
+  <link rel="canonical" href="http://localhost:4000//database/2016/09/30/InfluxDB_Init.html">
   <link rel="alternate" type="application/rss+xml" title="TinyZ's Blog" href="/feed.xml">
 
 </head>
@@ -163,26 +163,27 @@
 
 <p>CentOS</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code>wget https://dl.influxdata.com/influxdb/releases/influxdb-1.0.0.x86_64.rpm
-sudo yum localinstall influxdb-1.0.0.x86_64.rpm
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>wget https://dl.influxdata.com/influxdb/releases/influxdb-1.0.0.x86_64.rpm
+<span class="nb">sudo </span>yum localinstall influxdb-1.0.0.x86_64.rpm
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>启动influxdb</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code>&gt;systemctl start influxdb
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="o">&gt;</span>systemctl start influxdb
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>创建配置文件influxdb配置文件:</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code>&gt;influxd config &gt; influxdb.generated.conf
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="o">&gt;</span>influxd config <span class="o">&gt;</span> influxdb.generated.conf
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p><strong>8083端口用于后台管理界面, 8086端口用于HTTP API接口</strong></p>
 
-<h2 id="section">总结</h2>
+<h2 id="总结">总结</h2>
 
 <p>笔者使用的是下载rpm之后安装的办法。
 各位看官可以使用官网示例的安装过程<a href="https://docs.influxdata.com/influxdb/v1.0/introduction/installation/">官方安装示例</a></p>
@@ -193,7 +194,7 @@ sudo yum localinstall influxdb-1.0.0.x86_64.rpm
 </article>
     </div>
     <footer class="footer">
-  <span class="footer__copyright">&copy; 2017 - TinyZ版权所有 .</span>
+  <span class="footer__copyright">&copy; 2019 - TinyZ版权所有 .</span>
 </footer> 
 
 <script type="text/javascript" src="/js/jquery-1.12.3.min.js"></script>

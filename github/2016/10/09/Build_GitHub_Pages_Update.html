@@ -43,7 +43,7 @@
   <meta name="theme-color" content="#ffffff">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="https://tinyzzh.github.io//github/2016/10/09/Build_GitHub_Pages_Update.html">
+  <link rel="canonical" href="http://localhost:4000//github/2016/10/09/Build_GitHub_Pages_Update.html">
   <link rel="alternate" type="application/rss+xml" title="TinyZ's Blog" href="/feed.xml">
 
 </head>
@@ -157,19 +157,23 @@
 
 <p><a href="http://jekyllrb.com/">官网</a>引导如下:</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code>~ <span class="nv">$ </span>&gt;gem install jekyll bundler
-~ <span class="nv">$ </span>&gt;jekyll new my-awesome-site
-~ <span class="nv">$ </span>&gt;cd my-awesome-site
-~/my-awesome-site &gt;bundle <span class="nb">exec </span>jekyll serve
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre>~ <span class="nv">$ </span><span class="o">&gt;</span>gem install jekyll bundler
+~ <span class="nv">$ </span><span class="o">&gt;</span>jekyll new my-awesome-site
+~ <span class="nv">$ </span><span class="o">&gt;</span><span class="nb">cd </span>my-awesome-site
+~/my-awesome-site <span class="o">&gt;</span>bundle <span class="nb">exec </span>jekyll serve
 <span class="c"># =&gt; Now browse to http://localhost:4000   (现在浏览器打开http://localhost:4000)</span>
-</code></pre>
-</div>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p><strong>博主对ruby了解甚少，假如不是Jekyll的话，可能都不会和ruby产生交集。所以…不要苛求</strong></p>
 
 <p>Jekyll引入的Bundler，博主从未接触过，从纯新人角度跟着官网的示例一行一行的执行命令记录自己踩的坑。</p>
 
-<h2 id="step-1-gemsslconnect">Step 1: 遇到gem报SSL_connect错误</h2>
+<h2 id="step-1-遇到gem报ssl_connect错误">Step 1: 遇到gem报SSL_connect错误</h2>
 
 <p>win7系统电脑, 使用ruby installer安装完ruby环境.</p>
 
@@ -177,38 +181,38 @@
 
 <p>默认的gem是<strong>https://rubygems.org/</strong></p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">&gt; </span>gem sources --add http://rubygems.org/
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="o">&gt;</span> gem sources <span class="nt">--add</span> http://rubygems.org/
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <h2 id="step-2-bundle-install">Step 2: bundle install</h2>
 
 <p>首先安装完bundler之后，进入jekyll目录(Gemfile)文件所在目录, 执行:</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$&gt; </span>bundle <span class="nb">exec </span>jekyll serve
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="nv">$&gt;</span> bundle <span class="nb">exec </span>jekyll serve
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>输出一段英文. 大意是需要bundle install先执行一次。</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code>~ <span class="nv">$&gt;</span> bundle install
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>~ <span class="nv">$&gt;</span> bundle install
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>win10电脑很顺利的安装完成了bundle install的各种安装下载等等巴拉巴拉….
 但是在win7电脑的时候，
 cmd中执行之后中途会因为各种各样的问题停下来。请按照输出的提示安装相对于的库? 等等还是蛮多的。</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">~$&gt; </span>gem install execjs -v <span class="s1">'2.7.0'</span>
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>~<span class="nv">$&gt;</span> gem install execjs <span class="nt">-v</span> <span class="s1">'2.7.0'</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>当时没注意，直接无脑的按照提示命令进行手动安装，居然手动安装成功了。也是感觉怪怪的，不知道啥原因也。
 紧跟着手动处理了两三次，感觉有点不正常，于是下决定查一下原因，
 仔细看输出信息，发现都是因为SSL连接引发，再跟着注意到Gemfile中gem仓库使用的是https
 修改为http之后，在执行install，一步到底。解决</p>
 
-<h2 id="section">脱坑</h2>
+<h2 id="脱坑">脱坑</h2>
 
 <p>隔了几天再去查SSL_connect错误原因，发现下面的文章<a href="https://github.com/ruby-china/rubygems-mirror/wiki">脱坑办法</a></p>
 
@@ -220,7 +224,7 @@ cmd中执行之后中途会因为各种各样的问题停下来。请按照输�
 </article>
     </div>
     <footer class="footer">
-  <span class="footer__copyright">&copy; 2017 - TinyZ版权所有 .</span>
+  <span class="footer__copyright">&copy; 2019 - TinyZ版权所有 .</span>
 </footer> 
 
 <script type="text/javascript" src="/js/jquery-1.12.3.min.js"></script>

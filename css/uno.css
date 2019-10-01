@@ -1219,9 +1219,7 @@ hr {
 
 .panel-cover--collapsed {
 	width: 40%;
-	/*max-width: 530px;*/
-	max-width: 460px;
-}
+	max-width: 530px; }
 
 .panel-cover--overlay {
 	display: block;
@@ -1256,9 +1254,7 @@ hr {
 
 .no-js .panel-main {
 	width: 40%;
-	/*max-width: 530px; */
-	max-width: 460px;
-}
+	max-width: 530px; }
 
 .panel-main__inner {
 	display: table-cell;
@@ -1569,10 +1565,7 @@ input[type="tel"] {
 
 @media all and (min-width: 1300px) {
 	.content-wrapper {
-		/*margin-left: 530px; */
-		margin-left: 460px;
-	}
-}
+		margin-left: 530px; } }
 @media all and (max-width: 1100px) {
 	.panel-cover__logo {
 		width: 70px; }

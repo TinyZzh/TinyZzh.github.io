@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <title>杂记 - 20160909</title>
+  <title>项目从Maven迁移到Gradle</title>
   <meta name="description" content="专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。">
   <meta name="author" content="TinyZ">
   <meta name="HandheldFriendly" content="True">
@@ -43,7 +43,7 @@
   <meta name="theme-color" content="#ffffff">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="https://tinyzzh.github.io//other/2016/09/09/Date_Note_16_09_09.html">
+  <link rel="canonical" href="http://localhost:4000//okra-ax/gradle/2017/09/29/Okra_Ax_Change_Build_Tool_From_Maven_2_Gradle.html">
   <link rel="alternate" type="application/rss+xml" title="TinyZ's Blog" href="/feed.xml">
 
 </head>
@@ -145,15 +145,40 @@
         <article class="post-container post-container--single">
 
   <header class="post-header">
-    <h1 class="post-title">杂记 - 20160909</h1>
+    <h1 class="post-title">项目从Maven迁移到Gradle</h1>
   </header>
 
   <section class="post">
-    <p>从8月15号开始到现在,被杭州G20折腾将近一个月。总算是过去了。</p>
+    <p>Okra-Ax从Maven迁移到Gradle.</p>
 
-<p>笔者住主城区从8月15号开始，房东的房子不允许住了。被安排到城站边上凑活住了半个月。</p>
+<p>公司项目使用Gradle也将近一年时间了。准备将自己的项目转换为Gradle。主要是使用统一的
+工具方便一点。</p>
 
-<p>8月31号从杭州到天津，4号转北京，9月8号回杭州。</p>
+<h2 id="1-安装gradle">1. 安装Gradle</h2>
+
+<p>自行安装, 不赘述。</p>
+
+<h2 id="2-项目从maven转到gradle">2. 项目从Maven转到Gradle</h2>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>gradle init --type pom
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>转换后项目多出如下图所示文件夹和文件:</p>
+
+<div align="center"><img src="/images/2017-09/2017-09-29-1.png" alt="转换后项目" /></div>
+
+<p>模块中新增build.gradle. 包依赖等信息由gradle自动转换过来.</p>
+
+<p>.gradle目录无需版本控制. 所以在.gitignore中忽略增加忽略.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>.gradle/<span class="k">*</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h2 id="3-总结">3. 总结</h2>
+
+<p>End</p>
 
 
   </section>
@@ -161,7 +186,7 @@
 </article>
     </div>
     <footer class="footer">
-  <span class="footer__copyright">&copy; 2017 - TinyZ版权所有 .</span>
+  <span class="footer__copyright">&copy; 2019 - TinyZ版权所有 .</span>
 </footer> 
 
 <script type="text/javascript" src="/js/jquery-1.12.3.min.js"></script>

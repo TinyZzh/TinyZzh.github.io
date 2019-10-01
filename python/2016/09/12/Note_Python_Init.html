@@ -43,7 +43,7 @@
   <meta name="theme-color" content="#ffffff">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="https://tinyzzh.github.io//python/2016/09/12/Note_Python_Init.html">
+  <link rel="canonical" href="http://localhost:4000//python/2016/09/12/Note_Python_Init.html">
   <link rel="alternate" type="application/rss+xml" title="TinyZ's Blog" href="/feed.xml">
 
 </head>
@@ -160,18 +160,18 @@
 <p>开发环境：Windows 10
 编辑器：PyCharm 2016 社区开源版</p>
 
-<h2 id="python">安装Python环境</h2>
+<h2 id="安装python环境">安装Python环境</h2>
 
 <p>下载python 2.7.12<a href="https://www.python.org/downloads/">官网下载地址</a>版本。选择<a href="https://www.python.org/ftp/python/2.7.12/python-2.7.12.msi">“Windows x86 MSI installer”</a>
 下载安装对应版本。</p>
 
-<h2 id="mysqldb">安装MySQLdb</h2>
+<h2 id="安装mysqldb">安装MySQLdb</h2>
 
 <p>初次入门就直接选择mysql相关的内容作为切入口(新手不推荐这么做)，MySQL安装遇到很多坑。</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#&gt; pip install MySQL-python</span>
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="c">#&gt; pip install MySQL-python</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>提示缺少VC对Python的编译环境。</p>
 
@@ -179,15 +179,15 @@
 
 <p>继续pip安装。依旧报错</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#&gt; ... Cannot open include file: 'config-win.h': .....</span>
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="c">#&gt; ... Cannot open include file: 'config-win.h': .....</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>一番Google之后改用easy_install。easy_install默认在{$_PYTHON_HOME}/Scripts/目录下和pip同级。</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#&gt; easy_install MySQL-python</span>
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="c">#&gt; easy_install MySQL-python</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
 <p>在公司采用这种方式顺利安装MySQL扩展完成。</p>
 
@@ -195,9 +195,28 @@
 一番尝试，最后没办法修改为从<a href="https://pypi.python.org/pypi/MySQL-python">MySQL-python</a>
 下载对应的版本<a href="https://pypi.python.org/packages/27/06/596ae3afeefc0cda5840036c42920222cb8136c101ec0f453f2e36df12a0/MySQL-python-1.2.5.win32-py2.7.exe#md5=6f43f42516ea26e79cfb100af69a925e">MySQL-python-1.2.5.win32-py2.7.exe (md5)</a></p>
 
-<h2 id="section">测试示例</h2>
+<h2 id="测试示例">测试示例</h2>
 
-<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="c">#!/usr/bin/python</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="rouge-code"><pre><span class="c">#!/usr/bin/python</span>
 <span class="c"># -*- coding: UTF-8 -*-</span>
 
 <span class="kn">import</span> <span class="nn">MySQLdb</span>
@@ -216,10 +235,9 @@
     <span class="k">print</span> <span class="s">"Mysql Error </span><span class="si">%</span><span class="s">d: </span><span class="si">%</span><span class="s">s"</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
 <span class="k">print</span> <span class="s">"endl"</span>
-</code></pre>
-</div>
+</pre></td></tr></tbody></table></code></pre></div></div>
 
-<h2 id="section-1">总结</h2>
+<h2 id="总结">总结</h2>
 
 <p>至此, 完整的python环境就安装好了。enjoy it !</p>
 
@@ -228,7 +246,7 @@
 </article>
     </div>
     <footer class="footer">
-  <span class="footer__copyright">&copy; 2017 - TinyZ版权所有 .</span>
+  <span class="footer__copyright">&copy; 2019 - TinyZ版权所有 .</span>
 </footer> 
 
 <script type="text/javascript" src="/js/jquery-1.12.3.min.js"></script>
