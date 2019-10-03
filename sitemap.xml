@@ -3,6 +3,21 @@
     
     
     <url>
+        <loc>http://localhost:4000/devops/2019/10/03/java_code_coverage_with_jenkins.html</loc>
+        
+        <lastmod>2019-10-03T22:15:00+08:00</lastmod>
+        
+        
+        <changefreq>monthly</changefreq>
+        
+        
+        <priority>0.5</priority>
+        
+    </url>
+    
+    
+    
+    <url>
         <loc>http://localhost:4000/javanote/2019/09/30/Java_class_implements_multiple_interfaces.html</loc>
         
         <lastmod>2019-09-30T20:16:00+08:00</lastmod>
@@ -546,7 +561,7 @@
     <url>
         <loc>http://localhost:4000/archives/</loc>
         
-        <lastmod>2019-10-01T12:43:19+08:00</lastmod>
+        <lastmod>2019-10-04T02:14:32+08:00</lastmod>
         
         
         <changefreq>monthly</changefreq>
@@ -561,7 +576,7 @@
     <url>
         <loc>http://localhost:4000/categories/</loc>
         
-        <lastmod>2019-10-01T12:43:19+08:00</lastmod>
+        <lastmod>2019-10-04T02:14:32+08:00</lastmod>
         
         
         <changefreq>monthly</changefreq>
@@ -576,7 +591,7 @@
     <url>
         <loc>http://localhost:4000/feed.xml</loc>
         
-        <lastmod>2019-10-01T12:43:19+08:00</lastmod>
+        <lastmod>2019-10-04T02:14:32+08:00</lastmod>
         
         
         <changefreq>monthly</changefreq>
@@ -591,7 +606,7 @@
     <url>
         <loc>http://localhost:4000/</loc>
         
-        <lastmod>2019-10-01T12:43:19+08:00</lastmod>
+        <lastmod>2019-10-04T02:14:32+08:00</lastmod>
         
         
         <changefreq>monthly</changefreq>
@@ -606,7 +621,7 @@
     <url>
         <loc>http://localhost:4000/js/main.js</loc>
         
-        <lastmod>2019-10-01T12:43:19+08:00</lastmod>
+        <lastmod>2019-10-04T02:14:32+08:00</lastmod>
         
         
         <changefreq>monthly</changefreq>
@@ -621,7 +636,7 @@
     <url>
         <loc>http://localhost:4000/sitemap.xml</loc>
         
-        <lastmod>2019-10-01T12:43:19+08:00</lastmod>
+        <lastmod>2019-10-04T02:14:32+08:00</lastmod>
         
         
         <changefreq>monthly</changefreq>
@@ -636,7 +651,7 @@
     <url>
         <loc>http://localhost:4000/tags/</loc>
         
-        <lastmod>2019-10-01T12:43:19+08:00</lastmod>
+        <lastmod>2019-10-04T02:14:32+08:00</lastmod>
         
         
         <changefreq>monthly</changefreq>
@@ -651,7 +666,7 @@
     <url>
         <loc>http://localhost:4000/page2/</loc>
         
-        <lastmod>2019-10-01T12:43:19+08:00</lastmod>
+        <lastmod>2019-10-04T02:14:32+08:00</lastmod>
         
         
         <changefreq>monthly</changefreq>
