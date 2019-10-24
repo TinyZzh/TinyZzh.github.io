@@ -3,10 +3,10 @@
   <channel>
     <title>TinyZ's Blog</title>
     <description>专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。</description>
-    <link>http://localhost:4000//</link>
-    <atom:link href="http://localhost:4000//feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>2019-10-04</pubDate>
-    <lastBuildDate>2019-10-04</lastBuildDate>
+    <link>https://tinyzzh.github.io//</link>
+    <atom:link href="https://tinyzzh.github.io//feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>2019-10-25</pubDate>
+    <lastBuildDate>2019-10-25</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
     
       <item>
@@ -320,8 +320,8 @@
 
 </description>
         <pubDate>2019-10-03</pubDate>
-        <link>http://localhost:4000//devops/2019/10/03/java_code_coverage_with_jenkins.html</link>
-        <guid isPermaLink="true">http://localhost:4000//devops/2019/10/03/java_code_coverage_with_jenkins.html</guid>
+        <link>https://tinyzzh.github.io//devops/2019/10/03/java_code_coverage_with_jenkins.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//devops/2019/10/03/java_code_coverage_with_jenkins.html</guid>
         
         <category>DevOps</category>
         
@@ -515,8 +515,8 @@
 
 </description>
         <pubDate>2019-09-30</pubDate>
-        <link>http://localhost:4000//javanote/2019/09/30/Java_class_implements_multiple_interfaces.html</link>
-        <guid isPermaLink="true">http://localhost:4000//javanote/2019/09/30/Java_class_implements_multiple_interfaces.html</guid>
+        <link>https://tinyzzh.github.io//javanote/2019/09/30/Java_class_implements_multiple_interfaces.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//javanote/2019/09/30/Java_class_implements_multiple_interfaces.html</guid>
         
         <category>Java随笔</category>
         
@@ -537,33 +537,13 @@
 
 </description>
         <pubDate>2018-07-10</pubDate>
-        <link>http://localhost:4000//github/2018/07/10/Github_Ca_Bundle_Crt_No_Such_Process.html</link>
-        <guid isPermaLink="true">http://localhost:4000//github/2018/07/10/Github_Ca_Bundle_Crt_No_Such_Process.html</guid>
+        <link>https://tinyzzh.github.io//github/2018/07/10/Github_Ca_Bundle_Crt_No_Such_Process.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//github/2018/07/10/Github_Ca_Bundle_Crt_No_Such_Process.html</guid>
         
         <category>Github</category>
         
         
         <category>Github</category>
-        
-      </item>
-    
-      <item>
-        <title>Top指令</title>
-        <description>&lt;p&gt;　　Top命令详细&lt;/p&gt;
-
-&lt;p&gt;-H 表示转换为显示线程&lt;/p&gt;
-
-&lt;p&gt;top -H -p [pid]&lt;/p&gt;
-
-</description>
-        <pubDate>2017-10-07</pubDate>
-        <link>http://localhost:4000//linux/2017/10/07/Linux_Top_Commond.html</link>
-        <guid isPermaLink="true">http://localhost:4000//linux/2017/10/07/Linux_Top_Commond.html</guid>
-        
-        <category>Linux</category>
-        
-        
-        <category>Linux</category>
         
       </item>
     
@@ -602,8 +582,8 @@
 
 </description>
         <pubDate>2017-09-29</pubDate>
-        <link>http://localhost:4000//okra-ax/gradle/2017/09/29/Okra_Ax_Change_Build_Tool_From_Maven_2_Gradle.html</link>
-        <guid isPermaLink="true">http://localhost:4000//okra-ax/gradle/2017/09/29/Okra_Ax_Change_Build_Tool_From_Maven_2_Gradle.html</guid>
+        <link>https://tinyzzh.github.io//okra-ax/gradle/2017/09/29/Okra_Ax_Change_Build_Tool_From_Maven_2_Gradle.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//okra-ax/gradle/2017/09/29/Okra_Ax_Change_Build_Tool_From_Maven_2_Gradle.html</guid>
         
         <category>Okra-Ax</category>
         
@@ -744,8 +724,8 @@
 
 </description>
         <pubDate>2017-09-23</pubDate>
-        <link>http://localhost:4000//okra-ax/okra/2017/09/23/Okra_Ax_Design_Description.html</link>
-        <guid isPermaLink="true">http://localhost:4000//okra-ax/okra/2017/09/23/Okra_Ax_Design_Description.html</guid>
+        <link>https://tinyzzh.github.io//okra-ax/okra/2017/09/23/Okra_Ax_Design_Description.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//okra-ax/okra/2017/09/23/Okra_Ax_Design_Description.html</guid>
         
         <category>Okra-Ax</category>
         
@@ -827,8 +807,8 @@
 
 </description>
         <pubDate>2017-09-03</pubDate>
-        <link>http://localhost:4000//unity3d/2017/09/03/Unity3D_JsonUtility_1.html</link>
-        <guid isPermaLink="true">http://localhost:4000//unity3d/2017/09/03/Unity3D_JsonUtility_1.html</guid>
+        <link>https://tinyzzh.github.io//unity3d/2017/09/03/Unity3D_JsonUtility_1.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//unity3d/2017/09/03/Unity3D_JsonUtility_1.html</guid>
         
         <category>Unity3D</category>
         
@@ -899,8 +879,8 @@
 
 </description>
         <pubDate>2017-06-03</pubDate>
-        <link>http://localhost:4000//travel/2017/06/03/Travel_Kumamoto_Japan.html</link>
-        <guid isPermaLink="true">http://localhost:4000//travel/2017/06/03/Travel_Kumamoto_Japan.html</guid>
+        <link>https://tinyzzh.github.io//travel/2017/06/03/Travel_Kumamoto_Japan.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//travel/2017/06/03/Travel_Kumamoto_Japan.html</guid>
         
         <category>Travel</category>
         
@@ -982,8 +962,8 @@ cmd中执行之后中途会因为各种各样的问题停下来。请按照输�
 
 </description>
         <pubDate>2016-10-09</pubDate>
-        <link>http://localhost:4000//github/2016/10/09/Build_GitHub_Pages_Update.html</link>
-        <guid isPermaLink="true">http://localhost:4000//github/2016/10/09/Build_GitHub_Pages_Update.html</guid>
+        <link>https://tinyzzh.github.io//github/2016/10/09/Build_GitHub_Pages_Update.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//github/2016/10/09/Build_GitHub_Pages_Update.html</guid>
         
         <category>GitHub</category>
         
@@ -1088,8 +1068,8 @@ cmd中执行之后中途会因为各种各样的问题停下来。请按照输�
 
 </description>
         <pubDate>2016-10-01</pubDate>
-        <link>http://localhost:4000//centos/python/2016/10/01/Glances_Monitor_Centos_InfluxDB_Grafana.html</link>
-        <guid isPermaLink="true">http://localhost:4000//centos/python/2016/10/01/Glances_Monitor_Centos_InfluxDB_Grafana.html</guid>
+        <link>https://tinyzzh.github.io//centos/python/2016/10/01/Glances_Monitor_Centos_InfluxDB_Grafana.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//centos/python/2016/10/01/Glances_Monitor_Centos_InfluxDB_Grafana.html</guid>
         
         <category>CentOS</category>
         
@@ -1099,6 +1079,61 @@ cmd中执行之后中途会因为各种各样的问题停下来。请按照输�
         <category>CentOS</category>
         
         <category>Python</category>
+        
+      </item>
+    
+      <item>
+        <title>InfluxDB - 安装</title>
+        <description>&lt;p&gt;本篇文章记录CentOS 7-x64操作系统，安装InfluxDB时序数据库。&lt;/p&gt;
+
+&lt;p&gt;环境:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;系统 : CentOS 7-x64&lt;/li&gt;
+  &lt;li&gt;InfluxDB : 1.0.0&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.influxdata.com/downloads/&quot;&gt;InfluxDB下载页&lt;/a&gt;
+笔者下载&lt;a href=&quot;https://dl.influxdata.com/influxdb/releases/influxdb-1.0.0.x86_64.rpm&quot;&gt;1.0.0版本&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;CentOS&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;wget https://dl.influxdata.com/influxdb/releases/influxdb-1.0.0.x86_64.rpm
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;yum localinstall influxdb-1.0.0.x86_64.rpm
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;启动influxdb&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;systemctl start influxdb
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;创建配置文件influxdb配置文件:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;influxd config &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; influxdb.generated.conf
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;8083端口用于后台管理界面, 8086端口用于HTTP API接口&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;笔者使用的是下载rpm之后安装的办法。
+各位看官可以使用官网示例的安装过程&lt;a href=&quot;https://docs.influxdata.com/influxdb/v1.0/introduction/installation/&quot;&gt;官方安装示例&lt;/a&gt;&lt;/p&gt;
+
+</description>
+        <pubDate>2016-09-30</pubDate>
+        <link>https://tinyzzh.github.io//database/2016/09/30/InfluxDB_Init.html</link>
+        <guid isPermaLink="true">https://tinyzzh.github.io//database/2016/09/30/InfluxDB_Init.html</guid>
+        
+        <category>Database</category>
+        
+        <category>InfluxDB</category>
+        
+        
+        <category>Database</category>
         
       </item>
     
