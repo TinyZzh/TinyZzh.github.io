@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Rust笔记(一) 搭建开发环境</title>
+  <meta name="description" content="专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。">
+  <meta name="author" content="TinyZ">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="TinyZ's Blog">
+  <meta name="twitter:description" content="专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="TinyZ's Blog">
+  <meta property="og:description" content="专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。">
+
+  <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-194x194.png" sizes="194x194">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/images/favicons/android-chrome-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="shortcut icon" href="/images/favicons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#ffc40d">
+  <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://localhost:4000//rust/2016/04/15/Use_Log4j_2_x_In_Project.html">
+  <link rel="alternate" type="application/rss+xml" title="TinyZ's Blog" href="/feed.xml">
+
+
+<script src="https://hm.baidu.com/hm.js?f5d72321042a4068a214bb314ca29e38"></script>
+
+</head>
+
+<body>
+<span class="mobile btn-mobile-menu">
+  <i class="icon icon-list btn-mobile-menu__icon"></i>
+  <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+</span>
+  
+<header class="panel-cover" style="background-image: url(/images/cover.jpg)">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+        <a href="/" title="TinyZ's Blog">
+          <img src="/images/me.jpg" class="user-image" alt="My Profile Photo">
+          <h1 class="panel-cover__title panel-title">TinyZ's Blog</h1>
+        </a>
+        <hr class="panel-cover__divider">
+        <p class="panel-cover__description">专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+
+        <div class="navigation-wrapper">
+          <div>
+            <ul>
+              <li><a href="/" title="Blog">首页 | Index</a></li>
+              <li><a href="/categories/" title="Categories">分类 | Categories</a></li>
+              <li><a href="/tags/" title="Tags">标签 | Tags</a></li>
+              <li><a href="/archives/" title="Tags">归档 | Archives</a></li>
+              <li><a href="/about/" title="About Me">简介 | About</a></li>
+            </ul>
+          </div>
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="link to TinyZ's Blog blog" class="blog-button">Blog</a></li>
+            </ul>
+          </nav>
+
+          <nav class="cover-navigation navigation--social">
+            <ul class="navigation">
+            
+
+            
+
+            
+              <!-- LinkedIn -->
+              <li class="navigation__item">
+                <a href="https://www.linkedin.com/in/灼华-周-79326a116" title="灼华-周-79326a116 on LinkedIn" target="_blank">
+                  <i class="icon icon-social-linkedin"></i>
+                  <span class="label">LinkedIn</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- GitHub -->
+              <li class="navigation__item">
+                <a href="https://www.github.com/TinyZzh" title="TinyZzh on GitHub" target="_blank">
+                  <i class="icon icon-social-github"></i>
+                  <span class="label">GitHub</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Email -->
+              <li class="navigation__item">
+                <a href="mailto:tinyzzh815@gmail.com" title="Email tinyzzh815@gmail.com" target="_blank">
+                  <i class="icon icon-mail"></i>
+                  <span class="label">Email</span>
+                </a>
+              </li>
+            
+
+            <!-- RSS -->
+            <li class="navigation__item">
+              <a href="/feed.xml" title="Subscribe" target="_blank">
+                <i class="icon icon-rss"></i>
+                <span class="label">RSS</span>
+              </a>
+            </li>
+            </ul>
+          </nav>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+<div class="content-wrapper">
+    <div class="content-wrapper__inner">
+        <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <h1 class="post-title">Rust笔记(一) 搭建开发环境</h1>
+  </header>
+
+  <section class="post">
+    <p>Rust是一门强调安全、并发、高效的系统编程语言。无GC实现内存安全机制、无数据竞争的并发机制、无运行时开销的抽象机制，是Rust独特的优越特性。
+它声称解决了传统C语言和C++语言几十年来饱受责难的内存安全问题，同时还保持了很高的运行效率、很深的底层控制、很广的应用范围，
+在系统编程领域具有强劲的竞争力和广阔的应用前景。</p>
+
+<h1 id="搭建rust开发环境">搭建Rust开发环境</h1>
+
+<p>博主从Rust 0.9版本时开始关注Rust项目。到现在落笔时Rust的1.8稳定版本。
+感觉是时候接触一下这门新系统级编程语言了。Rust诞生至今还不算很长，虽然社区等对各种IDE都有了初步支持，
+但是相比于其他老牌语法而言，仍很不完善。本文记录博主搭建Rust环境的流程和遇到的坑</p>
+
+<p>需求：</p>
+
+<ul>
+  <li><a href="https://www.rust-lang.org/downloads.html">Rust环境</a></li>
+  <li>Visual Studio 2015</li>
+  <li><a href="https://visualstudiogallery.msdn.microsoft.com/c6075d2f-8864-47c0-8333-92f183d3e640/">VisualRust插件</a></li>
+  <li><a href="https://github.com/phildawes/racer">racer代码补全</a></li>
+</ul>
+
+<h2 id="11安装rust环境">1.1安装Rust环境</h2>
+<p>选择适合自己开发平台的Rust包.由于博主使用的是VS2015，这里选择下载Rust的MSVC安装包。
+另外一个需要下载的是source包（用于rust标准库的代码提示）。</p>
+
+<p><img src="/images/2016-04/a1.jpg" alt="Alt text" /></p>
+
+<p>双击运行”rust-1.8.0-x86_64-pc-windows-msvc.msi”启动windows操作系统的安装程序.</p>
+<ul>
+  <li>默认安装路径: C:\Progrem Files\Rust *** 版本号</li>
+  <li>
+    <p>自定义安装路径: 点选”advanced”按钮.在设置里面安装路径和需要的模块.
+一路Next然后Finish</p>
+  </li>
+  <li><strong>由于需要写入注册列表和修改环境变量，所以操作系统中安装了安全软件的请允许安装器操作</strong></li>
+</ul>
+
+<h2 id="12校验rust编译环境">1.2校验Rust编译环境</h2>
+<p>运行windows命令行(快捷键:Win + R 输入cmd 回车). 输入如下命令并回车</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="o">&gt;</span> <span class="n">rustc</span> <span class="o">--</span><span class="n">version</span>
+<span class="o">&gt;</span> <span class="n">cargo</span> <span class="o">--</span><span class="n">version</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p><img src="/images/2016-04/a2.jpg" alt="Alt text" /></p>
+
+<p>正确输出版本信息说明安装和环境变量配置成功.
+<strong>假如出现  “‘rustc’不是内部或外部命令，也不是可运行的程序或批处理文件”
+请在”环境变量”的Path中增加rust的bin目录</strong></p>
+
+<h2 id="cargo">cargo</h2>
+<p>cargo是rust官方推荐使用的项目管理软件。功能大概类似于java里面的maven和ant。负责管理依赖项和编译。
+安装rust时，默认安装(可以自定义为不安装)</p>
+
+<h2 id="2-安装visualrust插件">2 安装VisualRust插件</h2>
+
+<p>VisualRust插件下载地址:</p>
+
+<ul>
+  <li><a href="https://visualstudiogallery.msdn.microsoft.com/c6075d2f-8864-47c0-8333-92f183d3e640/">MSDN-VisualRust</a></li>
+</ul>
+
+<p>下载插件，选择对应的Visual Studio版本安装即可.</p>
+
+<h2 id="3-安装racer">3 安装racer</h2>
+<p>racer是rust社区里面出现的一个代码补全提示工具。针对多种IDE都有相对应的支持。
+(截至于v1.2.6版本貌似只支持标准库的代码提示)</p>
+
+<p>在命令行中输入如下指令并回车:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="o">&gt;</span> <span class="n">cargo</span> <span class="n">install</span> <span class="n">racer</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>此方法来自《Rust primer》pdf电子书。博主一直无法编译安装成功。所以采用了下载源码包编译的办法，具体办法如下</p>
+
+<ul>
+  <li>在<a href="https://github.com/phildawes/racer">https://github.com/phildawes/racer</a>项目下载最新的racer包</li>
+  <li>在解压缩之后的目录中，使用cargo编译racer</li>
+</ul>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="o">&gt;</span> <span class="n">cd</span> <span class="n">racer</span>
+<span class="o">&gt;</span> <span class="n">cargo</span> <span class="n">build</span> <span class="o">--</span><span class="n">release</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>编译需要联网，cargo会管理和下载racer的相关依赖。中途可能会出现编译失败（基本上都是因为网络原因无法下载到，你懂的）。
+多尝试编译几次即可。
+编译完成，在racer目录下面的target目录会生成一个racer.exe的可执行文件
+将racer.exe文件复制到rust的bin目录下</p>
+
+<h3 id="31-在vs2015中配置racer">3.1 在VS2015中配置racer</h3>
+<p>点击”工具” -&gt; “选项”  -&gt; “Visual Rust”  界面如下:</p>
+
+<p><img src="/images/2016-04/a3.jpg" alt="Alt text" /></p>
+
+<p>根据racer.exe的路径配置。设置rust源码的source/src的目录。
+博主这里设置了RUST_SRC_PATH的环境变量，所以无需手动设置Rust sources的路径</p>
+
+<p>至此，在Windows 10操作系统中使用Visual Studio 2015开发Rust的环境就搭建完成了。</p>
+
+<p>enjoy it !:)</p>
+
+
+  </section>
+
+</article>
+    </div>
+    <footer class="footer">
+  <span class="footer__copyright">&copy; 2020 - TinyZ版权所有 .</span>
+</footer> 
+
+<script type="text/javascript" src="/js/jquery-1.12.3.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-77019170-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+</div>
+</body>
+</html>

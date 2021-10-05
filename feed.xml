@@ -3,11 +3,300 @@
   <channel>
     <title>TinyZ's Blog</title>
     <description>专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。</description>
-    <link>https://tinyzzh.github.io//</link>
-    <atom:link href="https://tinyzzh.github.io//feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>2019-10-25</pubDate>
-    <lastBuildDate>2019-10-25</lastBuildDate>
+    <link>http://localhost:4000//</link>
+    <atom:link href="http://localhost:4000//feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>2020-05-04</pubDate>
+    <lastBuildDate>2020-05-04</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
+    
+      <item>
+        <title></title>
+        <description>&lt;h1 id=&quot;一步一步精通intellij-idea-自定义live-templates&quot;&gt;[一步一步精通Intellij IDEA] 自定义Live Templates&lt;/h1&gt;
+
+&lt;h2 id=&quot;前言&quot;&gt;前言&lt;/h2&gt;
+
+&lt;p&gt;Live Templates是Intellij IDEA提供的强大的可扩展代码模板功能。功能旨在帮助开发者简化重复性代码、结构的编写，提高开发效率。IDEA根据编程语言、工具等条件来归类和分组并内置了很多通用的常见的代码模板。例如&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;psvm&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;sout&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;psf&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;。同时支持用户自定义代码模板。&lt;/p&gt;
+
+&lt;p&gt;让我们通过后续文章逐步掌握核精通此功能。&lt;/p&gt;
+
+&lt;h2 id=&quot;live-templates&quot;&gt;Live Templates&lt;/h2&gt;
+
+&lt;h2 id=&quot;模板相关的配置&quot;&gt;模板相关的配置&lt;/h2&gt;
+
+&lt;p&gt;首先，通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;File&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt; -&amp;gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;Setting&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt; 或 快捷键 &lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;Ctrl + Alt + S&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt; 打开Intellij IDEA的&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;Setting&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;界面。选择&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;Editor&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt; -&amp;gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;Live Templates&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;。 如下图1.&lt;/p&gt;
+
+&lt;div align=&quot;center&quot;&gt;&lt;img src=&quot;/images/2020-05/1.png&quot; alt=&quot;Setting&quot; /&gt;&lt;/div&gt;
+
+&lt;p&gt;图中所示的都是内置的通用的基础的代码模板。&lt;/p&gt;
+
+&lt;h2 id=&quot;内置代码模板java&quot;&gt;内置代码模板(JAVA)&lt;/h2&gt;
+
+&lt;h2 id=&quot;创建第一个代码模板&quot;&gt;创建第一个代码模板&lt;/h2&gt;
+
+&lt;p&gt;还记得当初笔者刚入门的时候，学习的第一个代码补全&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;psvm&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;+&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;Tab&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;，用了好几年一直都没过多的关注过这个代码模板时怎么设置的。o(∩_∩)o 哈哈（捂脸）。后来有一次专注于深入的学习IDEA后知道在&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;other&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;组内。效果就是快速生成下面的代码。&lt;/p&gt;
+
+&lt;div align=&quot;center&quot;&gt;&lt;img src=&quot;/images/2020-05/2.png&quot; alt=&quot;psvm&quot; /&gt;&lt;/div&gt;
+
+&lt;p&gt;模板的效果如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;c1&quot;&gt;//  psvm + `Tab`&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;//  光标&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;模板中的变量&quot;&gt;模板中的变量&lt;/h3&gt;
+
+&lt;p&gt;Live Templates的自定义模板的变量的格式为 &lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;$&amp;lt;variable_name&amp;gt;$&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;（美元符号 `$` 包围变量名）。有两个系统保留参数，分别为&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;$END$&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;$SELECTION$&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;$END$&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;为编辑结束时，光标停留的位置。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;$SELECTION$&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;变量代指生成模板之前的选中的代码或文本块。&lt;/p&gt;
+
+&lt;p&gt;下面按照按照&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;psvm&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;的样式Copy核定义属于自己的模板。下面开始。&lt;/p&gt;
+
+&lt;h3 id=&quot;创建template-group&quot;&gt;创建&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;Template Group...&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;右侧的&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;➕&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;单击&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;Template Group...&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;创建一个分组。来保存归档属于我们自定义的代码模板。&lt;/p&gt;
+
+&lt;div align=&quot;center&quot;&gt;&lt;img src=&quot;/images/2020-05/3.png&quot; alt=&quot;psvm&quot; /&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;创建live-template&quot;&gt;创建&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;Live Template&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;右侧的&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;➕&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;单击&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;Live Template&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;创建一个模板。定义模板的缩写、帮助记忆的描述和模板内容。如下图所示：&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;$METHOD_NAME&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;$END&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div align=&quot;center&quot;&gt;&lt;img src=&quot;/images/2020-05/4.png&quot; alt=&quot;psvm&quot; /&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;模板演示&quot;&gt;模板演示&lt;/h3&gt;
+
+&lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
+
+</description>
+        <pubDate>2020-05-04</pubDate>
+        <link>http://localhost:4000//2020/05/04/2019-11-16-Intellij_IDEA_custom_live_template.html</link>
+        <guid isPermaLink="true">http://localhost:4000//2020/05/04/2019-11-16-Intellij_IDEA_custom_live_template.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Unity UGUI实战 - 使用Scroll View制作游戏聊天框</title>
+        <description>&lt;h1 id=&quot;spring-boot-reference-documentation&quot;&gt;Spring Boot Reference Documentation&lt;/h1&gt;
+
+&lt;h2 id=&quot;3-profiles&quot;&gt;3. Profiles&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://docs.spring.io/spring-boot/docs/2.2.0.RELEASE/reference/html/spring-boot-features.html#boot-features-profiles&quot;&gt;Spring Boot Profiles Docs&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;设置content&quot;&gt;设置Content&lt;/h2&gt;
+&lt;div align=&quot;center&quot;&gt;&lt;img src=&quot;/images/2020-02/1.jpg&quot; alt=&quot;图1&quot; /&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;添加Vertical Layout Group&lt;/li&gt;
+  &lt;li&gt;添加Content Size Filter&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;设置content的子物体&quot;&gt;设置Content的子物体&lt;/h2&gt;
+&lt;div align=&quot;center&quot;&gt;&lt;img src=&quot;/images/2020-02/2.jpg&quot; alt=&quot;图1&quot; /&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;添加Horizontal Layout Group&lt;/li&gt;
+  &lt;li&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div align=&quot;center&quot;&gt;&lt;img src=&quot;/images/2020-02/3.jpg&quot; alt=&quot;图1&quot; /&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;当父类或接口中的定义的方法实现有冲突时, 子类必须覆写父中的方法. 或者把类定义为abstract&lt;/li&gt;
+  &lt;li&gt;当子类继承父类, 实现父接口的情况时。隐式的继承父类中的方法.&lt;/li&gt;
+  &lt;li&gt;类中定义的方法实现，优先级高于接口中default实现&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;End&lt;/p&gt;
+
+</description>
+        <pubDate>2020-02-16</pubDate>
+        <link>http://localhost:4000//unity/ugui/2020/02/16/Scroll_View_Chat_Channel.html</link>
+        <guid isPermaLink="true">http://localhost:4000//unity/ugui/2020/02/16/Scroll_View_Chat_Channel.html</guid>
+        
+        <category>Unity-UGUI</category>
+        
+        
+        <category>Unity</category>
+        
+        <category>UGUI</category>
+        
+      </item>
+    
+      <item>
+        <title>Java随笔 - Spring-Boot的@Profiles的注解</title>
+        <description>&lt;h1 id=&quot;spring-boot-reference-documentation&quot;&gt;Spring Boot Reference Documentation&lt;/h1&gt;
+
+&lt;h2 id=&quot;3-profiles&quot;&gt;3. Profiles&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://docs.spring.io/spring-boot/docs/2.2.0.RELEASE/reference/html/spring-boot-features.html#boot-features-profiles&quot;&gt;Spring Boot Profiles Docs&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;example-requirement&quot;&gt;Example Requirement&lt;/h2&gt;
+
+&lt;p&gt;Spring Boot Version : 2.2.0.RELEASE&lt;/p&gt;
+
+&lt;h2 id=&quot;configuration&quot;&gt;Configuration&lt;/h2&gt;
+
+&lt;h3 id=&quot;with-applicationproperties&quot;&gt;With &lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;application.properties&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;application.properties&lt;/p&gt;
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;nx&quot;&gt;spring&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;profiles&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;active&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;dev&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;hsqldb&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;当父类或接口中的定义的方法实现有冲突时, 子类必须覆写父中的方法. 或者把类定义为abstract&lt;/li&gt;
+  &lt;li&gt;当子类继承父类, 实现父接口的情况时。隐式的继承父类中的方法.&lt;/li&gt;
+  &lt;li&gt;类中定义的方法实现，优先级高于接口中default实现&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;End&lt;/p&gt;
+
+</description>
+        <pubDate>2019-10-28</pubDate>
+        <link>http://localhost:4000//javanote/spring-boot/2019/10/28/SpringBoot_profiles_annotation.html</link>
+        <guid isPermaLink="true">http://localhost:4000//javanote/spring-boot/2019/10/28/SpringBoot_profiles_annotation.html</guid>
+        
+        <category>Java随笔</category>
+        
+        <category>Spring-Boot</category>
+        
+        
+        <category>JavaNote</category>
+        
+        <category>Spring-Boot</category>
+        
+      </item>
+    
+      <item>
+        <title>Java随笔 - Spring-Boot的@Profile的注解</title>
+        <description>&lt;h1 id=&quot;spring-boot-reference-documentation&quot;&gt;Spring Boot Reference Documentation&lt;/h1&gt;
+
+&lt;p&gt;Spring Boot Version : &lt;strong&gt;2.2.0.RELEASE&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Spring Boot Profiles Docs URL: &lt;a href=&quot;https://docs.spring.io/spring-boot/docs/2.2.0.RELEASE/reference/html/spring-boot-features.html#boot-features-profiles&quot;&gt;文档link&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;1-profile-注解&quot;&gt;1. @Profile 注解&lt;/h2&gt;
+
+&lt;p&gt;Spring Framework 从3.1版本开始提供@Profile注解。通过可以修饰 &lt;strong&gt;@Component、@Configuration和@ConfigurationProperties&lt;/strong&gt; 三种类型的注解，用于策略的控制程序启动核加载的配置或组件。&lt;/p&gt;
+
+&lt;h2 id=&quot;2-激活profile&quot;&gt;2. 激活&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;Profile&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/h2&gt;
+
+&lt;h3 id=&quot;21-通过applicationproperties或applicationyaml配置文件配置&quot;&gt;2.1. 通过&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;application.properties&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;或&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;application.yaml&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;配置文件配置&lt;/h3&gt;
+
+&lt;p&gt;在&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;application.properties&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;文件中配置:&lt;/p&gt;
+&lt;div class=&quot;language-properties highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;err&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;!-- 激活配置 --&amp;gt;
+&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;spring.profiles.active&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;dev&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;!-- 设置缺省配置. active未定义时，default生效 --&amp;gt;
+&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;spring.profiles.default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;prod&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;分别定义为&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;application-prod.properties&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;application-dev.properties&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;, 对应不同的生产环境的配置。Spring程序在启动时，根据profile配置策略的加载配置。&lt;/p&gt;
+
+&lt;h3 id=&quot;22-通过springapplicationsetadditionalprofiles方法设置&quot;&gt;2.2. 通过SpringApplication#setAdditionalProfiles方法设置&lt;/h3&gt;
+
+&lt;p&gt;通过SpringApplication的setAdditionalProfiles(…​)方法设置。&lt;/p&gt;
+
+&lt;h3 id=&quot;23-通过activeprofiles设置spring-test&quot;&gt;2.3. 通过&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;@ActiveProfiles&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;设置（spring-test）&lt;/h3&gt;
+
+&lt;p&gt;在写 &lt;strong&gt;单元测试&lt;/strong&gt; 时，通过&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;@ActiveProfiles&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;激活&lt;/p&gt;
+
+&lt;h2 id=&quot;3-profile的应用&quot;&gt;3. &lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;@Profile&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;的应用&lt;/h2&gt;
+
+&lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- 通过修饰beans --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;beans&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;profile=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;dev&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;&amp;lt;!-- 配置生效的bean --&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;bean&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/bean&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/beans&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;4-总结&quot;&gt;4. 总结&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;当父类或接口中的定义的方法实现有冲突时, 子类必须覆写父中的方法. 或者把类定义为abstract&lt;/li&gt;
+  &lt;li&gt;当子类继承父类, 实现父接口的情况时。隐式的继承父类中的方法.&lt;/li&gt;
+  &lt;li&gt;类中定义的方法实现，优先级高于接口中default实现&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;End&lt;/p&gt;
+
+</description>
+        <pubDate>2019-10-28</pubDate>
+        <link>http://localhost:4000//javanote/spring-boot/2019/10/28/SpringFramework_IOC_Container.html</link>
+        <guid isPermaLink="true">http://localhost:4000//javanote/spring-boot/2019/10/28/SpringFramework_IOC_Container.html</guid>
+        
+        <category>Java随笔</category>
+        
+        <category>Spring-Boot</category>
+        
+        
+        <category>JavaNote</category>
+        
+        <category>Spring-Boot</category>
+        
+      </item>
     
       <item>
         <title>DevOps - Java代码增量覆盖率工具</title>
@@ -320,8 +609,8 @@
 
 </description>
         <pubDate>2019-10-03</pubDate>
-        <link>https://tinyzzh.github.io//devops/2019/10/03/java_code_coverage_with_jenkins.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//devops/2019/10/03/java_code_coverage_with_jenkins.html</guid>
+        <link>http://localhost:4000//devops/2019/10/03/java_code_coverage_with_jenkins.html</link>
+        <guid isPermaLink="true">http://localhost:4000//devops/2019/10/03/java_code_coverage_with_jenkins.html</guid>
         
         <category>DevOps</category>
         
@@ -515,8 +804,8 @@
 
 </description>
         <pubDate>2019-09-30</pubDate>
-        <link>https://tinyzzh.github.io//javanote/2019/09/30/Java_class_implements_multiple_interfaces.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//javanote/2019/09/30/Java_class_implements_multiple_interfaces.html</guid>
+        <link>http://localhost:4000//javanote/2019/09/30/Java_class_implements_multiple_interfaces.html</link>
+        <guid isPermaLink="true">http://localhost:4000//javanote/2019/09/30/Java_class_implements_multiple_interfaces.html</guid>
         
         <category>Java随笔</category>
         
@@ -537,13 +826,33 @@
 
 </description>
         <pubDate>2018-07-10</pubDate>
-        <link>https://tinyzzh.github.io//github/2018/07/10/Github_Ca_Bundle_Crt_No_Such_Process.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//github/2018/07/10/Github_Ca_Bundle_Crt_No_Such_Process.html</guid>
+        <link>http://localhost:4000//github/2018/07/10/Github_Ca_Bundle_Crt_No_Such_Process.html</link>
+        <guid isPermaLink="true">http://localhost:4000//github/2018/07/10/Github_Ca_Bundle_Crt_No_Such_Process.html</guid>
         
         <category>Github</category>
         
         
         <category>Github</category>
+        
+      </item>
+    
+      <item>
+        <title>Top指令</title>
+        <description>&lt;p&gt;　　Top命令详细&lt;/p&gt;
+
+&lt;p&gt;-H 表示转换为显示线程&lt;/p&gt;
+
+&lt;p&gt;top -H -p [pid]&lt;/p&gt;
+
+</description>
+        <pubDate>2017-10-07</pubDate>
+        <link>http://localhost:4000//linux/2017/10/07/Linux_Top_Commond.html</link>
+        <guid isPermaLink="true">http://localhost:4000//linux/2017/10/07/Linux_Top_Commond.html</guid>
+        
+        <category>Linux</category>
+        
+        
+        <category>Linux</category>
         
       </item>
     
@@ -582,8 +891,8 @@
 
 </description>
         <pubDate>2017-09-29</pubDate>
-        <link>https://tinyzzh.github.io//okra-ax/gradle/2017/09/29/Okra_Ax_Change_Build_Tool_From_Maven_2_Gradle.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//okra-ax/gradle/2017/09/29/Okra_Ax_Change_Build_Tool_From_Maven_2_Gradle.html</guid>
+        <link>http://localhost:4000//okra-ax/gradle/2017/09/29/Okra_Ax_Change_Build_Tool_From_Maven_2_Gradle.html</link>
+        <guid isPermaLink="true">http://localhost:4000//okra-ax/gradle/2017/09/29/Okra_Ax_Change_Build_Tool_From_Maven_2_Gradle.html</guid>
         
         <category>Okra-Ax</category>
         
@@ -724,8 +1033,8 @@
 
 </description>
         <pubDate>2017-09-23</pubDate>
-        <link>https://tinyzzh.github.io//okra-ax/okra/2017/09/23/Okra_Ax_Design_Description.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//okra-ax/okra/2017/09/23/Okra_Ax_Design_Description.html</guid>
+        <link>http://localhost:4000//okra-ax/okra/2017/09/23/Okra_Ax_Design_Description.html</link>
+        <guid isPermaLink="true">http://localhost:4000//okra-ax/okra/2017/09/23/Okra_Ax_Design_Description.html</guid>
         
         <category>Okra-Ax</category>
         
@@ -733,407 +1042,6 @@
         <category>Okra-Ax</category>
         
         <category>Okra</category>
-        
-      </item>
-    
-      <item>
-        <title>Unity3D的JsonUtility使用</title>
-        <description>&lt;p&gt;记录一下使用JsonUtility遇到的坑.&lt;/p&gt;
-
-&lt;h2 id=&quot;1-类或字段必须是可序列化的&quot;&gt;1. 类或字段必须是可序列化的&lt;/h2&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;class必须是public或者带[Serializable]的Attribute.&lt;/li&gt;
-  &lt;li&gt;field必须是public或带[SerializeField]的Attribute.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;[SerializeField]属性, 有UnityEngine提供, 表示序列化时需要强制序列化这个字段.&lt;/p&gt;
-
-&lt;div class=&quot;language-csharp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-7
-8
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;na&quot;&gt;[Serializable]&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;internal&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;CfgBuild&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SerializeField&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;2-不支持解析json的array&quot;&gt;2. 不支持解析Json的Array&lt;/h2&gt;
-
-&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;w&quot;&gt;    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ID&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;n1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ID&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;n2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;上面的JSON会直接反序列化失败.  但是支持JSON中包含Array, 如下所示:&lt;/p&gt;
-
-&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;w&quot;&gt;    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;list&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ID&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;n1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ID&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;n2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;目前笔者搜索的解决方案也是在外部封装一层.&lt;/p&gt;
-
-&lt;h2 id=&quot;3-不支持get和set&quot;&gt;3. 不支持get和set&lt;/h2&gt;
-
-&lt;div class=&quot;language-csharp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;c1&quot;&gt;//  get和set不支持&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;//  public int ret { get; set; }&lt;/span&gt;
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;不会报错，不影响代码执行。但是会导致反序列化后的bean没有赋值. 
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;4-其他&quot;&gt;4. 其他&lt;/h2&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;笔者使用还比较少, 没有详细去处理异常的状态. 扩展信息可以从参考资料中查看
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;5-参考资料&quot;&gt;5. 参考资料&lt;/h2&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/zhaoqingqing/p/3995304.html&quot;&gt;SerializeField和Serializable&lt;/a&gt;.&lt;/li&gt;
-&lt;/ol&gt;
-
-</description>
-        <pubDate>2017-09-03</pubDate>
-        <link>https://tinyzzh.github.io//unity3d/2017/09/03/Unity3D_JsonUtility_1.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//unity3d/2017/09/03/Unity3D_JsonUtility_1.html</guid>
-        
-        <category>Unity3D</category>
-        
-        
-        <category>Unity3D</category>
-        
-      </item>
-    
-      <item>
-        <title>2017年旅行记录(上海 - 熊本)</title>
-        <description>&lt;p&gt;2017年旅行记录(上海 - 熊本)&lt;/p&gt;
-
-&lt;h1 id=&quot;概述&quot;&gt;概述&lt;/h1&gt;
-
-&lt;p&gt;(皇家加勒比·海洋量子号)6天5夜(2017-05-30 - 2017-06-04)日本游轮旅行. 
-笔者第一次出国，所以记录一下旅游行程纪念一下.&lt;/p&gt;
-
-&lt;p&gt;最开始以为出国很简单，带上护照和钞票走到哪里就算那里. 但是…. 
-理想很丰满，现实很骨感。&lt;/p&gt;
-
-&lt;p&gt;不过整体来说旅行还是蛮不错的. 无忧无虑, 吃了睡睡了吃, 而且不用上班. o(∩_∩)o 哈哈&lt;/p&gt;
-
-&lt;p&gt;本次旅行留下不少深刻的印象，大概如下：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;上海吴淞口的海水很脏，很浑浊。和八代的清澈海水形成鲜明对比.&lt;/li&gt;
-  &lt;li&gt;日本的小孩子很独立. 登船日第二天7点+在熊本火车站遇到3个小孩儿自己过地下过道, 旁边完全木有大人.&lt;/li&gt;
-  &lt;li&gt;TAXI很贵, 在新八代港口到八代火车站(2700日元左右≈180rmb).&lt;/li&gt;
-  &lt;li&gt;海上看日出日落, 真的必有一番风味.&lt;/li&gt;
-  &lt;li&gt;在国外, 人生地不熟的地方, 语言不通的情况下, 要慎重选择自由行. 起码掌握日常英语口语.&lt;/li&gt;
-  &lt;li&gt;日本老人超多. 大型商场全是老头老太太在逛街. 导游说:日本的老人都是有钱人&lt;/li&gt;
-  &lt;li&gt;游轮的特色表演节目《星海传奇》很不错, 去看了两次.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h1 id=&quot;detail&quot;&gt;Detail&lt;/h1&gt;
-
-&lt;h2 id=&quot;day-1&quot;&gt;Day 1&lt;/h2&gt;
-
-&lt;p&gt;5月30号7点从杭州出发坐大巴车前往上海宝山区吴淞口港口码头。到达码头后, 经过行李托运(下午1点后可以进房间, 行李在走廊),
-海关检查等等. 11:50准时开始登船. 拿护照原件换取船卡(船卡可以用于活动预定, 消费, 下船等等). 
-上船享受完第一顿午餐后, 在多功能玩了碰碰车(登船的旅客还不算多, 不需要排队)&lt;/p&gt;
-
-&lt;h2 id=&quot;day-2&quot;&gt;Day 2&lt;/h2&gt;
-
-&lt;p&gt;登船第二天，游轮海上巡航。游轮上活动超多, 每天都安排得很满. 不过笔者是后来才知道的. 第一天睡过去了就.&lt;/p&gt;
-
-&lt;h2 id=&quot;day-3&quot;&gt;Day 3&lt;/h2&gt;
-
-&lt;p&gt;早上6-7点游轮停靠在日本新八代港口（非熊本港）。参与免费的观光团. 事实证明便宜没好货, 古人诚不我欺&lt;/p&gt;
-
-&lt;h2 id=&quot;day-4&quot;&gt;Day 4&lt;/h2&gt;
-
-&lt;p&gt;日本熊本岸上观光第二天. 体验自由行独立前往熊本市, 体验和感受一下另外一座日本城市.&lt;/p&gt;
-
-&lt;h2 id=&quot;day-5&quot;&gt;Day 5&lt;/h2&gt;
-
-&lt;p&gt;游轮回上海的海上巡航日。&lt;/p&gt;
-
-&lt;h2 id=&quot;day-6&quot;&gt;Day 6&lt;/h2&gt;
-
-&lt;p&gt;清晨到达吴淞口港口, 在帆船自助餐厅吃完早餐, 会船舱收拾行李准备下船. 
-要托运行李的根据时间表下船, 由于笔者不托运， 可以提早下船(8:15). 在码头坐大巴回杭州. 自此结束整个行程&lt;/p&gt;
-
-&lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;本来还想写点详细干货的。 写到一半感觉也是蛮枯燥的。
-有兴趣的盆友直接点开&lt;a href=&quot;https://tieba.baidu.com/p/3919094550&quot;&gt;大神的游后感传送门&lt;/a&gt;.&lt;/p&gt;
-
-</description>
-        <pubDate>2017-06-03</pubDate>
-        <link>https://tinyzzh.github.io//travel/2017/06/03/Travel_Kumamoto_Japan.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//travel/2017/06/03/Travel_Kumamoto_Japan.html</guid>
-        
-        <category>Travel</category>
-        
-        
-        <category>Travel</category>
-        
-      </item>
-    
-      <item>
-        <title>搭建自己的GitHub Pages(二) - 升级Jekyll到3.2</title>
-        <description>&lt;p&gt;4月份的时候博文记录搭建3.0的环境&lt;a href=&quot;/github/2016/04/13/Build_GitHub_Pages.html&quot;&gt;搭建自己的GitHub Pages&lt;/a&gt;。
-最近升级Jekyll到最新版本(&lt;strong&gt;3.2&lt;/strong&gt;)。&lt;/p&gt;
-
-&lt;p&gt;博主之前为了方便写了一个简单的批处理用于快速启动Jekyll本地服务器。升级Jekyll之后发现批处理启动不起来，批处理脚本报错。
-于是去官网查看一下原因。 发现版本变更貌似影响还比较大. 记录一下升级过程:&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;http://jekyllrb.com/&quot;&gt;官网&lt;/a&gt;引导如下:&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;~ &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;gem install jekyll bundler
-~ &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;jekyll new my-awesome-site
-~ &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;my-awesome-site
-~/my-awesome-site &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;jekyll serve
-&lt;span class=&quot;c&quot;&gt;# =&amp;gt; Now browse to http://localhost:4000   (现在浏览器打开http://localhost:4000)&lt;/span&gt;
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;博主对ruby了解甚少，假如不是Jekyll的话，可能都不会和ruby产生交集。所以…不要苛求&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Jekyll引入的Bundler，博主从未接触过，从纯新人角度跟着官网的示例一行一行的执行命令记录自己踩的坑。&lt;/p&gt;
-
-&lt;h2 id=&quot;step-1-遇到gem报ssl_connect错误&quot;&gt;Step 1: 遇到gem报SSL_connect错误&lt;/h2&gt;
-
-&lt;p&gt;win7系统电脑, 使用ruby installer安装完ruby环境.&lt;/p&gt;
-
-&lt;p&gt;当时不知道因为啥引发的，但是根据错误输出知道是SSL引发的问题。增加http的gem仓库解决。&lt;/p&gt;
-
-&lt;p&gt;默认的gem是&lt;strong&gt;https://rubygems.org/&lt;/strong&gt;&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; gem sources &lt;span class=&quot;nt&quot;&gt;--add&lt;/span&gt; http://rubygems.org/
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;step-2-bundle-install&quot;&gt;Step 2: bundle install&lt;/h2&gt;
-
-&lt;p&gt;首先安装完bundler之后，进入jekyll目录(Gemfile)文件所在目录, 执行:&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;nv&quot;&gt;$&amp;gt;&lt;/span&gt; bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;jekyll serve
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;输出一段英文. 大意是需要bundle install先执行一次。&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;~ &lt;span class=&quot;nv&quot;&gt;$&amp;gt;&lt;/span&gt; bundle install
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;win10电脑很顺利的安装完成了bundle install的各种安装下载等等巴拉巴拉….
-但是在win7电脑的时候，
-cmd中执行之后中途会因为各种各样的问题停下来。请按照输出的提示安装相对于的库? 等等还是蛮多的。&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;~&lt;span class=&quot;nv&quot;&gt;$&amp;gt;&lt;/span&gt; gem install execjs &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'2.7.0'&lt;/span&gt;
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;当时没注意，直接无脑的按照提示命令进行手动安装，居然手动安装成功了。也是感觉怪怪的，不知道啥原因也。
-紧跟着手动处理了两三次，感觉有点不正常，于是下决定查一下原因，
-仔细看输出信息，发现都是因为SSL连接引发，再跟着注意到Gemfile中gem仓库使用的是https
-修改为http之后，在执行install，一步到底。解决&lt;/p&gt;
-
-&lt;h2 id=&quot;脱坑&quot;&gt;脱坑&lt;/h2&gt;
-
-&lt;p&gt;隔了几天再去查SSL_connect错误原因，发现下面的文章&lt;a href=&quot;https://github.com/ruby-china/rubygems-mirror/wiki&quot;&gt;脱坑办法&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;感觉还是直接http算了。折腾。反正博主基本上除了GitHub pages基本上也不用ruby&lt;/p&gt;
-
-</description>
-        <pubDate>2016-10-09</pubDate>
-        <link>https://tinyzzh.github.io//github/2016/10/09/Build_GitHub_Pages_Update.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//github/2016/10/09/Build_GitHub_Pages_Update.html</guid>
-        
-        <category>GitHub</category>
-        
-        <category>Blog</category>
-        
-        
-        <category>GitHub</category>
-        
-      </item>
-    
-      <item>
-        <title>Glances监控服务器状态</title>
-        <description>&lt;p&gt;Glances是Python编写的基于curses的跨平台系统监控工具。&lt;/p&gt;
-
-&lt;p&gt;最近leader引入了InfluxDB + Grafana做服务状态监控，主要监控用户在线，队列IO，线程状态等服务端服务有关性能指标和参数。
-笔者在服务监控这块接触的并不是特别多。所以打算花点业余时间研究记录学习一下。&lt;/p&gt;
-
-&lt;p&gt;在这个过程中想到是否可以利用Python脚本解析(top, iostat)等工具的监控数据，汇总并上报信息到InfluxDB，在Grafana显示，
-实现对服务器机器状态的监控。&lt;/p&gt;
-
-&lt;p&gt;万事先Google，看看是否有前辈已经造轮子，避免重复制造垃圾轮子。o(∩_∩)o 哈哈&lt;/p&gt;
-
-&lt;p&gt;Google发现了Glances项目，使用Python开发并且直接支持InfluxDB+Grafana输出显示。&lt;/p&gt;
-
-&lt;h2 id=&quot;从glances安装开始&quot;&gt;从Glances安装开始&lt;/h2&gt;
-
-&lt;p&gt;Glances提供多系统的多种安装途径。本文只记录笔者安装流程和遇到的问题。&lt;/p&gt;
-
-&lt;p&gt;依赖：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;python 2.7,&amp;gt;=3.3&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;psutil&amp;gt;=2.0.0&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;setuptools&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;可选依赖:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/2016-10/img_2016-10-01-1.png&quot; alt=&quot;Alt text&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;有兴趣可以参见官网&lt;a href=&quot;https://github.com/nicolargo/glances&quot;&gt;说明文档&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;环境：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;操作系统 : CentOS 7-x64&lt;/li&gt;
-  &lt;li&gt;Python版本 : 2.7.8(系统自带)&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;值得一提的是，安装过程中&lt;strong&gt;庆幸也是不幸&lt;/strong&gt;的事情是 : 安装过程笔者没遇到啥问题。&lt;/p&gt;
-
-&lt;p&gt;我只能攒一句Glances官方提供的自动安装初始化脚本 &lt;a href=&quot;https://bit.ly/glances&quot;&gt;下载地址&lt;/a&gt;支持的太好了。&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; curl &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt; https://bit.ly/glances | /bin/bash
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;对于InfluxDB相关的参数配置:&lt;/p&gt;
-
-&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-7
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;influxdb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;localhost&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8086&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;root&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;root&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;glances&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;InfluxDB&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;中的数据库&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;启动&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Glances&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;前要创建对应的数据库&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;tags&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;spam&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;eggs&lt;/span&gt;
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;启动Glances：&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; glances &lt;span class=&quot;nt&quot;&gt;--export-influxdb&lt;/span&gt;
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;配置grafana数据源&quot;&gt;配置Grafana数据源&lt;/h2&gt;
-
-&lt;p&gt;同样庆幸也是不幸的是：Glances提供了便捷的模板配置。官网模板配置:&lt;a href=&quot;https://github.com/nicolargo/glances/blob/master/conf/glances-grafana.json&quot;&gt;下载地址&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;在Grafana中选择”Import” -&amp;gt; glances-grafana.json文件&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/2016-10/img_2016-10-01-2.png&quot; alt=&quot;Alt text&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Grafana导入的*.json文件中的datasource配置必须对应InfluxDB中的db，否则无法找到数据源&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;至此，整个环境就安装好了。看一下效果：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/2016-10/img_2016-10-01-3.png&quot; alt=&quot;Alt text&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Glances监控包括CPU，IO，网络，磁盘等等。Enjoy it!!!&lt;/p&gt;
-
-</description>
-        <pubDate>2016-10-01</pubDate>
-        <link>https://tinyzzh.github.io//centos/python/2016/10/01/Glances_Monitor_Centos_InfluxDB_Grafana.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//centos/python/2016/10/01/Glances_Monitor_Centos_InfluxDB_Grafana.html</guid>
-        
-        <category>CentOS</category>
-        
-        <category>Python</category>
-        
-        
-        <category>CentOS</category>
-        
-        <category>Python</category>
-        
-      </item>
-    
-      <item>
-        <title>InfluxDB - 安装</title>
-        <description>&lt;p&gt;本篇文章记录CentOS 7-x64操作系统，安装InfluxDB时序数据库。&lt;/p&gt;
-
-&lt;p&gt;环境:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;系统 : CentOS 7-x64&lt;/li&gt;
-  &lt;li&gt;InfluxDB : 1.0.0&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://www.influxdata.com/downloads/&quot;&gt;InfluxDB下载页&lt;/a&gt;
-笔者下载&lt;a href=&quot;https://dl.influxdata.com/influxdb/releases/influxdb-1.0.0.x86_64.rpm&quot;&gt;1.0.0版本&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;CentOS&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;wget https://dl.influxdata.com/influxdb/releases/influxdb-1.0.0.x86_64.rpm
-&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;yum localinstall influxdb-1.0.0.x86_64.rpm
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;启动influxdb&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;systemctl start influxdb
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;创建配置文件influxdb配置文件:&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;influxd config &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; influxdb.generated.conf
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;8083端口用于后台管理界面, 8086端口用于HTTP API接口&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;笔者使用的是下载rpm之后安装的办法。
-各位看官可以使用官网示例的安装过程&lt;a href=&quot;https://docs.influxdata.com/influxdb/v1.0/introduction/installation/&quot;&gt;官方安装示例&lt;/a&gt;&lt;/p&gt;
-
-</description>
-        <pubDate>2016-09-30</pubDate>
-        <link>https://tinyzzh.github.io//database/2016/09/30/InfluxDB_Init.html</link>
-        <guid isPermaLink="true">https://tinyzzh.github.io//database/2016/09/30/InfluxDB_Init.html</guid>
-        
-        <category>Database</category>
-        
-        <category>InfluxDB</category>
-        
-        
-        <category>Database</category>
         
       </item>
     
