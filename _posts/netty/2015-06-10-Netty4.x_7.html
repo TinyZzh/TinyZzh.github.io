@@ -1,0 +1,187 @@
+---
+title: "Netty4.x中文教程系列(七) UDP协议"
+date: 2015-06-10 21:12:00 +0800
+categories: [Netty]
+tags: [Netty4.x中文教程系列]
+---
+<p>　　将近快一年时间没有更新Netty的博客。一方面原因是因为项目进度的问题。另外一方面是博主有一段时间去熟悉Unity3D引擎。</p>
+<p>　　本章节主要记录博主自己Netty的UDP协议使用。</p>
+
+<h2>　　1.　　构建UDP服务端</h2>
+<p>　　首先我们应该清楚UDP协议是一种无连接状态的协议。所以Netty框架区别于一般的有链接协议服务端启动程序（ServerBootstrap）。</p>
+<p>　　Netty开发基于UDP协议的服务端需要使用Bootstrap</p>
+<p>　　</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('848a7592-339a-4f5e-a73e-1a2031503b75')"><img id="code_img_closed_848a7592-339a-4f5e-a73e-1a2031503b75" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_848a7592-339a-4f5e-a73e-1a2031503b75" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('848a7592-339a-4f5e-a73e-1a2031503b75',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+    <div id="cnblogs_code_open_848a7592-339a-4f5e-a73e-1a2031503b75" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">package</span><span style="color: #000000;"> dev.tinyz.game;
+</span><span style="color: #008080;"> 2</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.bootstrap.Bootstrap;
+</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.buffer.Unpooled;
+</span><span style="color: #008080;"> 5</span> <span style="color: #0000ff;">import</span> io.netty.channel.*<span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.channel.nio.NioEventLoopGroup;
+</span><span style="color: #008080;"> 7</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.channel.socket.DatagramPacket;
+</span><span style="color: #008080;"> 8</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.channel.socket.nio.NioDatagramChannel;
+</span><span style="color: #008080;"> 9</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.handler.codec.MessageToMessageDecoder;
+</span><span style="color: #008080;">10</span>
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.net.InetSocketAddress;
+</span><span style="color: #008080;">12</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.nio.charset.Charset;
+</span><span style="color: #008080;">13</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.util.List;
+</span><span style="color: #008080;">14</span>
+<span style="color: #008080;">15</span> <span style="color: #008000;">/**</span>
+<span style="color: #008080;">16</span> <span style="color: #008000;"> * </span><span style="color: #808080;">@author</span><span style="color: #008000;"> TinyZ on 2015/6/8.
+</span><span style="color: #008080;">17</span>  <span style="color: #008000;">*/</span>
+<span style="color: #008080;">18</span> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> GameMain {
+</span><span style="color: #008080;">19</span>
+<span style="color: #008080;">20</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> main(String[] args) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> InterruptedException {
+</span><span style="color: #008080;">21</span>
+<span style="color: #008080;">22</span>         <span style="color: #0000ff;">final</span> NioEventLoopGroup nioEventLoopGroup = <span style="color: #0000ff;">new</span><span style="color: #000000;"> NioEventLoopGroup();
+</span><span style="color: #008080;">23</span>
+<span style="color: #008080;">24</span>         Bootstrap bootstrap = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Bootstrap();
+</span><span style="color: #008080;">25</span>         bootstrap.channel(NioDatagramChannel.<span style="color: #0000ff;">class</span><span style="color: #000000;">);
+</span><span style="color: #008080;">26</span> <span style="color: #000000;">        bootstrap.group(nioEventLoopGroup);
+</span><span style="color: #008080;">27</span>         bootstrap.handler(<span style="color: #0000ff;">new</span> ChannelInitializer&lt;NioDatagramChannel&gt;<span style="color: #000000;">() {
+</span><span style="color: #008080;">28</span>
+<span style="color: #008080;">29</span> <span style="color: #000000;">            @Override
+</span><span style="color: #008080;">30</span>             <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> channelActive(ChannelHandlerContext ctx) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> Exception {
+</span><span style="color: #008080;">31</span>                 <span style="color: #0000ff;">super</span><span style="color: #000000;">.channelActive(ctx);
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">33</span>
+<span style="color: #008080;">34</span> <span style="color: #000000;">            @Override
+</span><span style="color: #008080;">35</span>             <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">void</span> initChannel(NioDatagramChannel ch) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> Exception {
+</span><span style="color: #008080;">36</span>                 ChannelPipeline cp =<span style="color: #000000;"> ch.pipeline();
+</span><span style="color: #008080;">37</span>                 cp.addLast("framer", <span style="color: #0000ff;">new</span> MessageToMessageDecoder&lt;DatagramPacket&gt;<span style="color: #000000;">() {
+</span><span style="color: #008080;">38</span> <span style="color: #000000;">                    @Override
+</span><span style="color: #008080;">39</span>                     <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">void</span> decode(ChannelHandlerContext ctx, DatagramPacket msg, List&lt;Object&gt; out) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> Exception {
+</span><span style="color: #008080;">40</span>                         out.add(msg.content().toString(Charset.forName("UTF-8"<span style="color: #000000;">)));
+</span><span style="color: #008080;">41</span> <span style="color: #000000;">                    }
+</span><span style="color: #008080;">42</span>                 }).addLast("handler", <span style="color: #0000ff;">new</span><span style="color: #000000;"> UdpHandler());
+</span><span style="color: #008080;">43</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">44</span> <span style="color: #000000;">        });
+</span><span style="color: #008080;">45</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> 监听端口</span>
+<span style="color: #008080;">46</span>         ChannelFuture sync = bootstrap.bind(9009<span style="color: #000000;">).sync();
+</span><span style="color: #008080;">47</span>         Channel udpChannel =<span style="color: #000000;"> sync.channel();
+</span><span style="color: #008080;">48</span>
+<span style="color: #008080;">49</span> <span style="color: #008000;">//</span><span style="color: #008000;">        String data = "我是大好人啊";
+</span><span style="color: #008080;">50</span> <span style="color: #008000;">//</span><span style="color: #008000;">        udpChannel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(data.getBytes(Charset.forName("UTF-8"))), new InetSocketAddress("192.168.2.29", 9008)));</span>
+<span style="color: #008080;">51</span>
+<span style="color: #008080;">52</span>         Runtime.getRuntime().addShutdownHook(<span style="color: #0000ff;">new</span> Thread(<span style="color: #0000ff;">new</span><span style="color: #000000;"> Runnable() {
+</span><span style="color: #008080;">53</span> <span style="color: #000000;">            @Override
+</span><span style="color: #008080;">54</span>             <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> run() {
+</span><span style="color: #008080;">55</span> <span style="color: #000000;">                nioEventLoopGroup.shutdownGracefully();
+</span><span style="color: #008080;">56</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">57</span> <span style="color: #000000;">        }));
+</span><span style="color: #008080;">58</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">59</span> }</pre>
+    </div>
+    <span class="cnblogs_code_collapse">View Code</span></div>
+<p>　　于Tcp协议的客户端启动程序基本一样。唯一区别就在于，UDP服务器使用的是bind方法，来监听端口</p>
+<p>　　在Netty的Bootstrap类中的注释，发现有如下注释内容：</p>
+<p>　　<img src="http://images0.cnblogs.com/blog2015/359548/201506/102039066766793.png" alt="" /></p>
+<p>　　大意就是：bind()用于UDP， TCP连接使用connect()。</p>
+<p>　　上面的源码监听的是端口9009，那么所有使用UDP协议的数据，发送到端口9009，就会被我们的Netty接收到了。</p>
+<p>　　为了输出方便，博主在上面的代码中增加一个MessageToMessageDecoder将接收到的Datagram，排除其他信息，仅将字符串传递下去。并在UDPHandler中打印出来。</p>
+<h2>　　2.　　构建UDP客户端</h2>
+<p>　　UDP协议来说，其实没有客户端和服务端的区别啦。只是为了贴近TCP协议做的一点文字描述上面的区分。</p>
+<p>　　简单来讲，上面的那段逻辑其实就可以作为UDP客户端来使用。注释掉的那行逻辑其实就是发送&ldquo;我是大好人啊&rdquo;这个字符串到ip地址为192.168.2.29的服务端的9008端口。代码如下：</p>
+<p>　　</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('4210e2fa-cc56-4728-8980-dfb43e870f6f')"><img id="code_img_closed_4210e2fa-cc56-4728-8980-dfb43e870f6f" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_4210e2fa-cc56-4728-8980-dfb43e870f6f" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('4210e2fa-cc56-4728-8980-dfb43e870f6f',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+    <div id="cnblogs_code_open_4210e2fa-cc56-4728-8980-dfb43e870f6f" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">package</span><span style="color: #000000;"> dev.tinyz.game;
+</span><span style="color: #008080;"> 2</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.bootstrap.Bootstrap;
+</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.buffer.Unpooled;
+</span><span style="color: #008080;"> 5</span> <span style="color: #0000ff;">import</span> io.netty.channel.*<span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.channel.nio.NioEventLoopGroup;
+</span><span style="color: #008080;"> 7</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.channel.socket.DatagramPacket;
+</span><span style="color: #008080;"> 8</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.channel.socket.nio.NioDatagramChannel;
+</span><span style="color: #008080;"> 9</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.handler.codec.MessageToMessageDecoder;
+</span><span style="color: #008080;">10</span>
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.net.InetSocketAddress;
+</span><span style="color: #008080;">12</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.nio.charset.Charset;
+</span><span style="color: #008080;">13</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.util.List;
+</span><span style="color: #008080;">14</span>
+<span style="color: #008080;">15</span> <span style="color: #008000;">/**</span>
+<span style="color: #008080;">16</span> <span style="color: #008000;"> * </span><span style="color: #808080;">@author</span><span style="color: #008000;"> TinyZ on 2015/6/8.
+</span><span style="color: #008080;">17</span>  <span style="color: #008000;">*/</span>
+<span style="color: #008080;">18</span> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> GameMain {
+</span><span style="color: #008080;">19</span>
+<span style="color: #008080;">20</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> main(String[] args) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> InterruptedException {
+</span><span style="color: #008080;">21</span>
+<span style="color: #008080;">22</span>         <span style="color: #0000ff;">final</span> NioEventLoopGroup nioEventLoopGroup = <span style="color: #0000ff;">new</span><span style="color: #000000;"> NioEventLoopGroup();
+</span><span style="color: #008080;">23</span>
+<span style="color: #008080;">24</span>         Bootstrap bootstrap = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Bootstrap();
+</span><span style="color: #008080;">25</span>         bootstrap.channel(NioDatagramChannel.<span style="color: #0000ff;">class</span><span style="color: #000000;">);
+</span><span style="color: #008080;">26</span> <span style="color: #000000;">        bootstrap.group(nioEventLoopGroup);
+</span><span style="color: #008080;">27</span>         bootstrap.handler(<span style="color: #0000ff;">new</span> ChannelInitializer&lt;NioDatagramChannel&gt;<span style="color: #000000;">() {
+</span><span style="color: #008080;">28</span>
+<span style="color: #008080;">29</span> <span style="color: #000000;">            @Override
+</span><span style="color: #008080;">30</span>             <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> channelActive(ChannelHandlerContext ctx) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> Exception {
+</span><span style="color: #008080;">31</span>                 <span style="color: #0000ff;">super</span><span style="color: #000000;">.channelActive(ctx);
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">33</span>
+<span style="color: #008080;">34</span> <span style="color: #000000;">            @Override
+</span><span style="color: #008080;">35</span>             <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">void</span> initChannel(NioDatagramChannel ch) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> Exception {
+</span><span style="color: #008080;">36</span>                 ChannelPipeline cp =<span style="color: #000000;"> ch.pipeline();
+</span><span style="color: #008080;">37</span>                 cp.addLast("framer", <span style="color: #0000ff;">new</span> MessageToMessageDecoder&lt;DatagramPacket&gt;<span style="color: #000000;">() {
+</span><span style="color: #008080;">38</span> <span style="color: #000000;">                    @Override
+</span><span style="color: #008080;">39</span>                     <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">void</span> decode(ChannelHandlerContext ctx, DatagramPacket msg, List&lt;Object&gt; out) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> Exception {
+</span><span style="color: #008080;">40</span>                         out.add(msg.content().toString(Charset.forName("UTF-8"<span style="color: #000000;">)));
+</span><span style="color: #008080;">41</span> <span style="color: #000000;">                    }
+</span><span style="color: #008080;">42</span>                 }).addLast("handler", <span style="color: #0000ff;">new</span><span style="color: #000000;"> UdpHandler());
+</span><span style="color: #008080;">43</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">44</span> <span style="color: #000000;">        });
+</span><span style="color: #008080;">45</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> 监听端口</span>
+<span style="color: #008080;">46</span>         ChannelFuture sync = bootstrap.bind(0<span style="color: #000000;">).sync();
+</span><span style="color: #008080;">47</span>         Channel udpChannel =<span style="color: #000000;"> sync.channel();
+</span><span style="color: #008080;">48</span>
+<span style="color: #008080;">49</span>         String data = "我是大好人啊"<span style="color: #000000;">;
+</span><span style="color: #008080;">50</span>         udpChannel.writeAndFlush(<span style="color: #0000ff;">new</span> DatagramPacket(Unpooled.copiedBuffer(data.getBytes(Charset.forName("UTF-8"))), <span style="color: #0000ff;">new</span> InetSocketAddress("192.168.2.29", 9008<span style="color: #000000;">)));
+</span><span style="color: #008080;">51</span>
+<span style="color: #008080;">52</span>         Runtime.getRuntime().addShutdownHook(<span style="color: #0000ff;">new</span> Thread(<span style="color: #0000ff;">new</span><span style="color: #000000;"> Runnable() {
+</span><span style="color: #008080;">53</span> <span style="color: #000000;">            @Override
+</span><span style="color: #008080;">54</span>             <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> run() {
+</span><span style="color: #008080;">55</span> <span style="color: #000000;">                nioEventLoopGroup.shutdownGracefully();
+</span><span style="color: #008080;">56</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">57</span> <span style="color: #000000;">        }));
+</span><span style="color: #008080;">58</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">59</span> }</pre>
+    </div>
+    <span class="cnblogs_code_collapse">View Code</span></div>
+<p>　　和上面的&ldquo;服务端&rdquo;代码最大的差别就是，<strong>监听的端口号修改成0.</strong>为</p>
+<p>　　使用Netty的Channel发送DatagramPacket。写好目标地址，然后运行起来就可以自己测试一下了。</p>
+<h2>　　3.　　JAVA原生UDP</h2>
+<p>　　有朋友这个时候就会问：为什么不是有JAVA原生的UDP呢？</p>
+<p>　　其实很简单。说白了Netty使用的也是Java底层的代码。只是做了一层封装，以便于使用。服务端使用Netty框架构建高性能，高扩展的UDP服务器。</p>
+<p>　　客户端则使用JAVA或者任意其他的语言的API（遵循UDP协议即可）。</p>
+<p>　　下面上一段博主使用的的JAVA</p>
+<p>　　</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('bc878d64-6d80-47f2-a713-211c09b9962d')"><img id="code_img_closed_bc878d64-6d80-47f2-a713-211c09b9962d" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_bc878d64-6d80-47f2-a713-211c09b9962d" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('bc878d64-6d80-47f2-a713-211c09b9962d',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+    <div id="cnblogs_code_open_bc878d64-6d80-47f2-a713-211c09b9962d" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">package</span><span style="color: #000000;"> dev.tinyz.game;
+</span><span style="color: #008080;"> 2</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.io.IOException;
+</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.net.DatagramPacket;
+</span><span style="color: #008080;"> 5</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.net.DatagramSocket;
+</span><span style="color: #008080;"> 6</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.net.InetSocketAddress;
+</span><span style="color: #008080;"> 7</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.nio.charset.Charset;
+</span><span style="color: #008080;"> 8</span>
+<span style="color: #008080;"> 9</span> <span style="color: #008000;">/**</span>
+<span style="color: #008080;">10</span> <span style="color: #008000;"> * </span><span style="color: #808080;">@author</span><span style="color: #008000;"> TinyZ on 2015/6/10.
+</span><span style="color: #008080;">11</span>  <span style="color: #008000;">*/</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> UdpTest {
+</span><span style="color: #008080;">13</span>
+<span style="color: #008080;">14</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> main(String[] args) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> IOException {
+</span><span style="color: #008080;">15</span>         <span style="color: #0000ff;">final</span> String data = "博主邮箱:zou90512@126.com"<span style="color: #000000;">;
+</span><span style="color: #008080;">16</span>         <span style="color: #0000ff;">byte</span>[] bytes = data.getBytes(Charset.forName("UTF-8"<span style="color: #000000;">));
+</span><span style="color: #008080;">17</span>         InetSocketAddress targetHost = <span style="color: #0000ff;">new</span> InetSocketAddress("192.168.2.29", 9009<span style="color: #000000;">);
+</span><span style="color: #008080;">18</span>
+<span style="color: #008080;">19</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> 发送udp内容</span>
+<span style="color: #008080;">20</span>         DatagramSocket socket = <span style="color: #0000ff;">new</span><span style="color: #000000;"> DatagramSocket();
+</span><span style="color: #008080;">21</span>         socket.send(<span style="color: #0000ff;">new</span> DatagramPacket(bytes, 0<span style="color: #000000;">, bytes.length, targetHost));
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">23</span> }</pre>
+    </div>
+    <span class="cnblogs_code_collapse">View Code</span></div>
+<p>　　..</p>
+<p>　　ps.UDP协议最大特点就是效率高，速度快。用于某些场合可以极大改善系统的性能。</p>
+<p>&nbsp;</p>

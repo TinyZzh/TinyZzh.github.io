@@ -1,0 +1,83 @@
+---
+title: "Netty4.x中文教程系列(五) 编解码器Codec"
+date: 2014-04-09 14:27:00 +0800
+categories: [Netty]
+tags: [Netty4.x中文教程系列]
+---
+<p>&nbsp;&nbsp;&nbsp; 上一篇文章详细解释了ChannelHandler的相关构架设计，版本和设计逻辑变更等等。</p>
+<p>&nbsp;&nbsp;&nbsp; 这篇文章主要在于讲述Handler里面的Codec，也就是相关的编解码器。原本想把编解码器写在上一篇文章里面的。后来想想Netty里面的编解码器太多了。想要一次写完比较困难。于是重新开了一篇文章来专门写这个。</p>
+
+<h2 align="center">1.&nbsp;&nbsp;&nbsp;&nbsp; Hello World ！实例中的使用</h2>
+<p>　　在这里先讲一下我们第一篇文章里面的实例使用到编解码器。</p>
+<h3>1.1 DelimiterBasedFrameDecoder解码器</h3>
+<p>　　DelimiterBasedFrameDecoder 顾名思义我们可以理解为基于分隔符的帧解码器。参数有两个，一个是最大帧长度，另外一个是定义分隔符。</p>
+<p>在Delimiters中提供给我们两种分隔符。一种是&ldquo;0x00-NUL&rdquo;分隔符。另外一种就是实例中使用的&ldquo;\r\n&rdquo;或&ldquo;\n&rdquo;分隔符。</p>
+<p align="center"><img src="http://images.cnitblog.com/i/359548/201404/091422514341001.png" alt="" />&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; 在构造函数中我们可以看出，当分隔符是&ldquo;\n&rdquo;的时候，框架默认解码器为基于行的帧解码器（LineBasedFrameDecoder）。否则按照可读取比特长度进行帧解码。</p>
+<h3>1.2 StringDecoder 字符串解码器 和 编码器</h3>
+<p>　　解码器:将比特流转换为默认编码的字符串。默认编码为UTF-8。当然开发者可以通过设置字符编码参数来设置字符编码。编码器:将字符串转换为Byte[]</p>
+<h2 align="center">2.&nbsp;&nbsp;&nbsp;&nbsp; Netty中Handler详述</h2>
+<p>　　在Netty的类库的handler目录可以看出它的基本结构(下图)：</p>
+<p align="center"><img src="http://images.cnitblog.com/i/359548/201404/091423044653221.png" alt="" />&nbsp;</p>
+<p align="center">图2.1 handler包结构</p>
+<p>　　整个包由6个主要部分组成，笔者将由简入繁，慢慢想读者解释每个包的含义和用法。(若有不正确之处，希望大家能给予指点)</p>
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2.1 Logging 日志</h3>
+<p>&nbsp;<img style="display: block; margin-left: auto; margin-right: auto;" src="http://images.cnitblog.com/i/359548/201404/091424014189420.png" alt="" /></p>
+<p>　　　　用于Netty中的日志输出。</p>
+<h4>　　　　2.1.1 loggingHandler</h4>
+<p>　　LoggingHandler 继承于ChannelDuplexHandler。它的注释我们可以看出：&ldquo;是一个使用日志框架记录全部事件的ChannelHandler,&nbsp; 缺省值是记录全部DEBUG级别以上的事件&rdquo;。它的功能是记录全部事件，包含Inbound和Outbound的，之所以选择了继承ChannelDuplexHandler，是由于ChannelDuplexHandler 继承ChannelInboundHandlerAdapter 实现ChannelOutboundHandler。所以相当于Netty框架内的全部通信相关的事件都会得到处理。</p>
+<h4>　　　　2.1.2LogLevel</h4>
+<p>在这里作者定义了5个级别的log。TRACE，DEBUG，INFO，WARN，ERROR。</p>
+<h3>　　2.2 Ssl</h3>
+<p>&nbsp;<img style="display: block; margin-left: auto; margin-right: auto;" src="http://images.cnitblog.com/i/359548/201404/091424185281994.png" alt="" /></p>
+<p>　　用于SSL协议解析和编码。</p>
+<h4>　　　　2.2.1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SslHandler</h4>
+<p>　　　　熟悉了解过Http的朋友应该是知道ssl的。SSL 的英文全称是 &ldquo;Secure Sockets Layer&rdquo; ，中文名为 &ldquo; 安全套接层协议层 &rdquo; ，它是网景（ Netscape ）公司提出的基于 WEB 应用的安全协议。 SSL 协议指定了一种在应用程序协议（如 HTTP 、 Telenet 、 NMTP 和 FTP 等）和 TCP/IP 协议之间提供数据安全性分层的机制，它为 TCP/IP 连接提供数据加密、服务器认证、消息完整性以及可选的客户机认证。现在的相当一部分网站都有SSL加密。而SslHander则是Netty提供的Ssl解码编码处理。</p>
+<h4>　　　　2.2.2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NotSslRecordException 和 SslHandshakeCompletionEvent&nbsp;抛出异常和处理完成触发事件。</h4>
+<h3>　　2.3 Stream 流</h3>
+<p>&nbsp;<img style="display: block; margin-left: auto; margin-right: auto;" src="http://images.cnitblog.com/i/359548/201404/091424254979031.png" alt="" /></p>
+<p>　　用于文件的的传输。将Java里面的File转换为Stream流，然后进行传输。</p>
+<h3>　　2.4 Timeout 空闲检测</h3>
+<p>&nbsp;<img style="display: block; margin-left: auto; margin-right: auto;" src="http://images.cnitblog.com/i/359548/201404/091424317936441.png" alt="" /></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 用于Netty框架中空闲超时相关。</p>
+<p>IdleState 空闲状态。Netty中的空闲时间包括，读空闲，写空闲和读写空闲3种时间。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 顾名思义，读空闲即一段时间内没有接受到消息，写空闲即一段时间内没有发送消息。读写空闲即一段时间内读写都空闲。主要是用于检测空闲状态。并且特定条件下服务端关闭和释放一些资源。</p>
+<h3>　　2.5 Traffic 流量统计</h3>
+<p>&nbsp;<img style="display: block; margin-left: auto; margin-right: auto;" src="http://images.cnitblog.com/i/359548/201404/091424389976707.png" alt="" /></p>
+<p>　　用于流量统计。</p>
+<p>　　Netty提供了一个流量统计抽象类，一个Channel流量统计Handler和一个全局带宽流量统计Handler。</p>
+<h3>　　2.6 Codec 编解码器</h3>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 这个是目前Netty的重点。也是最核心最复杂的部分。也是笔者认为Netty设计里面最好的一部分。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 用于数据的编解码。</p>
+<p>　　编解码器可以理解为订立一个规范让客户端和服务端能够理解和识别字节流所包含的意思。其实编码和解码就是这么简单的事情，没什么复杂的。</p>
+<p>&nbsp;<img style="display: block; margin-left: auto; margin-right: auto;" src="http://images.cnitblog.com/i/359548/201404/091424487622056.png" alt="" /></p>
+<p>　　看到codec里面的这么一大堆的包类。读者是不是赶脚着很头晕？ O(&cap;_&cap;)O哈哈~。作者设计了非常友好的包逻辑结构。方便我们理解源码。</p>
+<p>即Codec包中的类优先看，下面的子包都是一些Netty开发者们提供的一些实现。</p>
+<p>有没有看到HelloWorld出现的LengthFieldBaseFrameDecoder和FixedLengthFrameDecoder。</p>
+<p>&nbsp;</p>
+<p>这里主要讲的是Netty中最重要的两个编解码器ByteToMessageCodec和MessageToMessageCodec。之所只讲着两个的原因是其他的编解码器都是继承于这两个的。</p>
+<p>ByteToMessageCodec：在Netty4.x版本中允许传递Java中的对象，所以这个编解码起的作用就是讲Byte流转换为对象。而MessageToMessageCodec则是将Object转换为Object。这两个的区分其实很模糊。可能需要大家亲自动手写过之后才会有比较好的感受。</p>
+<p>包base64：继承MessageToMessageEncoder&lt;ByteBuf&gt;。是base64编码的一些东西。</p>
+<p>包bytes：继承MessageToMessageEncoder&lt;ByteBuf&gt;。用于字节数组和Netty里面的ByteBuf互相转换</p>
+<p>包compression：用于ByteBuf数据压缩和解压缩的。继承MessageToMessageEncoder&lt;ByteBuf&gt;</p>
+<p>包http：用于HTTP请求相关的。这个包里面就比较复杂了。下面详细讲一下。</p>
+<ol>
+    <li>包空间：HTTP内容，请求，响应等。</li>
+    <li>包cors: 包名称是（跨域资源分享）Cross Origin Resource Sharing 的简写。用于客户端跨域请求。&nbsp; 可以参考 <a href="http://www.w3.org/TR/cors/">http://www.w3.org/TR/cors/</a></li>
+    <li>包multipart：POST消息和文件上传相关的一些。只是粗略看了一下。</li>
+    <li>包websocketx：针对近年来Html5发展起来的websocket技术的。不过貌似由于Html5标准还未正式的确定。所以这个包里面的内容比较多。编解码器版本也很多。相信以后统一标准之后会简单一些。暂时不推荐吧</li>
+</ol>
+<p>包marshalling：</p>
+<p>包protoBuf：用于<a href="http://code.google.com/p/protobuf/">Google Protocol Buffers</a> 编解码</p>
+<p>包rtsp：实时流传输协议（Real Time Streaming Protocol，RTSP）</p>
+<p>包sctp：流控制传输协议（Stream Control Transmission Protocol，SCTP）</p>
+<p>包serialization：用于序列化的Java对象的和ByteBuf之间的转换。</p>
+<p>包scoks：用于Java Socket通信相关的。支持Socket4a和 Socket 5两个版本</p>
+<p>包spdy：SPDY协议是近年来发展的一种协议。主要目的是为了减少网页加载的时间。它是HTTP协议的增强版本。它从某种程度上讲提高了HTTP协议在数据传输时的速度和性能</p>
+<p>包string：用于java里面字符串的编解码</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p style="padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 60px; font-family: 微软雅黑; font-size: 12px; border: #e0e0e0 1px dashed;"><strong>作者</strong>：TinyZ<br />出处：<a href="http://www.cnblogs.com/zou90512/" target="_blank">http://www.cnblogs.com/zou90512/</a><br />关于作者：努力学习，天天向上。不断探索学习，提升自身价值。记录经验分享。<br />本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文链接<br />如有问题，可以通过&nbsp;<span style="color: #0000ff;">zou90512@126.com&nbsp;</span>联系我，非常感谢。<br />笔者网店: <a href="http://aoleitaisen.taobao.com" target="_blank">http://aoleitaisen.taobao.com</a>. 欢迎广大读者围观</p>
+<p>&nbsp;</p>

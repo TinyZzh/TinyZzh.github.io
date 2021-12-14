@@ -1,0 +1,42 @@
+---
+title: "Netty4.x中文教程系列(四) ChannelHandler"
+date: 2014-01-15 17:32:00 +0800
+categories: [Netty]
+tags: [Netty4.x中文教程系列]
+---
+<p>&nbsp;&nbsp;&nbsp; 上一篇文章详细解释了Hello World示例的代码。里面涉及了一些Netty框架的基础。</p>
+<p>&nbsp;&nbsp;&nbsp; 这篇文章用以解释ChannelHandler。笔者本身在以前写过文章<a href="http://www.cnblogs.com/zou90512/p/3421478.html">ChannelHandler改动及影响</a> 和 <a href="http://www.cnblogs.com/zou90512/p/3407192.html">ChannelInitializer 学习</a> 对Netty的.ChannelHandler做过阐述。里面主要描述了4.x版本相对于3.x版本的改动以及影响。并引用了一些文章。为大家详细的解释了ChannelHandler里面涉及架构。</p>
+
+<h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.在4.x版本中的ChannelHandler</h2>
+<p>&nbsp;&nbsp;&nbsp; ChannelHandler接口是Handler里面的最高的接口。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ChannelInboundHandler接口和ChannelOutboundHandler接口，继承ChannelHandler接口。</p>
+<p>&nbsp;&nbsp;&nbsp; 流程如下图:</p>
+<p align="center"><img src="http://images.cnitblog.com/blog/359548/201401/151733070028.jpg" alt="" />&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; ChannelInBoundHandler负责数据进入并在ChannelPipeline中按照从上至下的顺序查找调用相应的InBoundHandler。</p>
+<p>&nbsp;&nbsp;&nbsp; ChannelOutBoundHandler负责数据出去并在ChannelPipeline中按照从下至上的顺序查找调用相应的OutBoundHandler。</p>
+<h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2.在5.x版本中的改动</h2>
+<p>&nbsp;&nbsp;&nbsp; 在5.x版本中。作者再次对ChannelHandler进行了改动。</p>
+<p>&nbsp;&nbsp;&nbsp; 在更新说明里可以看到:</p>
+<p>&nbsp;&nbsp;&nbsp; 作者简化了Handler的类型层次结构。</p>
+<p>ChannelInboundHandler和ChannelOutboundHandler接口合并到ChannelHandler里面。</p>
+<p>ChannelInboundHandlerAdapter，ChannelOutboundHandlerAdapter以及ChannelDuplexHandlerAdapter被取消，其功能被ChannelHandlerAdapter代替。</p>
+<p>由于上述的改动，开发者将无法区分InBoundHandler和OutBoundHandler 所以CombinedChannelDuplexHandler&nbsp;的功能也被ChannelHandlerAdapter代替。</p>
+<p>有兴趣了解的可以看一下注释。假如不看也影响不大。因为5.x看上去改动很大，实际上框架的设计思路并没有改变。</p>
+<p>&nbsp;</p>
+<p>(注释:</p>
+<p>5.x版本中虽然删除了InBoundHandler和OutBoundHandler，但是在设计思想上InBound和OurBound的概念还是存在的。只不过是作者使用了另外一种方式去实现罢了。</p>
+<p>查看过4.x版本代码的朋友可能已经了解知道了。消息在管道中都是以ChannelHandlerContext的形势传递的。而InBound和OutBound主要作用是被当做ChannelPipeline管道中标识。用于Handler中相对应的调用处理，通过两个布尔值变量inBound和outBound来区分是进入还是出去。并以此来区分Handler并调用相应的方法，其实没有什么实际用途。于是作者在5.x版本中对此做出了优化。优化方案笔者感觉very nice。</p>
+<p>由于删除了InBoundHandler和OutBoundHandler的接口。作者在DefaultChannelHandlerContext中重写了findContextInBound()和findContextOutBound()方法。并且在方法里引入了参数mask。</p>
+<p>在类开始处定义静态终态的变量来标记4.x版本中定义的InBound和OutBound中的方法名(可以变相的认为是枚举)。在源代码中的实现是利用mask来获取对应的flag，最终实现使用mask来区分InBoundHandler亦或是OutBoundHandler。</p>
+<p>这样的改动，优点显而易见。简化了层次结构，降低了框架的复杂度。同时功能上却没有什么变化。易于使用了解。</p>
+<p>)</p>
+<p>目前在不涉及框架底层的情况下。笔者将继续使用Netty 4.0.14 final版本。正如第一章介绍所说。5.x版本作者并没有进行大规模的设计变更。仅仅只是局部的小部分修改。所以在版本没有稳定之前。教程都将采用4.0.14final为框架包。</p>
+<h2>3.认识Handler中的编解码器</h2>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 编解码器在Netty框架中占了相当大的一部分代码量。由此可见其重要性。本章内容旨在阐述编解码器的基础。下一章会详细分类的按照框架的结构详解其余编解码器。</p>
+<p align="center"><img src="http://images.cnitblog.com/blog/359548/201401/151733164087.jpg" alt="" />&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在Netty的codec包内部我们可以看到很多的编解码器和一些异常捕获。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 下一章为大家相熟Handler里面的各种编解码器。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p style="padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 60px; font-family: 微软雅黑; font-size: 12px; border: #e0e0e0 1px dashed;"><strong>作者</strong>：TinyZ<br />出处：<a href="http://www.cnblogs.com/zou90512/" target="_blank">http://www.cnblogs.com/zou90512/</a><br />关于作者：努力学习，天天向上。不断探索学习，提升自身价值。记录经验分享。<br />本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文链接<br />如有问题，可以通过&nbsp;<span style="color: #0000ff;">zou90512@126.com&nbsp;</span>联系我，非常感谢。<br />笔者网店: <a href="http://aoleitaisen.taobao.com" target="_blank">http://aoleitaisen.taobao.com</a>. 欢迎广大读者围观</p>
+<p>&nbsp;</p>

@@ -1,0 +1,171 @@
+---
+title: "Netty4.x中文教程系列(六) 从头开始Bootstrap"
+date: 2014-08-12 18:24:00 +0800
+categories: [Netty]
+tags: [Netty4.x中文教程系列]
+---
+<p>&nbsp;&nbsp;&nbsp;&nbsp;其实自从中文教程系列（五）一直不知道自己到底想些什么。加上忙着工作上出现了一些问题。本来想就这么放弃维护了。没想到有朋友和我说百度搜索推荐了我的文章。瞬间有点小激动啊。决定自己要把这个教程系列完善下去。这里诚挚的想支持我的盆友们道歉。真的是让你们失望了。我居然有想放弃的这种丧心病狂的念头。以后绝对不会了。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;其实伴随着对Netty的逐步深入学习。感觉自己对netty的了解仍然有所欠缺。加上笔者语文课是美术老师教的。所以。。说多了都是泪啊。~~o(&gt;_&lt;)o ~~</p>
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+<p>下面开始正文：</p>
+<p>纵览Netty框架的包结构，不难看出。其实Netty是有五大模块组成。</p>
+<p style="text-align: center;"><img src="http://images.cnitblog.com/blog/359548/201408/121823447646483.png" alt="" /></p>
+<ol style="margin-left: 60pt;">
+    <li>
+        <div style="text-align: justify;"><span style="font-size: 10pt;">Bootstrap负责启动引导 </span></div>
+    </li>
+    <li>
+        <div style="text-align: justify;"><span style="font-size: 10pt;">Buffer是Netty自己封装的缓存器 </span></div>
+    </li>
+    <li>
+        <div style="text-align: justify;"><span style="font-size: 10pt;">Channel负责管理和建立连接 </span></div>
+    </li>
+    <li>
+        <div style="text-align: justify;"><span style="font-size: 10pt;">Handler是责任链路模式中的处理者 </span></div>
+    </li>
+    <li>
+        <div style="text-align: justify;"><span style="font-size: 10pt;">Util是Netty提供和使用到的一些工具 </span></div>
+    </li>
+</ol>
+<h2>如何启动Netty服务器</h2>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;Netty的启动服务器相关的类全部都在bootstrap包里面。所以本章我们从头开始，从bootstrap包里面的内容开始。从创建一个Netty服务器开始为大家逐步讲解Netty的应用。</p>
+<p>相比于第五章的ChannelHandler里面的编解码器bootstrap里面可以说是内容少的可怜。来看一下他的包内容：</p>
+<p style="text-align: center;"><img src="http://images.cnitblog.com/blog/359548/201408/121823451397298.png" alt="" /></p>
+<p style="margin-left: 21pt;">简简单单的三个类，一个接口。</p>
+<p style="margin-left: 21pt;">Bootstrap是客户端的启动程序类。</p>
+<p style="margin-left: 21pt;">ServerBootstrap是服务端的启动程序类</p>
+<p style="margin-left: 21pt;">Bootstrap和ServerBootstrap继承AbstractBootstrap。</p>
+<p style="margin-left: 21pt;">ChannelFactory则是AbstractBootstrap中用于创建Channel的接口</p>
+<p>以下代码以服务端的启动程序启动为例：</p>
+<h3>步骤一：实例化ServerBootstrap</h3>
+<p>首先我们需要实例化一个ServerBootstrap服务端启动引导程序。如下图：</p>
+<p style="text-align: center;"><img src="http://images.cnitblog.com/blog/359548/201408/121823454209084.png" alt="" /></p>
+<h3>步骤二：设置它的线程组</h3>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;创建两个NioEventLoopGroup，一个是父线程（Boss线程），一个是子线程(work线程)。</p>
+<p style="text-align: center;"><img src="http://images.cnitblog.com/blog/359548/201408/121823456703628.png" alt="" /></p>
+<p>设置bootstrap的线程组</p>
+<p style="text-align: center;"><img src="http://images.cnitblog.com/blog/359548/201408/121823459363941.png" alt="" /></p>
+<p>设置线程组主要的目的是为了处理Channel中的事件和IO操作。</p>
+<p>&nbsp;</p>
+<p>下图为ServerBootstrap的group方法的源码：</p>
+<p style="text-align: center;"><img src="http://images.cnitblog.com/blog/359548/201408/121823462806512.png" alt="" /></p>
+<p>父线程组被传递到父类中。详细的解释在最后面。涉及的东西太多。在后面在进行解释。</p>
+<h3>步骤三：设置Channel类型</h3>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;设置Channel类型：</p>
+<p style="text-align: center;"><img src="http://images.cnitblog.com/blog/359548/201408/121823465775070.png" alt="" /></p>
+<p>&nbsp;</p>
+<p>下图ServerBootstrap中channel()方法的源码：</p>
+<p style="text-align: center;"><img src="http://images.cnitblog.com/blog/359548/201408/121823469203343.png" alt="" /></p>
+<p style="text-align: center;">&nbsp;</p>
+<p>我们可以看到创建并设置了一个Channel工厂。</p>
+<p>下图是BootstrapChannelFactory的源码。它是一个终态的静态的类。实现ChannelFactory。作用是根据初始设置的Channel类型，创建并返回一个新的Channel。</p>
+<p style="text-align: center;"><img src="http://images.cnitblog.com/blog/359548/201408/121823472954157.png" alt="" /></p>
+<h3>步骤四：设置责任链路</h3>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;责任链模式是Netty的核心部分。每个处理者只负责自己有关的东西。然后将处理结果根据责任链传递下去。</p>
+<p style="text-align: center;"><img src="http://images.cnitblog.com/blog/359548/201408/121823476704972.png" alt="" /></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;我们要在初始的设置一个责任链路。当一个Channel被创建之后初始化的时候将被设置。下图是ServerBootstrap在init（）方法的源码：</p>
+<p style="text-align: center; margin-left: 21pt;"><img src="http://images.cnitblog.com/blog/359548/201408/121823480304314.png" alt="" /></p>
+<p>创建一个Channel，在初始化的设置管道里面的处理者。</p>
+<p>&nbsp;</p>
+<h3>步骤五：绑定并监听端口</h3>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;绑定并设置监听端口。</p>
+<p style="text-align: center;"><img src="http://images.cnitblog.com/blog/359548/201408/121823484206601.png" alt="" /></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;经过以上的5个步骤，我们的服务器就足以启动了。很多的设置都是Netty默认的。我们想设置自己的参数怎么办呢？Netty提供了这个方法。</p>
+<p>&nbsp;</p>
+<h3>步骤六：其他设置</h3>
+<p>1. 设置Channel选项配置：</p>
+<p>在Netty 以前的版本中都是以字符串来配置的。4.x版本发布之后统一修改为使用ChannelOption类来实现配置。</p>
+<p>例如：</p>
+<p style="text-align: center;"><img src="http://images.cnitblog.com/blog/359548/201408/121823486866915.png" alt="" /></p>
+<p>Socket连接是否保存连接:</p>
+<p style="text-align: center;"><img src="http://images.cnitblog.com/blog/359548/201408/121823489361458.png" alt="" /></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;还有很多其他的参数。如下图所示：</p>
+<p style="text-align: center;"><img src="http://images.cnitblog.com/blog/359548/201408/121823492955502.png" alt="" /></p>
+<p>这里不详细讲了。参考：io.netty.channel.ChannelOption</p>
+<p>&nbsp;</p>
+<p>2. 设置子Channel的属性：</p>
+<p style="text-align: center;"><img src="http://images.cnitblog.com/blog/359548/201408/121823496863087.png" alt="" /></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;设置子Channel的属性。当值为null是，属性将被删除。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h3>解释EventLoopGroup</h3>
+<p>这里解释一下我们上面创建的两个完全一样的线程组的作用。</p>
+<p>Netty的架构使用了非常复杂的主从式Reactor线程模型。简单的说就是。父线程组（代码中的parentBosser）担任（acceptor）的角色。负责接收客户端的连接请求，处理完成请求，创建一个Channel并注册到子线程组（代码中的childWorker）中的某个线程上面，然后这个线程将负责Channel的读写，编解码等操作。</p>
+<p>&nbsp;</p>
+<p>源代码查看：</p>
+<p>在步骤四中我们设置了责任链路。这里是Channel初始化和注册。在这里的init就是Channel的初始化。初始化完成之后。Group()则是获取在步骤一种的设置父线程组，并将这个新的Channel注册进来。</p>
+<p>下图是AbstractBootstrap的initAndRegister方法</p>
+<p style="text-align: center;"><img src="http://images.cnitblog.com/blog/359548/201408/121823502486659.png" alt="" /></p>
+<p>&nbsp;</p>
+<p>方法Init()实现在ServerBootstrap中。代码如下：</p>
+<p style="text-align: center;"><img src="http://images.cnitblog.com/blog/359548/201408/121823509988288.png" alt="" /></p>
+<p>看到下面的代码是不是有种和熟悉的感觉？没错。就是在步骤四中设置责任链路的那段代码。这里将注册新创建的Channel到子线程组</p>
+<p>&nbsp;</p>
+<p>Ps: 完。。。O(&cap;_&cap;)O哈哈~。。。写的好辛苦的说。。。附上我的测试示例代码。好累。。写这么多字。希望能帮助到大家</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('356a8199-3469-4147-be11-b53ac34cefa8')"><img id="code_img_closed_356a8199-3469-4147-be11-b53ac34cefa8" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_356a8199-3469-4147-be11-b53ac34cefa8" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('356a8199-3469-4147-be11-b53ac34cefa8',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+    <div id="cnblogs_code_open_356a8199-3469-4147-be11-b53ac34cefa8" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.bootstrap.ServerBootstrap;
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">import</span> io.netty.channel.*<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.channel.nio.NioEventLoopGroup;
+</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.channel.socket.nio.NioServerSocketChannel;
+</span><span style="color: #008080;"> 5</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.channel.socket.nio.NioSocketChannel;
+</span><span style="color: #008080;"> 6</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+</span><span style="color: #008080;"> 7</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> io.netty.handler.codec.LengthFieldPrepender;
+</span><span style="color: #008080;"> 8</span>
+<span style="color: #008080;"> 9</span> <span style="color: #008000;">/**</span>
+<span style="color: #008080;">10</span> <span style="color: #008000;"> * 测试。。O(&cap;_&cap;)O哈哈~
+</span><span style="color: #008080;">11</span> <span style="color: #008000;"> * Created by TinyZ on 2014/8/12.
+</span><span style="color: #008080;">12</span>  <span style="color: #008000;">*/</span>
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> MainTest {
+</span><span style="color: #008080;">14</span>
+<span style="color: #008080;">15</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> main(String[] args) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> Exception {
+</span><span style="color: #008080;">16</span>
+<span style="color: #008080;">17</span>         NioEventLoopGroup parentBosser = <span style="color: #0000ff;">new</span><span style="color: #000000;"> NioEventLoopGroup();
+</span><span style="color: #008080;">18</span>         NioEventLoopGroup childWorker = <span style="color: #0000ff;">new</span><span style="color: #000000;"> NioEventLoopGroup();
+</span><span style="color: #008080;">19</span>
+<span style="color: #008080;">20</span>         ServerBootstrap bootstrap = <span style="color: #0000ff;">new</span><span style="color: #000000;"> ServerBootstrap();
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">        bootstrap.group(parentBosser, childWorker);
+</span><span style="color: #008080;">22</span>         bootstrap.channel(NioServerSocketChannel.<span style="color: #0000ff;">class</span><span style="color: #000000;">);
+</span><span style="color: #008080;">23</span>         bootstrap.childHandler(<span style="color: #0000ff;">new</span> ChannelInitializer&lt;NioSocketChannel&gt;<span style="color: #000000;">() {
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">            @Override
+</span><span style="color: #008080;">25</span>             <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">void</span> initChannel(NioSocketChannel ch) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> Exception {
+</span><span style="color: #008080;">26</span>                 ChannelPipeline cp =<span style="color: #000000;"> ch.pipeline();
+</span><span style="color: #008080;">27</span>                 <span style="color: #008000;">//</span><span style="color: #008000;"> 基于长度的解码器</span>
+<span style="color: #008080;">28</span>                 cp.addLast("framer", <span style="color: #0000ff;">new</span> LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 2, 0, 2<span style="color: #000000;">));
+</span><span style="color: #008080;">29</span>                 cp.addLast("prepender", <span style="color: #0000ff;">new</span> LengthFieldPrepender(4<span style="color: #000000;">));
+</span><span style="color: #008080;">30</span>                 <span style="color: #008000;">//
+</span><span style="color: #008080;">31</span>                 cp.addLast("handler", <span style="color: #0000ff;">new</span> SimpleChannelInboundHandler&lt;Object&gt;<span style="color: #000000;">() {
+</span><span style="color: #008080;">32</span>
+<span style="color: #008080;">33</span> <span style="color: #000000;">                    @Override
+</span><span style="color: #008080;">34</span>                     <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">void</span> channelRead0(ChannelHandlerContext ctx, Object msg) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> Exception {
+</span><span style="color: #008080;">35</span>
+<span style="color: #008080;">36</span> <span style="color: #000000;">                        System.out.println();
+</span><span style="color: #008080;">37</span> <span style="color: #000000;">                        ctx.channel().writeAndFlush(msg);
+</span><span style="color: #008080;">38</span>
+<span style="color: #008080;">39</span> <span style="color: #000000;">                    }
+</span><span style="color: #008080;">40</span> <span style="color: #000000;">                });
+</span><span style="color: #008080;">41</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">42</span> <span style="color: #000000;">        });
+</span><span style="color: #008080;">43</span>         bootstrap.option(ChannelOption.SO_KEEPALIVE, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;">44</span>         <span style="color: #008000;">//</span><span style="color: #008000;">bootstrap.childAttr()</span>
+<span style="color: #008080;">45</span>         <span style="color: #0000ff;">try</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">46</span>             <span style="color: #008000;">//</span><span style="color: #008000;"> 绑定并监听端口</span>
+<span style="color: #008080;">47</span>             ChannelFuture future = bootstrap.bind(9002<span style="color: #000000;">).sync();
+</span><span style="color: #008080;">48</span>             <span style="color: #008000;">//</span><span style="color: #008000;"> 等待关闭事件</span>
+<span style="color: #008080;">49</span> <span style="color: #000000;">            future.channel().closeFuture().sync();
+</span><span style="color: #008080;">50</span>         } <span style="color: #0000ff;">finally</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">51</span>             <span style="color: #008000;">//</span><span style="color: #008000;"> 释放资源</span>
+<span style="color: #008080;">52</span> <span style="color: #000000;">            parentBosser.shutdownGracefully();
+</span><span style="color: #008080;">53</span> <span style="color: #000000;">            childWorker.shutdownGracefully();
+</span><span style="color: #008080;">54</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">55</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">56</span> }</pre>
+    </div>
+    <span class="cnblogs_code_collapse">View Code</span></div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p style="padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 60px; font-family: 微软雅黑; font-size: 12px; border: #e0e0e0 1px dashed;"><strong>作者</strong>：TinyZ<br />出处：<a href="http://www.cnblogs.com/zou90512/" target="_blank">http://www.cnblogs.com/zou90512/</a><br />关于作者：努力学习，天天向上。不断探索学习，提升自身价值。记录经验分享。<br />本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文链接<br />如有问题，可以通过&nbsp;<span style="color: #0000ff;">zou90512@126.com&nbsp;</span>联系我，非常感谢。<br />笔者网店: <a href="http://aoleitaisen.taobao.com" target="_blank">http://aoleitaisen.taobao.com</a>. 欢迎广大读者围观</p>
+<p>&nbsp;</p>
