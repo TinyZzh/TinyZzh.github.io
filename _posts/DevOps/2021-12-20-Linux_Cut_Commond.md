@@ -15,7 +15,7 @@ tags: [DevOps]
 * TOC
 {:toc}
 
-## \`-b\`和\`-c\`获取列表参数中的字节、字符
+## 1. \`-b\`和\`-c\`获取列表参数中的字节、字符
 
 默认使用\`TAB\`进行位置偏移（LIST）
 选取某个位置的字符. 
@@ -25,22 +25,22 @@ tags: [DevOps]
 >echo "Hello World!" \| cut -c 1-5 => \`Hello\`
 
 
-## **\`-d\`** 使用分隔符替代\`TAB\`对字符进行拆分定位
+## 2. **\`-d\`** 使用分隔符替代\`TAB\`对字符进行拆分定位
 
 
 根据某个分隔符拆分并打印. 
 >echo 'Hello World!' \| cut -d ' ' -f2 => \`World!\`
 
-## **\`-f\`** 获取根据字段，域
+## 3. **\`-f\`** 获取根据字段，域
 
 配合\`-d\`有奇效. 最常见的应用常见之一.
 
 
-## \`--complement\`排除选择的内容
+## 4. \`--complement\`排除选择的内容
 
 >echo 'Hello World!' \| cut -d ' ' -f2 => \`Hello\`
 
-## \`--only-delimited\` 是否\`仅\`打印带分隔符的行
+## 5. \`--only-delimited\` 是否\`仅\`打印带分隔符的行
 
 分隔符不存的行. 
 > echo 'Hello World!' \| cut -d 'x' -f2 => \`\`
@@ -48,7 +48,7 @@ tags: [DevOps]
 分隔符存在的行. 
 >echo 'Hello World!' \| cut -d ' ' -f2 => \`Hello\`
 
-## \`--output-delimiter\`替换输出的分隔符
+## 6. \`--output-delimiter\`替换输出的分隔符
 
 分隔符不存的行. 
 
