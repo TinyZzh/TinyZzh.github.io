@@ -34,6 +34,7 @@ highlighter: rouge #  [rouge, pygments]
 
 kramdown:
   toc_levels: 1..3
+  auto_ids: true
   input: GFM
   extensions:
     - autolink
@@ -41,7 +42,7 @@ kramdown:
     - smart
   syntax_highlighter: rouge
   syntax_highlighter_opts:
-    line_numbers: nil
+    line_numbers: true
 
 plugins: ["jekyll-paginate", "jekyll-archives"]
 exclude:
