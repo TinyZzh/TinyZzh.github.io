@@ -12,6 +12,7 @@ tags: [DevOps]
 
 <div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/2.png" alt="m"/></div>
 
+* TOC
 {:toc}
 
 ## \`-b\`和\`-c\`获取列表参数中的字节、字符
