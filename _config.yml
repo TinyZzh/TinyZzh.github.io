@@ -33,12 +33,12 @@ markdown: kramdown #  [rdiscount, karkdown]
 highlighter: rouge #  [rouge, pygments]
 
 kramdown:
+  toc_levels: 1..3
   input: GFM
   extensions:
     - autolink
     - footnotes
     - smart
-  enable_coderay: true
   syntax_highlighter: rouge
   syntax_highlighter_opts:
     line_numbers: nil
