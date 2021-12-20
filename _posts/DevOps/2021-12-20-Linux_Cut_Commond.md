@@ -16,17 +16,17 @@ tags: [DevOps]
 
 默认使用\`TAB\`进行位置偏移（LIST）
 选取某个位置的字符. 
->echo "Hello World!" | cut -c 2 => \`e\`
+>echo "Hello World!" \| cut -c 2 => \`e\`
 
 选取位置范围的字符. 
->echo "Hello World!" | cut -c 1-5 => \`Hello\`
+>echo "Hello World!" \| cut -c 1-5 => \`Hello\`
 
 
 ## **\`-d\`** 使用分隔符替代\`TAB\`对字符进行拆分定位
 
 
 根据某个分隔符拆分并打印. 
->echo 'Hello World!' | cut -d ' ' -f2 => \`World!\`
+>echo 'Hello World!' \| cut -d ' ' -f2 => \`World!\`
 
 ## **\`-f\`** 获取根据字段，域
 
@@ -35,19 +35,19 @@ tags: [DevOps]
 
 ## \`--complement\`排除选择的内容
 
->echo 'Hello World!' | cut -d ' ' -f2 => \`Hello\`
+>echo 'Hello World!' \| cut -d ' ' -f2 => \`Hello\`
 
 ## \`--only-delimited\` 是否\`仅\`打印带分隔符的行
 
 分隔符不存的行. 
-> echo 'Hello World!' | cut -d 'x' -f2 => \`\`
-> 
+> echo 'Hello World!' \| cut -d 'x' -f2 => \`\`
+
 分隔符存在的行. 
->echo 'Hello World!' | cut -d ' ' -f2 => \`Hello\`
+>echo 'Hello World!' \| cut -d ' ' -f2 => \`Hello\`
 
 ## \`--output-delimiter\`替换输出的分隔符
 
 分隔符不存的行. 
 
-> echo 'Hello World!' | cut -d ' ' --output-delimiter=' and ' -f-2 => \`Hello and World!\`
+> echo 'Hello World!' \| cut -d ' ' --output-delimiter=' and ' -f-2 => \`Hello and World!\`
 
