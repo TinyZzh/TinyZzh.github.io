@@ -12,6 +12,8 @@ tags: [DevOps]
 
 <div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/2.png" alt="m"/></div>
 
+{:toc}
+
 ## \`-b\`和\`-c\`获取列表参数中的字节、字符
 
 默认使用\`TAB\`进行位置偏移（LIST）
