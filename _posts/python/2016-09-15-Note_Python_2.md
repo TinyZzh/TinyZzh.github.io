@@ -1,16 +1,16 @@
 ---
-layout: page
+layout: post
 title: Python - 语法基础
 date: 2016-09-15 21:15:00 +0800
 categories: [Python]
 tags: [Python]
 ---
 
-**第一次接触程序且语言是Python，推荐仔细看一下本文章**. 内容主要介绍Python的一些语法基础信息
+**第一次接触程序且语言是 Python，推荐仔细看一下本文章**. 内容主要介绍 Python 的一些语法基础信息
 
 ## 1. Hello World！
 
-创建第一个python文件hello_world.py,
+创建第一个 python 文件 hello_world.py,
 
 ```python
 #!/usr/bin/python
@@ -18,13 +18,13 @@ tags: [Python]
 print("Hello World!")
 ```
 
-第一行: 调用/usr/bin下的python解释器
+第一行: 调用/usr/bin 下的 python 解释器
 
-第二行: **-*- coding: UTF-8 -*-**用于解决文件编码问题。
+第二行: **-_- coding: UTF-8 -_-**用于解决文件编码问题。
 
-第三行: 输出Hello World！文本
+第三行: 输出 Hello World！文本
 
-## 2. Python保留关键字
+## 2. Python 保留关键字
 
 ![Alt text]({{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/py_img_1.jpg)
 
@@ -139,32 +139,6 @@ while (1):
 
 ## 4. 日期与时间
 
-Python的日期时间类库time和datetime库
+Python 的日期时间类库 time 和 datetime 库
 
 推荐文章[链接地址](http://www.wklken.me/posts/2015/03/03/python-base-datetime.html)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

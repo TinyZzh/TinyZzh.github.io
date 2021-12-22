@@ -1,20 +1,20 @@
 ---
-layout: page
+layout: post
 title: Okra框架(二) 搭建Socket服务器
 date: 2016-04-18 19:29:00 +0800
 categories: [Okra]
 tags: [Okra框架]
 ---
 
-本文将介绍使用Okra框架帮助开发者快速搭建高性能应用程序Socket服务端。
-博主接触的网络游戏（包含但不限于网页, 手机）的服务端通信使用的协议基本上就Socket，Http或是WebSocket三种方式。
-本系列教程将介绍利用Okra框架这三种通信方式的示例。
+本文将介绍使用 Okra 框架帮助开发者快速搭建高性能应用程序 Socket 服务端。
+博主接触的网络游戏（包含但不限于网页, 手机）的服务端通信使用的协议基本上就 Socket，Http 或是 WebSocket 三种方式。
+本系列教程将介绍利用 Okra 框架这三种通信方式的示例。
 
-### 1. 创建Executor
+### 1. 创建 Executor
 
-在通信过程中，我们可以把每一个消息可以当做是一个任务。Executor则是Okra中负责处理每一条消息的任务执行者。
-同时，每一个Executor都是一个并发线程。
-如下代码实现一个简单的示例ObjectExecutor:
+在通信过程中，我们可以把每一个消息可以当做是一个任务。Executor 则是 Okra 中负责处理每一条消息的任务执行者。
+同时，每一个 Executor 都是一个并发线程。
+如下代码实现一个简单的示例 ObjectExecutor:
 
 ```java
 public class ObjectExecutor implements Executor {
@@ -44,7 +44,7 @@ public class ObjectExecutor implements Executor {
 }
 ```
 
-Okra提供了封装好的Disruptor桥用于Netty结合Disruptor。Okra通过Executor工厂让用户可以便捷灵活的定制特殊的处理者.
+Okra 提供了封装好的 Disruptor 桥用于 Netty 结合 Disruptor。Okra 通过 Executor 工厂让用户可以便捷灵活的定制特殊的处理者.
 
 ```java
 public class ExampleSocketHandler extends DisruptorAdapterBy41xHandler<Object> {
@@ -55,9 +55,9 @@ public class ExampleSocketHandler extends DisruptorAdapterBy41xHandler<Object> {
 }
 ```
 
-### 2. 创建Server
+### 2. 创建 Server
 
-然后创建一个Server继承TcpProtocolServer实现自己的服务器类. 增加Handler处理
+然后创建一个 Server 继承 TcpProtocolServer 实现自己的服务器类. 增加 Handler 处理
 
 ```java
 public class TcpServer extends TcpProtocolServer {
@@ -86,7 +86,7 @@ public class TcpServer extends TcpProtocolServer {
 
 ### 3. 启动服务器
 
-假如你的项目中使用了Spring框架，那么只需要在配置如下bean就可以启动:
+假如你的项目中使用了 Spring 框架，那么只需要在配置如下 bean 就可以启动:
 
 ```xml
 <!-- Tcp server -->
@@ -95,7 +95,7 @@ public class TcpServer extends TcpProtocolServer {
 </bean>
 ```
 
-普通Java程序:
+普通 Java 程序:
 
 ```java
 TcpServer server = new TcpServer(9005);
@@ -105,5 +105,5 @@ server.start();
 只需要简短的两行代码就可以启动服务器了。
 
 ### 4. 总结
-本文介绍了使用Okra快速搭建高可用，高性能，可扩展，高并发服务器的示例。Okra通过封装，简化了服务器搭建过程。
 
+本文介绍了使用 Okra 快速搭建高可用，高性能，可扩展，高并发服务器的示例。Okra 通过封装，简化了服务器搭建过程。

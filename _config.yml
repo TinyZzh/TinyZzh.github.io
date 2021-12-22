@@ -1,58 +1,100 @@
 # Site settings
 title: TinyZ's Blog
 description: "专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。"
-url: "https://tinyzzh.github.io"
-baseurl: "/"
-rooturl: ""
-google_analytics: "UA-77019170-1"
-baidu_analytics: "f5d72321042a4068a214bb314ca29e38"
-disqus_shortname: "tinyzzh815"
+permalink: /:categories/:year/:month/:day/:title:output_ext
+baseurl: "/" # the subpath of your site, e.g. /blog
+url: "https://tinyzzh.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+logo: "/assets/img/branding/MVM-logo-full.svg"
+logo-icon: "/assets/img/branding/MVM-symbol.svg"
+logo-icon-SEO: "/assets/img/branding/TinyZ-symbol-black.png" # must be a non SVG file
 
-# timezone: '+0800' #"Asia/Shanghai"
-timezone: "Asia/Shanghai"
+# Night/Dark mode
+# Default mode is "auto", "auto" is for auto nightshift
+# (19:00 - 07:00), "manual" is for manual toggle, and
+# "on/off" is for default on/off.                                                                                                                                                 
+#
+# Whatever the user's choice is, it will supersede the
+# default setting of the site and be kept during the
+# visit (session). Only the dark mode setting is "manual",
+# it will be always kept on every visit (i.e. no matter
+# the browser is closed or not)
+night_mode: "auto"
 
-author:
-  name: "TinyZ"
-  email: tinyzzh815@gmail.com
-  github_username: TinyZzh
-  linkedin_username: 灼华-周-79326a116
+logo-dark: "/assets/img/branding/MVM-logo-full-dark.svg"
+highlight_theme: syntax-base16.monokai.dark # select a dark theme for the code highlighter if needed
 
-defaults:
-  - scope:
-      path: ""
-      type: "posts"
-    values:
-      layout: "post"
+# Author settings
+author: TinyZ Zzh
+author-pic: author_pic.jpg
+about-author: 专注于高并发服务器、网络游戏相关(Java、PHP、Unity3D、Unreal Engine等)技术，热爱游戏事业, 正在努力实现自我价值当中。
+
+# Contact links
+email: tinyzzh815@gmail.com
+phone:
+website: https://tinyzzh.github.io # Add your website
+linkedin: 灼华-周-79326a116
+github: TinyZzh # Add your Github handle
+twitter: # Add your Twitter handle
+bandcamp: armandomaynez # Add your Bandcamp username
+stackoverflow: stackoverflow # Add your stackoverflow account
+
+# Newsletter
+mailchimp: "https://github.us1.list-manage.com/subscribe/post?u=8ece198b3eb260e6838461a60&amp;id=397d90b5f4"
+
+# Disqus
+discus_identifier: tinyzzh815 # Add your discus identifier
+comments_curtain: yes # leave empty to show the disqus embed directly
+
+# Tracker
+analytics: UA-77019170-1
+fbadmin: ar.maybach
+
+# Paginate
+paginate: 6
+paginate_path: "page:num"
+words_per_minute: 200
+
+plugins:
+  mermaid_enable: true
+  page_background: /branding/page_background_3.jpg
 
 # Build settings
-destination: _site
-paginate: 20
-#permalink: /:year/:title/
-#markdown: kramdown  #  [rdiscount, karkdown]
-markdown: kramdown #  [rdiscount, karkdown]
-highlighter: rouge #  [rouge, pygments]
+markdown: kramdown
 
 kramdown:
-  toc_levels: 1..3
-  auto_ids: true
-  input: GFM
-  extensions:
-    - autolink
-    - footnotes
-    - smart
-  syntax_highlighter: rouge
+  highlighter: rouge
   syntax_highlighter_opts:
     line_numbers: true
+mathjax: true
+highlighter: rouge
 
-plugins: ["jekyll-paginate", "jekyll-archives"]
+compress_html:
+  clippings: all
+  comments: all
+  startings: [html, head, body]
+
+# Outputting
+timezone: Asia/Shanghai
+
+category_archive:
+  type: liquid
+  path: /categories/
+
+sass:
+  style: compressed
+
+plugins:
+  - jekyll-paginate
+  - jekyll-feed
+  - jekyll-sitemap
+
+include: [_pages]
 exclude:
   [
-    "README.md",
-    "Gemfile",
-    "Gemfile.lock",
-    "screenshot.png",
-    "1.bundle_install.bat",
-    "2.jekyll_bootstrap.bat",
-    "3.jekyll_publish.bat",
-    "vendor",
+    "node_modules",
+    "gulpfile.js",
+    "package.json",
+    "yarn.lock",
+    "package-lock.json",
+    "assets/css/sass/",
   ]

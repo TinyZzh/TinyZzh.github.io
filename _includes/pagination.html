@@ -1,15 +1,8 @@
-<nav class="pagination" role="navigation">
+<div class="pagination clearfix">
   {% if paginator.previous_page %}
-    {% if paginator.previous_page == 1 %}
-      <a rel="prev" class="posts newer btn small" href="{{ "#blog" | prepend: site.baseurl }}" title="Previous Page">上一页</a>
-    {% else %}
-      <a rel="prev" class="posts newer btn small" href="{{ site.baseurl }}page{{ paginator.previous_page }}/">上一页</a>
-    {% endif %}
+    <a href="..{{ paginator.previous_page_path }}" class="previous"><i class="fa fa-angle-left" aria-hidden="true"></i> Previous</a>
   {% endif %}
-
-  <span class="pagination__page-number">Page {{ paginator.page}} of {{ paginator.total_pages}}</span>
-
   {% if paginator.next_page %}
-    <a rel="next" class="posts older btn small" href="{{ site.baseurl }}page{{ paginator.next_page }}/">下一页</a>
+    <a href="..{{ paginator.next_page_path }}" class="next">Next <i class="fa fa-angle-right" aria-hidden="true"></i></a>
   {% endif %}
-</nav>
+</div>
