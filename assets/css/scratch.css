@@ -95,7 +95,7 @@ aside.toc {
     }
     .toc-content{
         max-height: calc(100vh - 7em);
-        overflow: scroll;
+        /* overflow: scroll; */
         border-bottom-color: var(--blue);
         border-bottom-style: solid;
         background-color: var(--grey5);

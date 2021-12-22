@@ -39,11 +39,11 @@ bandcamp: armandomaynez # Add your Bandcamp username
 stackoverflow: stackoverflow # Add your stackoverflow account
 
 # Newsletter
-mailchimp: "https://github.us1.list-manage.com/subscribe/post?u=8ece198b3eb260e6838461a60&amp;id=397d90b5f4"
+mailchimp:
 
 # Disqus
-discus_identifier: tinyzzh815 # Add your discus identifier
-comments_curtain: yes # leave empty to show the disqus embed directly
+discus_identifier: tinyzzh815
+comments_curtain: yes
 
 # Tracker
 google_analytics: UA-77019170-1
@@ -58,6 +58,12 @@ words_per_minute: 200
 plugins:
   mermaid_enable: true
   page_background: branding/page_background_3.jpg
+  comments: utteranc  #[disqus, utteranc]
+  comments_opts:
+    repo: TinyZzh/TinyZzh.github.io
+    issue-term: title
+    label: comments
+    theme: github-dark
 
 # Build settings
 markdown: kramdown
