@@ -1325,7 +1325,7 @@ toc-item-4,
   }
   .toc-content {
     max-height: calc(100vh - 7em);
-    overflow: scroll;
+    /* overflow: scroll; */
   }
 }
 /* = = = = = = = = = = Tags = = = = = = = = = = */

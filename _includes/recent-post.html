@@ -1,14 +1,14 @@
 {% include calculate_relative_base.html %}
 
 <div class="recent-box">
-  <h2 class="page-subtitle">Recent posts</h2>
+  <h3 class="page-subtitle">{{ site.data.ui-text[site.locale].recent_posts | default: 'Recent posts' }}</h3>
   <div class="recent-list">
     {% for post in site.posts offset:0 limit:4 %}
       {% if post.title %}
         <div class="recent-item">
           {% include escape-404.html %}
           {% include remove_double_slash.html %}
-          <a href="{{ post_url }}" class="recent-item-img" style="background: url('{{ relativebase }}assets/img/{{ post.img }}') center no-repeat; background-size: cover;">
+          <a href="{{ post_url }}" class="recent-item-img" style="background: url('{{ relativebase }}assets/img/{{ post.img | default: site.extensions.page_background }}') center no-repeat; background-size: cover;">
             <div class="recent-item-title">
               <span>{{ post.title }}</span>
               {% include post_meta.html type="recent-item-meta" date="none" %}
