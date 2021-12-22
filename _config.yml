@@ -46,8 +46,9 @@ discus_identifier: tinyzzh815 # Add your discus identifier
 comments_curtain: yes # leave empty to show the disqus embed directly
 
 # Tracker
-analytics: UA-77019170-1
-fbadmin: ar.maybach
+google_analytics: UA-77019170-1
+baidu_analytics: "f5d72321042a4068a214bb314ca29e38"
+fbadmin: 
 
 # Paginate
 paginate: 6
@@ -56,7 +57,7 @@ words_per_minute: 200
 
 plugins:
   mermaid_enable: true
-  page_background: /branding/page_background_3.jpg
+  page_background: branding/page_background_3.jpg
 
 # Build settings
 markdown: kramdown
