@@ -21,7 +21,7 @@ logo-icon-SEO: "/assets/img/branding/TinyZ-symbol-black.png" # must be a non SVG
 night_mode: "auto"
 
 logo-dark: "/assets/img/branding/MVM-logo-full-dark.svg"
-highlight_theme: syntax-base16.monokai.dark # select a dark theme for the code highlighter if needed
+highlight_theme: syntax-base16.monokai.light # select a dark theme for the code highlighter if needed
 
 # Author settings
 author: TinyZ Zzh
@@ -55,15 +55,21 @@ paginate: 6
 paginate_path: "page:num"
 words_per_minute: 200
 
-plugins:
+extensions:
   mermaid_enable: true
   page_background: branding/page_background_3.jpg
+  # [支持暗色模式](https://github.com/mmistakes/minimal-mistakes/discussions/2033#discussioncomment-460914)
+  theme_mode:
+    dark: [ syntax-base16.monokai.dark, ]
   comments: utteranc  #[disqus, utteranc]
   comments_opts:
     repo: TinyZzh/TinyZzh.github.io
     issue-term: title
     label: comments
     theme: github-dark
+    # 仅当使用discus时生效
+    discus_identifier: tinyzzh815
+    comments_curtain: yes
 
 # Build settings
 markdown: kramdown

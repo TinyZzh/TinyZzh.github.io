@@ -62,8 +62,16 @@
 	<!-- Styles -->
 	<link rel="stylesheet" href="{{ relativebase }}assets/css/main.css">
 	{% include favicon.html %}
+  <!-- Default mode -->
 	{% if page.layout == 'post' %}
 	<link rel="stylesheet" href="{{ relativebase }}assets/css/highlighter/{{ site.highlight_theme }}.css">
+    <!-- Dark mode -->
+    {% if site.extensions.theme_mode.dark %}
+      <meta name="color-scheme" content="light dark">
+      {% for dark_mode_css in site.extensions.theme_mode.dark %}
+        <style>@import url("{{ '{{ relativebase }}assets/css/highlighter/{{ dark_mode_css }}.css' | relative_url }}") (prefers-color-scheme: dark);</style>
+      {% endfor %}
+    {% endif %}
 	{% endif %}
 
   {% if site.baidu_analytics %}
