@@ -2,7 +2,7 @@
     <div class="comment-wrapper">
         {% if site.comments == 'utteranc' %}
         {% if site.comments_opts.repo %}
-        <script src="{{ relativebase }}assets/fonts/js/utteranc.js" repo="{{ site.comments_opts.repo }}"
+        <script src="{{ relativebase }}assets/js/utteranc.js" repo="{{ site.comments_opts.repo }}"
             issue-term="{{ site.comments_opts.issue_term | default : title }}"
             label="{{ site.comments_opts.label | default : comments }}" theme="{{ site.comments_opts.theme | default : github-light }}"
             crossorigin="anonymous" async>
