@@ -61,16 +61,18 @@ extensions:
   # [支持暗色模式](https://github.com/mmistakes/minimal-mistakes/discussions/2033#discussioncomment-460914)
   theme_mode:
     dark: [ syntax-base16.monokai.dark, ]
-  comments: utteranc  #[disqus, utteranc]
-  comments_opts:
-    repo: TinyZzh/TinyZzh.github.io
-    issue-term: title
-    label: comments
-    theme: github-dark
-    # 仅当使用discus时生效
-    discus_identifier: tinyzzh815
-    comments_curtain: yes
   date_format: "%Y-%m-%d"
+
+# 评论系统
+comments: utteranc  #[disqus, utteranc]
+comments_opts:
+  repo: TinyZzh/TinyZzh.github.io
+  issue_term: title
+  label: comments
+  theme: github-dark
+  # 仅当使用discus时生效
+  discus_identifier: tinyzzh815
+  comments_curtain: yes
 
 locale: zh
 data:
