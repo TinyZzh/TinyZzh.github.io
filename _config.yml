@@ -123,7 +123,7 @@ data:
       archives: 归档
       tags: 标签
       about: 关于
-      tom_feed: FEED
+      atom_feed: FEED
       search: 搜索
       prev_page: 上一页
       next_page: 下一页
