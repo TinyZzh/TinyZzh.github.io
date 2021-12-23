@@ -74,14 +74,6 @@ comments_opts:
   discus_identifier: tinyzzh815
   comments_curtain: yes
 
-locale: zh
-data:
-  ui-text:
-    zh:
-      less_than: 少于
-      minute_read: 分钟阅读
-      recent_posts: 最 新 文 章
-
 # Build settings
 markdown: kramdown
 
@@ -122,3 +114,20 @@ exclude:
     "package-lock.json",
     "assets/css/sass/",
   ]
+
+locale: zh
+data:
+  ui-text:
+    zh:
+      home: 首页
+      archives: 归档
+      tags: 标签
+      about: 关于
+      tom_feed: FEED
+      search: 搜索
+      prev_page: 上一页
+      next_page: 下一页
+      read_more: 点击阅读
+      less_than: 少于
+      minute_read: 分钟阅读
+      recent_posts: 最 新 文 章
