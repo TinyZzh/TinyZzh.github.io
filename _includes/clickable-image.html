@@ -21,14 +21,13 @@
 
     var imgaes = document.getElementsByClassName("image-click-scaling");
     if (imgaes) {
-        for (const img in imgaes) {
-            // Get the image and insert it inside the modal - use its "alt" text as a caption
+        Array.from(imgaes).forEach((img) => {
             img.onclick = function () {
                 modal.classList.add("model-shown");
                 modalImg.src = this.src;
                 captionText.innerHTML = this.alt;
             }
-        }
+        });
     }
 </script>
 {% endif %}
