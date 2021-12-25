@@ -57,6 +57,7 @@ words_per_minute: 200
 
 extensions:
   mermaid_enable: true
+  image_scaling: true
   page_background: branding/page_background_3.jpg
   # [支持暗色模式](https://github.com/mmistakes/minimal-mistakes/discussions/2033#discussioncomment-460914)
   theme_mode:

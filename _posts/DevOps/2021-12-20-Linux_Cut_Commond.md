@@ -7,6 +7,7 @@ date: 2021-12-20 11:22:00 +0800
 categories: [DevOps]
 tags: [DevOps, Linux]
 toc: yes
+image_scaling: true
 ---
 
 \`Cut\`是一个强大的字符串处理工具.
