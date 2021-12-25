@@ -1,7 +1,7 @@
 {% assign image_scaling_enable = site.extensions.image_scaling | default : true %}
 {% if image_scaling_enable and page.image_scaling %}
 
-<style>@import url("{{ '{{ relativebase }}assets/css/clickable-image.css' | relative_url }}");</style>
+<style>@import url('{{ relativebase }}assets/css/clickable-image.css');</style>
 
 <div id="image-cover-modal" class="image-cover-modal">
     <img id="image-cover-image" class="image-cover-modal-content">
