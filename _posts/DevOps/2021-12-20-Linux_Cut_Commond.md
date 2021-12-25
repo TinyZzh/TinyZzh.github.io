@@ -14,7 +14,7 @@ image_scaling: true
 
 [Cut Command Document](https://linuxize.com/post/linux-cut-command/)
 
-<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/2.png" alt="m"/></div>
+<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/2.png" alt="帮助文档" width="300px" height="400px" class="image-click-scaling"/></div>
 
 - TOC
   {:toc}
