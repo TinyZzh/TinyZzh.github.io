@@ -67,13 +67,13 @@ extensions:
 # 评论系统
 comments: utteranc  #[disqus, utteranc]
 comments_opts:
+  comments_curtain: yes
   repo: TinyZzh/TinyZzh.github.io
   issue_term: title
   label: comments
   theme: github-dark
   # 仅当使用discus时生效
   discus_identifier: tinyzzh815
-  comments_curtain: yes
 
 # Build settings
 markdown: kramdown

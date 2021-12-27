@@ -1096,10 +1096,10 @@ svg.menu-icon-house {
 .hide {
   display: none;
 }
-#disqus_thread {
+#comment-layout {
   display: none;
 }
-#disqus_thread.show {
+#comment-layout.show {
   display: block;
 }
 
