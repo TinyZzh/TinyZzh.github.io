@@ -41,10 +41,6 @@ stackoverflow: stackoverflow # Add your stackoverflow account
 # Newsletter
 mailchimp:
 
-# Disqus
-discus_identifier: tinyzzh815
-comments_curtain: yes
-
 # Tracker
 google_analytics: UA-77019170-1
 baidu_analytics: "f5d72321042a4068a214bb314ca29e38"
