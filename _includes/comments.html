@@ -1,6 +1,6 @@
 <section class="comment-area">
     <div class="comment-wrapper">
-        {% if site.comments.comments_curtain %}
+        {% if site.comments and site.comments_opts.comments_curtain %}
         <div class="row" id="comment-curtain">
             <div class="col-lg-8 col-sm-10 mr-auto ml-auto">
                 <h2 class="page-subtitle">Comments</h2>
@@ -14,11 +14,13 @@
         {% if site.comments == 'utteranc' %}
             {% if site.comments_opts.repo %}
             <!-- TODO: TINYZ remove the remote js file dep -->
-            <script src="https://utteranc.es/client.js" repo="{{ site.comments_opts.repo }}"
-                issue-term="{{ site.comments_opts.issue_term | default : title }}"
-                label="{{ site.comments_opts.label | default : comments }}" theme="{{ site.comments_opts.theme | default : github-light }}"
-                crossorigin="anonymous" async>
-            </script>
+            <div id="comment-layout">
+                <script src="https://utteranc.es/client.js" repo="{{ site.comments_opts.repo }}"
+                    issue-term="{{ site.comments_opts.issue_term | default : title }}"
+                    label="{{ site.comments_opts.label | default : comments }}" theme="{{ site.comments_opts.theme | default : github-light }}"
+                    crossorigin="anonymous" async>
+                </script>
+            </div>
             {% endif %}
         {% elsif site.comments == 'disqus' and site.comments_opts.discus_identifier %}
             <div id="comment-layout"></div>
