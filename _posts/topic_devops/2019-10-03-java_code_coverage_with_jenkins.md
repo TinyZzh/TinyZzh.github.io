@@ -109,39 +109,39 @@ try (Git git = Git.open(new File(gitRepoPath))) {
 
 ```java
 List<CoverageRelativeResultElement> list = report.getChildrenResults()
-            .parallelStream()
-            .filter(cr -> CoverageElement.FILE.equals(cr.getElement()))
-            .filter(cr -> cr.getPaint() != null)
-            .map(cr -> scbInfo.stream()
-                    .filter(p -> p.getPath().endsWith(cr.getRelativeSourcePath()))
-                    .limit(1)
-                    .findAny()
-                    .map(scf -> {
-                        int[] lines = scf.getBlocks()
-                                .stream()
-                                .flatMapToInt(block -> IntStream.rangeClosed((int) (block.getStartLine() + 1), (int) block.getEndLine())
-                                        .filter(line -> cr.getPaint().isPainted(line))
-                                ).toArray();
-                        //  absolute coverage
-                        Map<CoverageElement, Ratio> results = new TreeMap<>();
-                        Ratio crHitRatio = analysisLogicHitCoverage(cr.getPaint(), level, cr.getPaint().lines.keys());
-                        results.put(CoverageElement.ABSOLUTE, crHitRatio);
-                        //  newly code coverage
-                        results.put(CoverageElement.RELATIVE, analysisLogicHitCoverage(cr.getPaint(), level, lines));
-                        //  coverage change
-                        CoverageResult pr = cr.getPreviousResult();
-                        if (pr != null) {
-                            Ratio prHitRatio = analysisLogicHitCoverage(pr.getPaint(), level, pr.getPaint().lines.keys());
-                            if (prHitRatio.numerator != 0.0F) {
-                                results.put(CoverageElement.CHANGE, Ratio.create(crHitRatio.getPercentageFloat() - prHitRatio.getPercentageFloat(), 100.0F));
-                            }
-                        }
-                        return new CoverageRelativeResultElement(cr.getName(), cr.getRelativeSourcePath(), results);
-                    })
-                    .orElse(null)
-            )
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
+    .parallelStream()
+    .filter(cr -> CoverageElement.FILE.equals(cr.getElement()))
+    .filter(cr -> cr.getPaint() != null)
+    .map(cr -> scbInfo.stream()
+            .filter(p -> p.getPath().endsWith(cr.getRelativeSourcePath()))
+            .limit(1)
+            .findAny()
+            .map(scf -> {
+                int[] lines = scf.getBlocks()
+                        .stream()
+                        .flatMapToInt(block -> IntStream.rangeClosed((int) (block.getStartLine() + 1), (int) block.getEndLine())
+                                .filter(line -> cr.getPaint().isPainted(line))
+                        ).toArray();
+                //  absolute coverage
+                Map<CoverageElement, Ratio> results = new TreeMap<>();
+                Ratio crHitRatio = analysisLogicHitCoverage(cr.getPaint(), level, cr.getPaint().lines.keys());
+                results.put(CoverageElement.ABSOLUTE, crHitRatio);
+                //  newly code coverage
+                results.put(CoverageElement.RELATIVE, analysisLogicHitCoverage(cr.getPaint(), level, lines));
+                //  coverage change
+                CoverageResult pr = cr.getPreviousResult();
+                if (pr != null) {
+                    Ratio prHitRatio = analysisLogicHitCoverage(pr.getPaint(), level, pr.getPaint().lines.keys());
+                    if (prHitRatio.numerator != 0.0F) {
+                        results.put(CoverageElement.CHANGE, Ratio.create(crHitRatio.getPercentageFloat() - prHitRatio.getPercentageFloat(), 100.0F));
+                    }
+                }
+                return new CoverageRelativeResultElement(cr.getName(), cr.getRelativeSourcePath(), results);
+            })
+            .orElse(null)
+    )
+    .filter(Objects::nonNull)
+    .collect(Collectors.toList());
 ```
 
 ## 3. 集成到 Jenkins
