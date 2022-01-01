@@ -1,0 +1,49 @@
+---
+---
+
+@import "syntax/light-syntax";
+@import "syntax/dark-syntax";
+
+html:not([data-theme]),
+html[data-theme="light"] {
+  @include light-syntax;
+}
+
+html[data-theme="dark"] {
+  @include dark-syntax;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme]),
+  html[data-theme="dark"] {
+    @include dark-syntax;
+  }
+
+  html[data-theme="light"] {
+    @include light-syntax;
+  }
+}
+
+// 自定义样式
+.highlight {
+  line-height: 1.25;
+}
+.highlight pre {
+  padding: 0;
+  margin: 0;
+  font-size: 0.85rem;
+}
+.highlight pre .lineno {
+  min-width: 1.45rem;
+}
+.highlight table td {
+  padding: 1px;
+  background-color: transparent;
+  text-align: initial;
+}
+.highlight table .rouge-gutter {
+  text-align: right;
+}
+.highlight table .rouge-code {
+  padding-left: 6px;
+}
