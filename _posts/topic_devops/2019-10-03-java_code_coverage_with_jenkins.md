@@ -154,12 +154,12 @@ checkout 源码。编译打包生成 hpi 安装包。或者使用 release 版本
 
 Step 1: 新增 Jacoco 报告分析工具
 
-<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/20191003_1.png" alt="图1"/></div>
+<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/20191003_1.png" alt="图1" class="image-click-scaling"/></div>
 覆盖率报告文件路径配置为jacoco生成的xml报告的路径.
 
 Step 2：点开”高级”. 配置增量分析相关的配置. 如下图所示
 
-<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/20191003_2.png" alt="图2"/></div>
+<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/20191003_2.png" alt="图2" class="image-click-scaling"/></div>
 
 - VCS Root Path：源码的版本控制跟路径. 相对于工作空间的路径
 - VCS Branch Name Match RegEx： 匹配需要分析的代码分支.
@@ -170,11 +170,11 @@ Step 2：点开”高级”. 配置增量分析相关的配置. 如下图所示
 Jenkins 的 Job 主页会有两个图表。一个是全局的代码覆盖率信息。Y 轴为统计粒度（分为代码逻辑分支，代码行，指令，方法，类等等）
 第二个为相比于上一次 master 分支的 build 新增的代码的覆盖率情况。根据配置的统计粒度显示。
 
-<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/20191003_3.png" alt="图3"/></div>
+<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/20191003_3.png" alt="图3" class="image-click-scaling"/></div>
 
 相对报告图标又包含为源分支信息，目标分支信息，本次覆盖率概览和单文件增量覆盖率详情四个维度的信息
 
-<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/20191003_4.png" alt="图4"/></div>
+<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/20191003_4.png" alt="图4" class="image-click-scaling"/></div>
 
 - Absolute：本文件的全量覆盖率信息.
 - Relative：相比于之前的 build 的新增的代码的覆盖率
@@ -182,7 +182,7 @@ Jenkins 的 Job 主页会有两个图表。一个是全局的代码覆盖率信�
 
 点击查看详细文件的覆盖率情况. 类似于 Jacoco 的 html 文件报告
 
-<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/20191003_5.png" alt="图5"/></div>
+<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/20191003_5.png" alt="图5" class="image-click-scaling"/></div>
 
 ## 4. 总结
 
