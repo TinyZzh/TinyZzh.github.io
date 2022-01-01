@@ -109,7 +109,8 @@ exclude:
     "package.json",
     "yarn.lock",
     "package-lock.json",
-    "assets/css/sass/",
+    # "assets/css/sass/",
+    "*.bat",
   ]
 
 locale: zh
