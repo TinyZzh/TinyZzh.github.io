@@ -348,3 +348,23 @@
     })()
   </script>
 {%- endif -%}
+
+<!-- Add header for code snippets -->
+<script type="text/javascript">
+  (function () {
+    var divHgAry = $("div.highlight");
+    if (divHgAry) {
+      Array.from(divHgAry).forEach((divHg) => {
+        var bl = /language-(\w+)/.exec(divHg.parentNode.className);
+        if (divHg.nodeName == 'DIV' && bl) {
+          var d = document.createElement('div');
+          d.innerHTML = '<div class="code-header">'
+            +'<span label-text="' + bl[1].toUpperCase() + '"><i class="fa fa-code small"></i></span>'
+            +'<button aria-label="copy" title-succeed="已复制！" data-original-title="" title=""><i class="fa fa-clipboard"></i></button>'
+            +'</div>'; 
+          divHg.parentNode.insertBefore(d, divHg);
+        }
+      });
+    }
+  })()
+</script>
