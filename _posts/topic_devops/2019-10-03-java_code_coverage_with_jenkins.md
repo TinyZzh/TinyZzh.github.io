@@ -1,9 +1,13 @@
 ---
 layout: post
+read_time: true
+show_date: true
 title: DevOps - Java代码增量覆盖率工具
 date: 2019-10-03 22:15:00 +0800
 categories: [DevOps]
 tags: [DevOps]
+toc: yes
+image_scaling: true
 ---
 
 > 相比于全量代码单元测试覆盖率，增量代码单元测试覆盖率，粒度更小，可以帮助开发者精准的了解每个新特性、新功能甚至每次 Commit 的代码覆盖率。
