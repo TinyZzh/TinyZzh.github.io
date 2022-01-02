@@ -341,11 +341,12 @@
     (function () {
       var config = {
         startOnLoad: true,
-        darkMode: true
+        theme: 'forest',
+        darkMode: false
       };
       mermaid.initialize(config);
       window.mermaid.init(undefined, document.querySelectorAll('pre code.language-mermaid'));
-    })()
+    })();
   </script>
 {%- endif -%}
 
