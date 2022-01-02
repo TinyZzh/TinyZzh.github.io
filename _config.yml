@@ -95,6 +95,7 @@ category_archive:
 
 sass:
   style: compressed
+  sass_dir: assets/css/sass/
 
 plugins:
   - jekyll-paginate
