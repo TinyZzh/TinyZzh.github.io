@@ -4,9 +4,9 @@ description: "专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累�
 permalink: /:categories/:year/:month/:day/:title:output_ext
 baseurl: "/" # the subpath of your site, e.g. /blog
 url: "https://tinyzzh.github.io" # the base hostname & protocol for your site, e.g. http://example.com
-logo: "/assets/img/branding/MVM-logo-full.svg"
-logo-icon: "/assets/img/branding/MVM-symbol.svg"
-logo-icon-SEO: "/assets/img/branding/TinyZ-symbol-black.png" # must be a non SVG file
+logo: "/assets/img/branding/TinyZ-logo.svg"
+logo-icon: "/assets/img/branding/TinyZ-symbol.svg"
+logo-icon-SEO: "/assets/img/branding/TinyZ-symbol-black.png"
 
 # Night/Dark mode
 # Default mode is "auto", "auto" is for auto nightshift
@@ -20,7 +20,7 @@ logo-icon-SEO: "/assets/img/branding/TinyZ-symbol-black.png" # must be a non SVG
 # the browser is closed or not)
 night_mode: "auto"
 
-logo-dark: "/assets/img/branding/MVM-logo-full-dark.svg"
+logo-dark: "/assets/img/branding/TinyZ-logo.svg"
 highlight_theme: syntax-base16.monokai.light # select a dark theme for the code highlighter if needed
 
 # Author settings
@@ -35,7 +35,7 @@ website: https://tinyzzh.github.io # Add your website
 linkedin: 灼华-周-79326a116
 github: TinyZzh # Add your Github handle
 twitter: # Add your Twitter handle
-bandcamp: armandomaynez # Add your Bandcamp username
+bandcamp:  # Add your Bandcamp username
 stackoverflow: stackoverflow # Add your stackoverflow account
 
 # Newsletter
@@ -57,7 +57,7 @@ extensions:
   page_background: branding/page_background_3.jpg
   # [支持暗色模式](https://github.com/mmistakes/minimal-mistakes/discussions/2033#discussioncomment-460914)
   theme_mode:
-    dark: [ syntax-base16.monokai.dark, ]
+    dark: [syntax-base16.monokai.dark]
   date_format: "%Y-%m-%d"
   post_copyright: true
   author_box_copyright: false
