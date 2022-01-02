@@ -21,7 +21,6 @@ logo-icon-SEO: "/assets/img/branding/TinyZ-symbol-black.png"
 night_mode: "auto"
 
 logo-dark: "/assets/img/branding/TinyZ-logo.svg"
-highlight_theme: syntax-base16.monokai.light # select a dark theme for the code highlighter if needed
 
 # Author settings
 author: TinyZ Zzh
@@ -35,7 +34,7 @@ website: https://tinyzzh.github.io # Add your website
 linkedin: 灼华-周-79326a116
 github: TinyZzh # Add your Github handle
 twitter: # Add your Twitter handle
-bandcamp:  # Add your Bandcamp username
+bandcamp: # Add your Bandcamp username
 stackoverflow: stackoverflow # Add your stackoverflow account
 
 # Newsletter
@@ -55,9 +54,6 @@ extensions:
   mermaid_enable: true
   image_scaling: true
   page_background: branding/page_background_3.jpg
-  # [支持暗色模式](https://github.com/mmistakes/minimal-mistakes/discussions/2033#discussioncomment-460914)
-  theme_mode:
-    dark: [syntax-base16.monokai.dark]
   date_format: "%Y-%m-%d"
   post_copyright: true
   author_box_copyright: false
