@@ -11,7 +11,7 @@ logo-icon-SEO: "/assets/img/branding/TinyZ-symbol-black.png" # must be a non SVG
 # Night/Dark mode
 # Default mode is "auto", "auto" is for auto nightshift
 # (19:00 - 07:00), "manual" is for manual toggle, and
-# "on/off" is for default on/off.                                                                                                                                                 
+# "on/off" is for default on/off.
 #
 # Whatever the user's choice is, it will supersede the
 # default setting of the site and be kept during the
@@ -44,7 +44,7 @@ mailchimp:
 # Tracker
 google_analytics: UA-77019170-1
 baidu_analytics: "f5d72321042a4068a214bb314ca29e38"
-fbadmin: 
+fbadmin:
 
 # Paginate
 paginate: 6
@@ -61,7 +61,7 @@ extensions:
   date_format: "%Y-%m-%d"
 
 # 评论系统
-comments: utteranc  #[disqus, utteranc]
+comments: utteranc #[disqus, utteranc]
 comments_opts:
   comments_curtain: yes
   repo: TinyZzh/TinyZzh.github.io
@@ -102,8 +102,7 @@ plugins:
   - jekyll-sitemap
 
 include: [_pages]
-exclude:
-  [
+exclude: [
     "node_modules",
     "gulpfile.js",
     "package.json",
@@ -129,3 +128,6 @@ data:
       less_than: 少于
       minute_read: 分钟阅读
       recent_posts: 最 新 文 章
+      news_letter: 邮 件 订 阅
+      title_comments: 评论
+      write_comment: 点击开始评论...
