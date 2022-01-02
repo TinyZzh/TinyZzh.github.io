@@ -17,8 +17,6 @@
 9. [✔]自动追加支持版权声明信息
 10. [-] xx
 
-git.exe clone --progress -v --depth 1 "https://github.com/walterlv/walterlv.github.io.git" "E:\C\Git@GitHub\walterlv.github.io"
-
 ## 参考
 
 1. https://github.com/kitian616/jekyll-TeXt-theme
