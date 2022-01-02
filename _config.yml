@@ -59,6 +59,8 @@ extensions:
   theme_mode:
     dark: [ syntax-base16.monokai.dark, ]
   date_format: "%Y-%m-%d"
+  post_copyright: true
+  author_box_copyright: false
 
 # 评论系统
 comments: utteranc #[disqus, utteranc]

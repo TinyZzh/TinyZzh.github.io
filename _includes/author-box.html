@@ -24,5 +24,6 @@
   <div class="author-desc">
     <h3>{{site.author}}</h3>
     <p>{{site.about-author}}</p>
-  </div>
+    {% if site.extensions.author_box_copyright %}{% include copyright.html %}{% endif %}
+    </div>
 </section>
