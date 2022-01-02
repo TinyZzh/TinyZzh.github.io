@@ -13,19 +13,13 @@
         </div>
         <div class="footer-nav">
             <div>
-                <a href="{{ relativebase }}archive.html">
-                    Posts
-                </a>
+                <a href="{{ relativebase }}archive.html">{{ site.data.ui-text[site.locale].archives | default: 'Posts' }}</a>
             </div>
             <div>
-                <a href="{{ relativebase }}tags.html">
-                    Tags
-                </a>
+                <a href="{{ relativebase }}tags.html">{{ site.data.ui-text[site.locale].tags | default: 'Tags' }}</a>
             </div>
             <div>
-                <a href="{{ relativebase }}about.html">
-                    About
-                </a>
+                <a href="{{ relativebase }}about.html">{{ site.data.ui-text[site.locale].about | default: 'About' }}</a>
             </div>
         </div>
     </div>
