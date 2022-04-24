@@ -2,6 +2,7 @@
 layout: post
 read_time: true
 show_date: true
+img: images/2022-04/04-24-01.jpg
 title: JVM全知道系列 -XX:+UseCompressedOops 压缩指针
 date: 2022-04-24 14:13:00 +0800
 categories: [JAVA, JVM]
@@ -32,7 +33,7 @@ JAVA的对象由对象头、实例数据和对齐填充三部分组成。
 启用压缩指针之后，指针表示的含义从真实的地址偏移转换为基于对齐填充的对象偏移。
 这样4byte(32位)指针就可以映射管理40e(2^32^-1))对象或32GB(8byte * 2^32^=32GB)的堆空间。
 
-<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/04-24-01.png" alt="OOP" class="image-click-scaling"/></div>
+<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/04-24-01.jpg" alt="OOP" class="image-click-scaling"/></div>
 
 
 ### 超过32GB的堆
