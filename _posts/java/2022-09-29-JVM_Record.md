@@ -13,7 +13,7 @@ image_scaling: true
 
 ## record关键字
 
-record关键字主要提供了更简洁、更紧凑的finnal修饰的不可变数据类的定义方式。可以用于数据传输，并发编程等领域。
+record关键字主要提供了更简洁、更紧凑的final修饰的不可变数据类的定义方式。可以用于数据传输，并发编程等领域。
 
 该特性最早于Java 14引入开始孵化，经历两次孵化，最终于Java 16转为正式特性。
 
@@ -79,15 +79,16 @@ public record PointR(int x, int y) {
 2. getter方法
 3. hashCode和equals方法
 4. toString方法
-5. finnal修饰的类
+5. final修饰的类
 
 
-### 定义静态属性字段，静态方法和类方法
+### 定义静态属性字段，静态方法、类方法和属性字段注解
 
-> record类不允许在其内部定义非静态属性字段. 除此之外，和class的用法基本上没有区别。
+record内部 **不允许** 定义非静态属性字段. 除此之外，和class的用法基本上没有区别。
+
 
 ```java
-public record PointR(int x, int y) {
+public record PointR(@Nullable int x, int y) {
 
     /**
      * 1. 定义静态属性字段
@@ -110,6 +111,31 @@ public record PointR(int x, int y) {
 }
 ```
 
+### 实现接口
+
+record关键字隐式继承Record类，所以 **不允许** 在使用 `extends` 继承其他类。和class一样是单根继承，多接口实现。
+
+```java
+public record PointR(int x, int y) implements Comparable<PointR> {
+
+    @Override
+    public int compareTo(PointR o) {
+        return 0;
+    }
+}
+```
+
+### 泛型
+
+```java
+public record PointR<R extends Serializable>(int x, int y, R r) {
+
+    public static void main(String[] args) {
+        //  测试
+        PointR<ArrayList<Integer>> pointR = new PointR<>(1, 2, new ArrayList<Integer>());
+    }
+}
+```
 
 ## 反射
 
@@ -123,7 +149,13 @@ RecordComponent[] recordComponents = PointR.class.getRecordComponents();
 
 ### 获取字段类型
 
-方法基本上类似于Field，`RecordComponent#getType()`反射获取属性字段的类型, `RecordComponent#getAnnotation()`反射获取属性字段的注解
+Class对象中新增 **isRecord()**方法用于区分类是否是record类.
+
+```java
+PointR.class.isRecord()
+```
+
+其他常用的反射相关的方法基本上类似于Field。例如：**RecordComponent#getType()** 反射获取属性字段的类型, **RecordComponent#getAnnotation()** 反射获取属性字段的注解
 
 ```java
 RecordComponent[] recordComponents = PointR.class.getRecordComponents();
