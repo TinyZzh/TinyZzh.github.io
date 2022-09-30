@@ -15,7 +15,7 @@ image_scaling: true
 
 record关键字主要提供了更简洁、更紧凑的final修饰的不可变数据类的定义方式。可以用于数据传输，并发编程等领域。
 
-该特性最早于Java 14引入开始孵化，经历两次孵化，最终于Java 16转为正式特性。
+该特性最早于**Java 14**引入开始孵化，经历两次孵化，最终于**Java 16**转为正式特性。
 
 
 ## 使用方法及示例
@@ -23,6 +23,7 @@ record关键字主要提供了更简洁、更紧凑的final修饰的不可变数
 在Java日常开发中，当我们需要定义个不可变数据类对象用于数据传输，并发编程等途径时。通常写法如下代码块所示. 
 
 以下示例代码块为了突显class和record的getter方法命名规则的差异，故意修改等效于record的x()和y()方法.  常规的getter方法命名方式应该为getX()和getY()
+
 
 ```java
 public final class Point {
@@ -84,7 +85,7 @@ public record PointR(int x, int y) {
 
 ### 定义静态属性字段，静态方法、类方法和属性字段注解
 
-record内部 **不允许** 定义非静态属性字段. 除此之外，和class的用法基本上没有区别。
+record内部 **不允许** 定义**非静态属性字段**. 除此之外，和class的用法基本上没有区别。
 
 
 ```java
@@ -113,9 +114,10 @@ public record PointR(@Nullable int x, int y) {
 
 ### 实现接口
 
-record关键字隐式继承Record类，所以 **不允许** 在使用 `extends` 继承其他类。和class一样是单根继承，多接口实现。
+record关键字隐式继承Record类，所以 **不允许** 在使用 **extends** 继承其他类。和class一样是单根继承，多接口实现。
 
 ```java
+//  扩展实现其他接口
 public record PointR(int x, int y) implements Comparable<PointR> {
 
     @Override
@@ -128,6 +130,7 @@ public record PointR(int x, int y) implements Comparable<PointR> {
 ### 泛型
 
 ```java
+//  Record使用泛型
 public record PointR<R extends Serializable>(int x, int y, R r) {
 
     public static void main(String[] args) {
@@ -136,6 +139,22 @@ public record PointR<R extends Serializable>(int x, int y, R r) {
     }
 }
 ```
+
+### 浅拷贝
+
+record和class一样，实现Cloneable接口后，针对引用类型都是默认**浅拷贝**. 在并发环境时，需要考虑是否会受到浅拷贝影响。
+
+```java
+public record PointR(int x, int y) implements Cloneable {
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        //  并发环境时，需要考虑是否会受到浅拷贝影响
+        return super.clone();
+    }
+}
+```
+
 
 ## 反射
 
