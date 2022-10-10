@@ -12,13 +12,16 @@ image_scaling: true
 ---
 
 
-字符表是由JVM中C++实现的HashTable结构（数组+链表）的字符串常量池，长度固定，不可扩容。
+字符表是由JVM中C++实现的HashTable结构（**数组+链表**）的字符串常量池，**长度固定，不可扩容**。数据结构如下图所示：
 
 <div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/hashtable-struct.png" alt="JEPS"/></div>
 
+
+Java 6的Jvm中StringTabele是分配在永久代中，不会被GC，从Java 7开始StringTable迁移到heap堆内存中，会触发GC，Java 8完全移除了永久代的概念，并用MetaSpace替代。StringTable的不同的实现方案的细微不同之处，参考String.intern()章节。
+
 ## StringTable源码解析
 
-[OpenJDK StringTable](https://github.com/openjdk/jdk/blob/bd90c4cfa63ba2de26f7482ed5d1704f9be9629f/src/hotspot/share/classfile/stringTable.cpp)
+上文提到StringTable是数组+单向链表的结构。本小节，我们看一下StringTable源代码的几个核心方法。[OpenJDK StringTable 源码](https://github.com/openjdk/jdk/blob/bd90c4cfa63ba2de26f7482ed5d1704f9be9629f/src/hotspot/share/classfile/stringTable.cpp)
 
 使用Handle string_or_null_h来摒弃GC导致字符串移动(对象地址变更)带来的问题。
 
@@ -67,7 +70,7 @@ oop StringTable::do_intern(Handle string_or_null_h, const jchar* name,
 }
 ```
 
-由于无法动态扩容，所以当链表平均长度超过**2**时，会进行rehash，通过重新计算hash值让字符串分布更均匀。具体的源代码如下：
+由于无法动态扩容，所以当链表平均长度超过**2**时，会进行rehash，**通过重新计算hash值让字符串分布更均匀**。具体的源代码如下：
 
 ```cpp
 // Rehash
@@ -126,16 +129,20 @@ void StringTable::rehash_table() {
 }
 ```
 
-## 谨慎使用intern()方法
+这个时候有同学可能就会问了，为什么采用rehash的方式而不是像HashMap一样转为红黑树呢？
 
-通过字符串的 **intern()** 方法，用户可以主动将字符串添加到StringTable中。**合理的使用intern可以减少堆内存的使用，提高内存的利用率**。
+首先红黑树是理论上上性能最优解，完全可以通过合理规划和使用，避免HashTable性能退化到这个地步，StringTable的设计初衷也是这样的。对于一般的情况，rehash完全可以满足最性能的要求。第三点，转为红黑树代码更复杂，维护成本更高，没有必要。
+
+## String.intern()方法
+
+Java的String有一个名为 **intern()** 的公共方法，用户可以通过调用此方法主动将字符串添加到StringTable中。
 
 当调用intern方法时，**首先检查StringTable中是否已经存在，已经存在则直接返回StringTable中的引用**。当StringTable中不存在时, 实现方案会有些许不同。 
 
 Java 6，不存在时，将字符串复制一份，插入到StringTable中
 Java 7及后续的版本，**不存在时，将当前字符串的引用，插入到StringTable中**。
 
-### 举个栗子 🌰
+ 举个栗子🌰：
 
 ```java
 var var0 = new String("hello ") + new String("world");
@@ -149,15 +156,18 @@ var var0 = new String("hello ") + new String("world");
 var var1 = "hello world";
 assert var0.intern() == var1;
 ```
+
 两段相同的代码在不同的JDK版本中执行，结果会有有些许的不同。Java 8可以正常执行，但是Java 6会抛出断言错误异常。
 
-Java 6时StringTabele是分配在永久代中，在Java 7迁移到堆中，Java 8完全移除了永久代的概念，并用MetaSpace替代。
 
-### 风险及注意事项
+
+### 其他风险及注意事项
+
+**合理的规划和使用intern可以减少堆内存的使用，合理的使用可以显著的提高内存的利用率**。与之相对的，滥用或者错误的使用intern()方法，由于StringTable的桶数量固定，当数据远远超过桶的数量时（2-3倍以上），导致链表的长度过长，查询效率退化为O(n)，最终反而影响程序的执行性能。
+
+线上事故案例分享: 前两年同事开发的一个项目，数据写入DB之前，会用到jackson进行序列化转为json字符串，**用户的唯一ID做完json的字段名**。上线之后这个进程隔几天时间就会因为OOM导致宕机。jmap把内存dump下来之后发现字符串数量明显异常，经过一系列的排查，最终定位为大量的用户唯一ID字符串在内存中没有被GC掉。在深入的排查发现是jackson库的默认启用intern对象的字段名导致的。
 
 常见的json框架(e.g. jsckson, fastjson .etc)都会默认开启并使用intern方法，利用此特性对json对象的字段名进行常量化管理，减少内存占用，提高内存利用率。但是基本上都或多或少的出现过导致内存泄露的案例。**使用前需要谨慎评估，是否业务场景可以用intern方法？依赖的第三方库是否有默认使用？**。例如：国家名，地区名，类对象字段名称等重复使用率高的字符，完全可以使用intern来避免每个用户单独占用内存。
-
-> 线上事故案例分享: 曾开发一个项目，json的key使用的是用户的唯一ID，进程隔几天时间就是OOM。dump下来之后发现字符串数量非常异常，最终定位是jackson库的默认启用intern字段名导致的。
 
 > Jackson: JsonParser.Feature.INTERN_FIELD_NAMES
 > Fastjson: Feature.InternFieldNames
@@ -194,9 +204,9 @@ Maximum bucket size     :         5
 
 ### -XX:+UseStringDeduplication
 
- G1GC引入的一个减少重复字符串的垃圾回收特性。Shenandoah GC于JDK 11支持。截至JDK 17 LTS发布，仅由**ZGC**不支持(***JDK 18开始支持***)。
+ G1GC引入的一个减少重复字符串的垃圾回收特性。Shenandoah GC于JDK 11支持。截至JDK 17 LTS发布，**ZGC**仍不支持此特性(***JDK 18开始支持***)。
 
-**-XX:StringDeduplicationAgeThreshold=3**. 默认经历3次GC，字符串将被纳入去重的候选对象。设置过大可能会导致YGC时间过长。
+**-XX:StringDeduplicationAgeThreshold=3**. 默认经历3次GC，字符串将被纳入去重的候选对象。设置过大可能会**导致YGC时间增长**。
 
 
 还有一系列相关的参数：
@@ -212,11 +222,11 @@ Maximum bucket size     :         5
 
 ### -XX:+CompactStrings
 
-默认**开启**压缩字符串. 当字符串能够使用latin-1编码描述时，优先使用latin-1编码。节省内存
+默认**开启**压缩字符串. 当字符串能够使用latin-1(ISO-8859-1)编码描述时，优先使用latin-1(ISO-8859-1)编码。**相比于UTF-16编码，节省50%内存。** 与此同时，由于内存占用的减少，字符串拼接，字符串复制等等方面也有显著的性能提升(复制的数据少)。
 
 ### **-XX:+OptimizeStringConcat**
 
-默认**开启**优化字符串串联连接操作。
+默认**开启**优化字符串串联连接操作。编译阶段优化字符串的串联方式，精简优化生成的字节码。
 
 参考资料
 
