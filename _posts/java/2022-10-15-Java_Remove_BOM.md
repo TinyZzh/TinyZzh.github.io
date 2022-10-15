@@ -15,7 +15,7 @@ Java的FileInputStream提供最基本的文件加载功能。**不支持BOM头**
 
 本文旨在找到通用的方式处理BOM头，并以UTF系列编码为例。需要扩展支持GB 18030等其他字符编码规范定义的特殊BOM，可以自行扩展。
 
-有很多开源库和工具支持。例如：[Apache Commons-io](https://commons.apache.org/proper/commons-io)
+有很多开源库和工具支持UTF系列编码。例如：[Apache Commons-io](https://commons.apache.org/proper/commons-io)。但是不支持GB 18030或者其他编码的BOM，这也是为什么写本文重要原因之一。
 
 ```java
 try (FileInputStream fis = new FileInputStream(file);
@@ -100,7 +100,7 @@ public final class BomInputStream extends PushbackInputStream {
 
 假如你的项目中使用**Spring Framework**，那么使用yaml内置的**UnicodeReader**是一个不错的选择。**支持UTF-16和UTF-8，不支持UTF-32的BOM头。** 
 
-> 很多类库会提供UnicodeReader
+> 很多类库会提供UnicodeReader，
 
 UnicodeReader核心方法如下：
 
