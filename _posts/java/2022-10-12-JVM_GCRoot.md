@@ -12,21 +12,19 @@ image_scaling: true
 ---
 
 
-GC是Java对堆栈进行内存管理的重要手段，GC算法也可能会影响Jvm的内存模型和内存管理方案。GC将开发者的内存管理权限收归Jvm统一托管，降低开发者维护内存的心智成本，提高开发进度。引入GC概念的同时，也带来新的问题和挑战，当前的应用方案千变万化，业务场景错综复杂，单纯凭借一套固定的GC算法和配置就能完全妥帖的适用于所有的业务场景吗？我们又可以做哪些事情呢？
+### GCRoot是什么？
 
-GC算法从提出方案到成为正式生产特性，往往不是一蹴而就的，一般都是经历过长久的版本迭代和一些列的优化扩展，并逐步的新增、暴露GC实现细节的配置项，以便于用户去在一定范围内根据自身的实际业务需求进行调整，找到应用GC和内存管理开销的平衡点。Jvm也会给GC算法提供一些列的缺省参数，简化用户的配置。
+GCRoot是Java实现精准式GC算法的基石。在了解GCRoot之前就必须对 **GC、可达性分析、精准式GC**的概念有所了解。
 
+GC是垃圾回收的简称。是Java对堆栈进行内存管理的重要手段。将开发者的内存管理权限收归Jvm统一托管，降低开发者维护内存的心智成本，提高开发进度，降低技术开发者的上手门槛。
 
-当我们查看GC相关的博客、教程时，总是会不可避免的看到 **可达性分析**, **GCRoot**之类的专有名词。此时，你是否也和博主一样，心里总会默默的升起一个大大的问号，到底GCRoot指的是什么？可达性分析又是什么？
+GC算法从提出方案到成为正式生产特性，不是一蹴而就的，完善的GC算法都是经历过长久的版本孵化、功能迭代和一些列的优化提案，并逐步的新增、暴露GC实现细节的用户自定义配置项，以便于用户去在一定范围内根据自身的实际业务需求进行调整，找到自身应用的GC和内存管理开销的平衡点。Jvm也会给GC算法提供一些列的缺省参数，简化用户的配置。
 
+**精准式GC**是指通过算法精准区别识别对象指针，精准区分垃圾和存活对象的GC算法。**可达性分析算法**是GC中用于快速区分**垃圾**的算法，而**GCRoot**是可达性分析的根节点，是算法的初始点。
 
 ### GCRoot有哪些？
 
-在OpenJDK的源码中搜索GC_ROOT。可以在Hprof工具相关的代码中查到 **[HeapHprofBinWriter](https://github.com/openjdk/jdk/blob/5725a93c078dac9775ccef04f3624647a8d38e83/src/jdk.hotspot.agent/share/classes/sun/jvm/hotspot/utilities/HeapHprofBinWriter.java)**， 列举**9种类型GCRoot**。
-
-> Hprof 是Jvm堆内存快照文件. 通过**jmap、jconsole**等工具将内存快照保存下来，有助于开发中排查内存泄露等问题。
-
-相关源码如下，定义的Hprof版本标识**JAVA PROFILE 1.0.2**, 包含9种类型。
+在OpenJDK的源码中搜索GC_ROOT。可以在Hprof工具相关的代码中查到 **[HeapHprofBinWriter](https://github.com/openjdk/jdk/blob/5725a93c078dac9775ccef04f3624647a8d38e83/src/jdk.hotspot.agent/share/classes/sun/jvm/hotspot/utilities/HeapHprofBinWriter.java)**， 列举**9种类型GCRoot**， 包含**8种类型**和**未知类型(为了兼容其他JVM实现的Dump)**，相关源码如下：
 
 ```java
 public class HeapHprofBinWriter extends AbstractHeapGraphWriter {
@@ -47,9 +45,15 @@ public class HeapHprofBinWriter extends AbstractHeapGraphWriter {
 }
 ```
 
-查看Eclipse的内存分析工具[Eclipse Memory Analyzer(MAT)]((<https://help.eclipse.org/latest/index.jsp?topic=%2Forg.eclipse.mat.ui.help%2Fconcepts%2Fgcroots.html>))的文档时发现MAT定义的枚举和OpenJDK中的不一致，GCRoot新增**INTERNED_STRING、FINALIZING、DEBUGGER、REFERENCE_CLEANUP、VM_INTERNAL、JNI_MONITOR**6个枚举。
+> Hprof 是Jvm堆内存快照文件. 通过**jmap、jconsole**等工具将内存快照保存下来，有助于开发中排查内存泄露等问题。
 
-怎么会出现不一致的情况呢？多方查找资料，也没有得到很明确的解答，于是想到VisualVM这个堆dump分析工具。
+源码中定义的Hprof版本标识为**JAVA PROFILE 1.0.2**，这个很重要，后续还会在提到。
+
+
+很多博客和文章中会提到Eclipse的内存分析工具[Eclipse Memory Analyzer(MAT)]((<https://help.eclipse.org/latest/index.jsp?topic=%2Forg.eclipse.mat.ui.help%2Fconcepts%2Fgcroots.html>))，MAT的文档中描述的GCRoot的类型和OpenJDK中的不一致，多了6个枚举 (**INTERNED_STRING、FINALIZING、DEBUGGER、REFERENCE_CLEANUP、VM_INTERNAL、JNI_MONITOR**)。
+
+怎么会出现不一致的情况呢？
+多方查找资料，也没有得到很明确的解答，甚至可以说没有找到任何相关的回答，就好像全世界除了我没有人对此有疑问一样。一头莫展之际，灵光一闪的想到VisualVM这个堆dump分析工具。
 
 ### VisualVM的Commit解惑
 
@@ -58,11 +62,11 @@ VisualVM 2.x支持JDK 1.8以上的版本。**不再集成在JDK中，作为独�
 
 在历史提交记录的备注中查到端倪，OpenJDK和现行的JVM基本上都是遵循**JAVA PROFILE 1.0.2**规范，Android操作系统中使用的是**Dalvik虚拟机**遵循**JAVA PROFILE 1.0.3**。
 
-2.x版本为了支持Android的内快照存堆dump解析，VisualVM开始升级支持**JAVA PROFILE 1.0.3**，由此新增6个GCRoot枚举。
+2.x版本支持Android的Dalvik虚拟机的内快照存堆Dump解析，VisualVM升级支持**JAVA PROFILE 1.0.3**并支持新增的6个GCRoot类型。
 
 > 早期由于MAT和VisualVM等分析查看工具，不支持1.0.3规范，会使用**hprof-conv input.hprof out.hprof**将dump文件转换为1.0.2规范格式。
 
-以下截取VisualVM 2.1.4版本的GCRoot.java部分源码：
+以下截取**VisualVM 2.1.4**版本的**GCRoot.java**部分源码：
 
 ```java
 public interface GCRoot {
@@ -169,7 +173,7 @@ public interface GCRoot {
 |VM_INTERNAL |||
 |JNI_MONITOR |||
 
-总结一下，**JNI相关（本地/全局/引用变量）, 虚拟机相关（运行时的类对象，静态对象，常量池），线程相关（对象，栈帧，同步）**都可以作为GC Root。
+总结一下，**JNI相关（本地/全局/引用变量）, 虚拟机相关（运行时的类对象，静态对象，常量池），线程相关（对象，栈帧，同步）** 都可以作为GC Root。
 
 
 ### 参考资料
