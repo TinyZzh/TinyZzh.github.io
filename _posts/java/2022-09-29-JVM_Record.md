@@ -168,7 +168,7 @@ RecordComponent[] recordComponents = PointR.class.getRecordComponents();
 
 ### 获取字段类型
 
-Class对象中新增 **isRecord()**方法用于区分类是否是record类.
+Class对象中新增 **isRecord()** 方法用于区分类是否是record类.
 
 ```java
 PointR.class.isRecord()
