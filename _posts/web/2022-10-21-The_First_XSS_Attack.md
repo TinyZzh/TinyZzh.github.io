@@ -24,7 +24,7 @@ image_scaling: true
 
 本文以**Chrome浏览器**为例，**使用方法适用于市场上所有主流的浏览器**。
 主要工具是 浏览器内置的**Chrome DevTool**
-涉及演示的网站：**[360doc](https://www.360doc.com)、[起点中文网](https://www.qidian.com)、[Hi库](https://lexiangla.com/)、[CSDN](https://blog.csdn.net)**
+涉及演示的网站：**[Hi库](https://lexiangla.com/)、[CSDN](https://blog.csdn.net)、[360doc](https://www.360doc.com)、[起点中文网](https://www.qidian.com)**
 
 
 ### Chrome DevTool
