@@ -2,7 +2,7 @@
 layout: post
 read_time: true
 show_date: true
-img: images/2022-04/04-24-01.jpg
+img: images/2022-10/jvm-logo.jpg
 title: 部署Spring Boot Admin实现基础的服务器监控和告警
 date: 2022-10-26 10:16:00 +0800
 categories: [JAVA, SpringBootAdmin, SBA]
@@ -60,7 +60,7 @@ public class MonitorApplication {
 
 默认监听8080端口，启动之后通过 [http://127.0.0.1:8080](http://127.0.0.1:8080)查看面板。首页如下如所示：
 
-<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/sba_2-7-6-dashboard.png" alt="xx"/></div>
+<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/sba_2-7-6-dashboard.png" alt="xx" class="image-click-scaling"/></div>
 
 
 ## 应用接入Spring Boot Admin
@@ -98,13 +98,14 @@ management.endpoints.web.exposure.include=*
 
 启动测试程序。
 
-<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/sba_2-7-6-dashboard_first_app.png" alt="xx"/></div>
+<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/sba_2-7-6-dashboard_first_app.png" alt="xx" class="image-click-scaling"/></div>
 
-<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/sba_2-7-6-dashboard_first_app_detail.png" alt="xx"/></div>
+<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/sba_2-7-6-dashboard_first_app_detail.png" alt="xx" class="image-click-scaling"/></div>
+
 
 ## Spring Cloud服务发现
 
-上例中通过引入client包并注册到SBA。本例主要演示通过Spring Cloud全家桶的服务发现自动注册到SBA。
+上例中通过引入client包并注册到SBA。本例主要演示通过Spring Cloud全家桶的服务发现自动注册到SBA。SBA支持全部Spring Cloud的服务发现组件。
 
 首先确定你的项目中引入了Spring Cloud依赖。
 
@@ -141,9 +142,9 @@ spring:
 
 ## 健康状态告警
 
-配置健康状态告警。以钉钉为例，更多其他类型的告警通知配置见 **[Spring Boot Admin Reference Guide](https://codecentric.github.io/spring-boot-admin/current/)**
+SBA内置许多通知方式，例如：**Microsoft Teams、邮件**。也允许用户自定义通知，通过继承实现 **AbstractEventNotifier**。本小节主要以**钉钉告警通知**为例，更多其他类型的告警通知配置见 **[Spring Boot Admin Notifications](https://codecentric.github.io/spring-boot-admin/2.7.6/#_notifications)**
 
-相比于普罗米修斯这种重量级的监控和日志收集方案，**SBA无法追溯查看历史数据**，仅仅是针对状态变更的当前状态做一个告警和通知。作为重量级监控方案的补充，灵活使用。
+相比于普罗米修斯这种重量级的监控和日志收集方案，**SBA无法追溯查看历史数据**，仅仅是针对状态变更的当前状态做一个告警和通知。作为重量级监控方案的补充，更灵活使用。
 
 ### [钉钉告警通知](https://codecentric.github.io/spring-boot-admin/2.6.6/#DingTalk-notifications)
 
@@ -153,6 +154,13 @@ spring:
 |spring.boot.admin.notify.dingtalk.webhook-url|钉钉机器人的webhookUrl|
 |spring.boot.admin.notify.dingtalk.secret|钉钉机器人的密钥|
 |spring.boot.admin.notify.dingtalk.message|通知文本，支持SpEL表达式|"#{instance.registration.name} #{instance.id} is #{event.statusInfo.status}"
+
+## 其他
+
+SBA的另外一大亮点就是支持定义端点，允许嵌入外部网页。有助于用户扩展自定义的监控维度，也有助于支持各种各样的其他第三方库的监控管理后台，例如:Dubbo Admin。
+
+## 参考资料
+1. [Spring Boot Admin Reference Guide](https://codecentric.github.io/spring-boot-admin/current/)
 
 
 
