@@ -35,7 +35,7 @@ image_scaling: true
 
 <div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/unity3d_assetStudio_gui.png" alt="xx" class="image-click-scaling"/></div>
 
-## 提取地下城堡3：魂之师素材
+## 提取地下城堡3：魂之诗素材
 
 <div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/unity3d_assetstudio_dxcb3.png" alt="xx" class="image-click-scaling"/></div>
 
