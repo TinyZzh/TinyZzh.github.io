@@ -12,6 +12,280 @@ image_scaling: true
 ---
 
 
+微博点赞榜，粉丝/观众活跃榜，直播打赏/热度榜，关键词热搜榜等等，你是否曾经和我一样好奇这些排行榜是怎么实现的？
+
+到底是怎样一个工具或方案支撑了这些充斥在我们生活日常方方面面的“排行榜”。
+
+开始之前要从服务器的技术架构说起。一个网站或多或少的都会通过使用缓存来在各个服务直接共享状态，降低DB的访问压力。而Redis则是其中相对比较流行的一种缓存中间件。
+
+Redis提供一种特殊的数据类型**Sorted Set**有序集合。使用次集合可以快速的对数据进行排序，时间复杂度是O(log(n))，低层使用的是跳表。这让Redis成为优先选则为实现涉及到排序类型的业务的根本原因，在不增加架构复杂度的基础上，快速可靠的实现新需求。
+
+而本期就通过回顾生死狙击页游排行榜迭代演进，分享为什么生死狙击页游没有选择Redis实现排行榜。
+
+### 远古时期的排行榜
+
+早期，生死狙击的排行榜实现方案还比较简陋，
+通过一大堆的src表收集排行榜所需的原始数据，在每日凌晨的定时任务过滤有效数据，再通过**Collection.sort()**对数据进行一次排序，最后将玩家的**当前排名信息**、上次排名、玩家信息等信息写入到排行榜数据表中。
+
+**所有业务相关的数据都常驻在JVM堆内存中**。
+
+### 石器时代
+
+这个时期，策划童鞋引入跳跃模式，专注于游戏身法练习的模式，并且希望有一种更及时一点的排行榜，帮助玩家更早更及时的关注到排名或者成绩的变化。而彼时生死狙击的**排行榜业务数据更新周期是每日**，显然不能满足策划童鞋的预期。
+
+自此，博主也开始了和排行榜的不解之缘。并首次着手重构改进排行榜业务。
+
+实现**实时排序**必须追踪每次数据变动，并根据数据变动堆排行榜数据更新。但是每次变动都调用**Collection.sort()**进行全量排序显然是一种极其消耗和浪费服务器性能的做法。此时发现排行榜业务的一个特点，**玩家创造的排行榜数据只增不减，后续创造的较差的记录，不会影响以及记录在排行榜的记录。**梳理一下业务。
+
+1. 排行榜上榜记录未达到上限时，上报的玩家记录必定上榜。
+2. 排行榜记录达到上限时，未上榜玩家的上报记录超过排行榜最后一名时，必定上榜。
+3. 已经上榜的玩家，创造更好的记录，排名只会**向前变动**。
+
+
+排序的核心算法如下：
+
+```java
+/**
+    * 实时排行榜排序.
+    * 从排行榜最后一名开始向前检查并更新排名。
+    * <p>1. 当var1等于null时, 比最后一名优秀, 排行榜一定变更</p>
+    * <p>2. 当排行榜的length为0时, 排行榜一定变更， 第一名入榜</p>
+    * <p>3. 当var1排序在bean右侧时, 玩家刷新个人记录，排行榜可能变更. 否则玩家排名不变</p>
+    *
+    * @param bean     新纪录
+    * @param var0     旧记录
+    * @param copyRank 排行榜列表
+    */
+protected boolean sortRank0(final B bean, final B var0, List<B> copyRank) {
+    B var1 = var0;
+    int endIndex;
+    boolean isDirty = false;
+    if (var1 == null) {
+        var1 = bean;
+        endIndex = copyRank.size() - 1;
+        isDirty = true;
+    } else {
+        if (var1.isChanged(bean)) {
+            var1.updateInfo(bean);
+            setChanged(true);
+        }
+        if (var1.compareTo(bean) > 0) {
+            var1.updateValue(bean);
+            setChanged(true);
+            endIndex = var1.curRank - 1;
+            copyRank.remove(endIndex);
+            endIndex--;
+        } else {    //  排名未改变
+            return false;
+        }
+    }
+    int startIndex;
+    if (copyRank.isEmpty()) {
+        var1.curRank = 1;
+        var1.lastRank = 0;
+        copyRank.add(var1);
+    } else {
+        for (int i = endIndex; i >= 0; i--) {
+            B next = copyRank.get(i);
+            if (next.compareTo(var1) < 0) {
+                startIndex = i + 1;
+                var1.lastRank = var1.curRank;
+                var1.curRank = startIndex + 1;
+                copyRank.add(startIndex, var1);
+                isDirty = true;
+                break;
+            } else {
+                next.lastRank = next.curRank;
+                next.curRank += 1;
+                if (i == 0) {
+                    var1.lastRank = var1.curRank;
+                    var1.curRank = 1;
+                    copyRank.add(0, var1);
+                    isDirty = true;
+                }
+            }
+        }
+    }
+    return isDirty;
+}
+```
+
+### 工业时代
+
+显然，石器时代的方案比较落后。**设计方案先天不支持有自动排名下降的需求**，只能通过**Collection.sort()**解决。虽然使用了泛型，但是对泛型的约束是**必须继承BaseRankInfo**，对类型扩展很不方便，父类的公共字段无法满足天马行空的想法，需要大批量的实现子类扩展，导致**排行榜信息类大批量增加**。第三点就是**排行榜都是硬编码实现的**，每次新增需求都会设计到技术排期、开发。
+
+这次重构项目组试图通过抽象DB处理接口，数据Bean处理结构和特定注解对排行榜功能进行整合，定时清榜和发奖。**将这一切打包成一个Rank特定的结构方案，并暴露给策划童鞋填模板表进行复用**。
+
+```java
+@Inherited
+@Documented()
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface GameRankTemplate {
+
+    /**
+     * 排行榜的长度上限
+     */
+    int length() default Constant.RANK_MAX_LENGTH;
+
+    /**
+     * 数据库操作组件
+     *
+     * @return the bean's mybatis mapper.
+     */
+    Class<? extends GameRankBeanMapper> mapper() default DefaultGameRankBeanMapper.class;
+
+    /**
+     * Bean处理器. 数据加载完成后调用handler处理排行榜的数据.
+     */
+    Class<? extends GameRankBeanHandler> beanHandler() default RpgCharNameHandler.class;
+}
+
+public interface GameRankBeanMapper<T> {
+
+    void createTable(int group);
+
+    List<T> selectById(int group);
+
+    void deleteById(int group);
+
+    void batchInsert(int group, List<T> ranks);
+}
+
+public interface GameRankBeanHandler<T> {
+
+    void handle(List<T> beans);
+
+}
+```
+
+有一定的成功，首先**一定程度上解决硬编码问题**，提高排行榜业务代码的复用率，另一方面**引入模板表配置，通过策划童鞋配置来复用排行榜结构，更灵活**。但是很明显，基于Rank的打包方案并不够通用，依然会因为排序规则，排序影响因子而导致Rank结构不复用，定义越来越多的Rank结构。
+
+### 后工业化时代
+
+这次是一个颠覆性的重构，**借鉴Redis的Sorted Set（跳表）**，我们实现了属于生死狙击页游的跳表排行榜。
+
+主要结构如下：
+
+```java
+public class ReducedGameRank implements Serializable {
+
+    /**
+     * Unique rank identify.
+     */
+    private final RankConfig config;
+    /**
+     * The rank struct description.
+     */
+    private final ReducedGameRankStructDescriptor descriptor;
+    /**
+     * Unique player's identify and rank score mapping map.
+     * Unique Id - Sorted Key.
+     */
+    protected final ConcurrentHashMap<Object, Comparable> mappingMap;
+    /**
+     * player's rank goal and displayed rank info map.
+     */
+    protected final ConcurrentSkipListMap<Comparable, RankBean> sortedMap;
+}
+```
+
+通过**descriptor**策划配置的模板表数据, 可以控制排行榜行为(e.g. 发奖，清榜 .etc)，**mappingMap**管理玩家排行榜记录，**sortedMap**实现根据记录有序排序的玩家信息map。
+
+
+为什么不直接使用Redis而是参考其方案自研？
+
+1. 架构上需要单独引入Redis这个第三方中间件。增加架构复杂度
+2. Redis的sorted set通过一个长整型数值来排序。面临超过4-5个排序条件时，有些捉襟见肘，需要业务层妥协。
+3. 相比于Redis的高可用架构，使用Java标准库的ConcurrentSkipListMap可以实现更高效且低成本的并发。接入目前的技术架构比较简单。
+
+本次重构的另外一个重大变动是**弱化排行榜记录和个人信息两个对象类的各种限制**，同时客户端同步重构为**通过反射获取排行榜记录各个字段的数据值**，彻底和各个业务中繁花似锦的对象bean结构解耦。
+
+核心排序算法和sortRank0类似，源码：
+
+```java
+public boolean update(final Object uniqueId, final Comparable score, final Object displayInfo) {
+    Assert.isInstanceOf(this.descriptor.getClzOfUniqueId(), uniqueId);
+    Assert.isInstanceOf(this.descriptor.getClzOfScore(), score);
+    Assert.isInstanceOf(this.descriptor.getClzOfInfo(), displayInfo);
+
+    Comparable lastScore = this.mappingMap.get(uniqueId);
+    if (lastScore != null
+            && lastScore.compareTo(score) < 0) {
+        //  if display info changed. replace by newly info.
+        RankBean bean = this.sortedMap.get(lastScore);
+        boolean infoChanged = bean != null && !Objects.equals(bean.getInfoBean(), displayInfo);
+        if (infoChanged) {
+            bean.setInfoBean(displayInfo);
+            this.updateWithIncremental(bean, CHANGED);
+        }
+        return infoChanged;
+    }
+    if (hasMaxRankLength()) {
+        Comparable lowest = this.lowest;
+        if (lowest != null && lowest.compareTo(score) < 0) {
+            return false;
+        }
+    }
+    if (this.sortedMap.containsKey(score)) {
+        LOG.error("player's rank data is conflicted. uniqueId:{}, score:{}, info:{}", uniqueId, score, displayInfo);
+        return false;
+    }
+    RankBean bean = new RankBean(identify(), uniqueId, score, displayInfo, rank(uniqueId), GameClock.currentTimeMillis(), 0L, 0, true);
+    this.lock.writeLock().lock();
+    try {
+        this.mappingMap.put(uniqueId, score);
+        if (lastScore != null) {
+            //  replace the prevent player's rank goal.
+            RankBean prev = this.sortedMap.remove(lastScore);
+            if (prev != null) {
+                bean.setLastChangeDisplayFlag(prev.getLastChangeDisplayFlag());
+                bean.setUpdateDisplayCount(prev.getUpdateDisplayCount());
+                bean.setDisplay(prev.isDisplay());
+            }
+            this.updateWithIncremental(bean, CHANGED);
+            this.sortedMap.putIfAbsent(score, bean);
+        } else if (hasMaxRankLength()) {
+            //  remove the lowest player's rank goal.
+            RankBean removed = this.sortedMap.remove(this.sortedMap.lastKey());
+            if (removed != null) {
+                this.updateWithIncremental(removed, REMOVED);
+            }
+            this.updateWithIncremental(bean, ADDED);
+            this.sortedMap.putIfAbsent(score, bean);
+            this.lowest = this.sortedMap.lastEntry().getKey();
+        } else {
+            this.updateWithIncremental(bean, ADDED);
+            this.sortedMap.putIfAbsent(score, bean);
+            this.currentRankLength++;
+        }
+        this.rankChanged = true;
+        return true;
+    } finally {
+        this.lock.writeLock().unlock();
+    }
+}
+```
+
+相比较sortRank0，**使用skipList避免了分数变动无法降低排名的问题**。
+
+
+### 现今
+
+经历多代演进，排行榜服务被剥离出主服务进程，作为一个单独的服务用于支撑全服的排行业务。
+
+
+
+
+### 展望
+
+列举一部分未尽的设想和未来展望。等后续有空的时候开发。
+
+1. 排行榜模板和周期性重复模板，例如：按照赛季时间滚动的排行榜，赛季过期老的排行榜也就废弃了，但是新赛季配置基本一致。目前都需要重复的配置。
+2. 排行榜服务负载不均衡。目前可以通过客户端负载均衡来协调排行榜服务的负载，但存在热点排行榜数据的问题，在高负载情况下，会出现响应慢等问题。
+3. 支持无限长度排行榜。
+4. 
+
 
 
 
