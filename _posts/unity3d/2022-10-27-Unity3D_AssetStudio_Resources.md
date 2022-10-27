@@ -57,7 +57,7 @@ image_scaling: true
 
 <div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/unity3d_assetstudio_dxcb3_export.png" alt="xx" class="image-click-scaling"/></div>
 
-
+展示导出结果图：
 <div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/unity3d_assetstudio_dxcb3_icon.png" alt="xx" class="image-click-scaling"/></div>
 
 
