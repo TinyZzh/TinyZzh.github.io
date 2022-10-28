@@ -45,7 +45,7 @@ image_scaling: true
 
 提取出来的贴图，动画，字体等游戏资产的列表视图。
 
-## 提取素材
+## 提取**地下城堡3：魂之诗**素材
 
 首先需要从官网或者第三方渠道下载对应的APK包。
 
@@ -61,6 +61,23 @@ image_scaling: true
 <div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/unity3d_assetstudio_dxcb3_icon.png" alt="xx" class="image-click-scaling"/></div>
 
 
+## 提取**无神之界**素材
 
+以导出宠物**怒狮**模型为例。在Scene Hierarchy视图选中**模型**，
 
+<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/wszj_nushi_model.png" alt="xx" class="image-click-scaling"/></div>
+
+在Asset List视图中选中对应的**动画**。
+
+<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/wszj_nushi_model_animationclip.png" alt="xx" class="image-click-scaling"/></div>
+
+<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/wszj_nushi_model_output.png" alt="xx" class="image-click-scaling"/></div>
+
+点击后输出为FBX格式的模型加动画。
+
+<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/wszj_nushi_model_output_result.png" alt="xx" class="image-click-scaling"/></div>
+
+### 怒狮.fbx
+
+<a href="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/pet_nushi_merge.fbx"></a>
 
