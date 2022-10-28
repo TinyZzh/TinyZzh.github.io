@@ -77,7 +77,6 @@ image_scaling: true
 
 <div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/wszj_nushi_model_output_result.png" alt="xx" class="image-click-scaling"/></div>
 
-### 怒狮.fbx
+[怒狮.fbx]({{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/pet_nushi_merge.fbx)
 
-<a href="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/pet_nushi_merge.fbx"></a>
 
