@@ -13,43 +13,127 @@ image_scaling: true
 
 
 
-[有序集合(Sorted Sets)](https://redis.io/docs/data-types/sorted-sets/)是[Redis](https://redis.io/docs/)内置的一种基于跳跃表(skip list)，时间复杂度为O(log(n))数据类型。
+[有序集合(Sorted Sets)](https://redis.io/docs/data-types/sorted-sets/)是[Redis](https://redis.io/docs/)内置的一种基于跳跃表(skip list)，时间复杂度为O(log(N))数据类型。
 
 本文的基础都是基于Redis的有序集合。
 
-## 有序集合相关的命令
+## 排行榜业务涉及的命令
 
-本文会使用到的命令。
+### ZADD
 
-|命令|描述|
+插入一条排行榜记录，当记录存在时，替换key对应的score。
+
+```powershell
+redis> ZADD myrank 1 "lucy"
+(integer) 1
+redis> ZRANGE myrank 0 -1 WITHSCORES
+1) "lucy"
+2) "1"
+redis> ZADD myrank 2 "lucy"
+(integer) 0
+redis> ZRANGE myrank 0 -1 WITHSCORES
+1) "lucy"
+2) 2.0
+```
+
+
+### ZINCRBY
+
+当记录存在时，累加score的值，否则和ADD类似插入一条新记录。
+
+```powershell
+ZINCRBY key increment member
+```
+
+```powershell
+redis> ZADD myrank 1 "lucy"
+(integer) 1
+redis> ZRANGE myrank 0 -1 WITHSCORES
+1) "lucy"
+2) "1"
+redis> ZINCRBY myrank 2 "lucy"
+3.0
+redis> ZRANGE myrank 0 -1 WITHSCORES
+1) "lucy"
+2) 3.0
+```
+
+### ZRANGE
+
+根据起始和结束索引获取列表，可以实现排行榜数据的分页查询。默认是**根据score值从小到大排序**。
+
+```powershell
+ZRANGE key start stop [BYSCORE | BYLEX] [REV] [LIMIT offset count]  [WITHSCORES]
+```
+
+|参数|描述|
 |--:|--:|
-|||
+|start|开始位置。 0|
+|stop|结束位置。负数表示倒序计数，-1表示获取全部|
+|REV|获取逆序排序的数据。Redis 6.2开始替代 **ZREVRANGE** 命令。|
+|WITHSCORES|在返回的列表的每个key之后追加对应的score数据|
 
-更多内容参考[有序集合相关的全部命令](https://redis.io/commands/?group=sorted-set)
+ZRANGE 排行榜的key start(开始位置) stop(结束位置) REV(逆序排序) (同时返回分数)
 
+```powershell
+> ZRANGE myrank 0 -1 WITHSCORES
+1) "lucy"
+2) 2.0
+3) "mike"
+4) 3.0
+```
 
-## Java中的实践
+### ZRANK
 
+获取个人再排行榜的排名。返回**从小到大排序的排行榜位置索引(排名)**。
+往往排行榜的业务都是从大到小排序的，可以通过使用**ZREVRANK命令**获取**从大到小排序**的排名。
 
+```powershell
+ZREVRANK key member
+```
 
+```powershell
+> ZRANGE myrank lucy
+2
+```
 
+更多内容命令说明见[Redis文档 - 有序集合](https://redis.io/commands/?group=sorted-set)
 
-## 用法实战
+### ZCARD
 
+获取有序集合的元素数量。获取排行榜的总长度。
 
-假若项目中未使用 Redis, 未来也不准备引入 Redis 的朋友。
-可以借鉴引用一下跳跃表的自己实现 SortedSet 或引用 GitHub 上其他网友的开源实现。
+```powershell
+> ZCARD myrank
+2
+```
 
-Redis 中的 SortedSet 根据一个名为 score 的 64 位双精度浮点数的参数实现排序. 但是在实际应用中推荐将 score 当做 64 位长整型来使用.
-原因很简单: long 的取值范围要大于 double.
+## 排行榜业务实践
 
-> > double 范围为[-(2^53), +(2^53)] long 范围为[-(2^63), +(2^63) - 1]
+Redis的有序集合提供了高可用、高效的查询，那如何将它和我们实际业务结合起来呢？
+Redis只有一个score值但是业务中排序影响因子又4、5个怎么办？
 
-当只有一个排序原则时，直接使用 score 排序即可。
-但是引言中的排序有三个条件，而 SortedSet 只提供一个参数而且还是数字，那该如何应用呢?
+有序集合的score是一个 **IEEE 754标准的双精度浮点数**，数据范围为 **-2^1024^ ~ +2^1024^**。其中**精确表示整数**的范围为**2^-53^(-9007199254740992) ~ 2^52^(90071992547409992)** 。超过精确范围的值将根据IEEE 754取/舍之后表示。
 
-下面来正菜了。因为 redis 保存的数据是 64 位的，而我们需要的数据可能不需要 64 位这么多。
-既如此合理分析拆分这 64 位长度拼接并组合成我们需要的数据，就可以实现简单的多条件排序了。
+一般平台的长整型范围为-(2^63^) ~ (2^63^ - 1)
+
+### 经验值排行榜
+
+根据等级从大到小，经验从大到小，**上榜时间从小到大**三个条件进行排序。
+
+```java
+
+int level = 60;
+int exp = 6000000;
+int timestamp = (int) (System.currentTimeMillis() / 1000);
+
+long redisScore = ((level & 0xFFL) << 56) | ((exp & 0xFFFFFFL) << 32) | (timestamp & 0xFFFFFFFFL);
+
+int tempTime = redisScore & 0xFFFFFFFFL;
+int tempExp = (redisScore >> 32) & 0xFFFFFFL;
+int tempLevel = (redisScore >> 56) & 0xFFL;
+
+```
 
 ## 分析各部分数据的取值范围
 
@@ -69,23 +153,7 @@ Redis 中的 SortedSet 根据一个名为 score 的 64 位双精度浮点数的�
 目前笔者能想到的就是通过降低数值规模。例如：
 每 1w 实际经验值转换为 1 点排序经验值。即 20E 实际经验 / 1w = 20w 排序经验. 20w 完全足够 24 位二进制来表示了。
 
-## 示例
 
-实现优先等级排序，经验排序，满级时间。
-
-```java
-
-int level = 60;
-int exp = 6000000;
-int timestamp = (int) (System.currentTimeMillis() / 1000);
-
-long redisScore = ((level & 0xFFL) << 56) | ((exp & 0xFFFFFFL) << 32) | (timestamp & 0xFFFFFFFFL);
-
-int tempTime = redisScore & 0xFFFFFFFFL;
-int tempExp = (redisScore >> 32) & 0xFFFFFFL;
-int tempLevel = (redisScore >> 56) & 0xFFL;
-
-```
 
 ## 总结
 
