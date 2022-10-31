@@ -113,45 +113,76 @@ ZREVRANK key member
 Redis的有序集合提供了高可用、高效的查询，那如何将它和我们实际业务结合起来呢？
 Redis只有一个score值但是业务中排序影响因子又4、5个怎么办？
 
-有序集合的score是一个 **IEEE 754标准的双精度浮点数**，数据范围为 **-2^1024^ ~ +2^1024^**。其中**精确表示整数**的范围为**2^-53^(-9007199254740992) ~ 2^52^(90071992547409992)** 。超过精确范围的值将根据IEEE 754取/舍之后表示。
+有序集合根据一个 **IEEE 754标准的双精度浮点数**表示分数进行从小到大排序，数据范围为 **-2^1024^ ~ +2^1024^**。其中**精确表示整数**的范围为**2^-53^(-9007199254740992) ~ 2^52^(90071992547409992)** 。超过精确范围的值将根据IEEE 754取/舍之后表示。
 
 一般平台的长整型范围为-(2^63^) ~ (2^63^ - 1)
 
-### 经验值排行榜
+### 游戏通关记录排行榜
 
-根据等级从大到小，经验从大到小，**上榜时间从小到大**三个条件进行排序。
+根据关卡通关耗时从小到大排序, 根据VIP等级**从大到小**排序，上榜时间从小到大三个条件进行排序。
+
+首先将排序规则是从小到大还是从大到小进行统一，统一规则就可以，两种方式差别不大。根据本示例来讲，将VIP等级通过某种算法，转换为从小到大排序是比较合适的，例如：**将VIP等级上限设定为100级，使用100级减去当前VIP等级的差值从小到大排序**。
+
+统一规则之后，下一步就是通过算法将排序影响因子数据转换为有序集合的score。
+这里博主提供两个简单的实现思路以供参考。
+
+#### 位运算
+
+将双精度浮点数的64位的拆分并用于表达3个排序条件值。例如：
+第一个排序条件等级经验值，使用最高的24位，有效值范围为[0, 16777216]。
+第二个当前，占用8位，有效取值[0, 127]。
+剩余的32位，用于时间戳。
 
 ```java
 
-int level = 60;
-int exp = 6000000;
-int timestamp = (int) (System.currentTimeMillis() / 1000);
+int cost = 185215;
+int vipLv = 10;
+long mills = System.currentTimeMillis();
+//  分别偏移40位, 32位
+long redisScore = ((cost & 0xFFFFFFL) << 40) | ((vipLv & 0xFFL) << 32) | (mills & 0xFFFFFFFFL);
 
-long redisScore = ((level & 0xFFL) << 56) | ((exp & 0xFFFFFFL) << 32) | (timestamp & 0xFFFFFFFFL);
-
-int tempTime = redisScore & 0xFFFFFFFFL;
-int tempExp = (redisScore >> 32) & 0xFFFFFFL;
-int tempLevel = (redisScore >> 56) & 0xFFL;
-
+long tMills = redisScore & 0xFFFFFFFFL;
+int tVipLv = (redisScore >> 32) & 0xFFL;
+int tCost = (redisScore >> 40) & 0xFFFFFFL;
 ```
 
-## 分析各部分数据的取值范围
+**总结：降低Score的最大数值范围，但是可以精准的表达每个影响因子的分数，小于2^53^整数方面基本上没有精度问题。**
 
-先普及一点基础知识.
+#### 大整数计算
 
-- 8 位二进制: 有符号[-128, 127]， 无符号[0, 255]
-- 8 位二进制: 有符号[-128, 127]， 无符号[0, 255]
-- ...
-- 32 位二进制: 有符号[-2^31, 2^31 - 1]， 无符号[0, 2^32]
-- ...
-- 64 位二进制: 有符号[-2^63, 2^63 - 1]， 无符号[0, 2^64]
+**转换为字符串进行拼接**或者**BigInteger或BigDecimal**进行超大数据运算，然后将结果输出为双精度浮点数 **Double**。
 
-64 位二进制数，首先时间戳精确到秒 则需要 32 位，等级一般 8 位即可（根据需求扩展到 9 位、10 位...）。
-这么拆分下来经验值最多使用剩余 24 位表示，有符号[-2^23, 2^23 - 1],也就 800w+。
-对于一些小数值经验应该是足够了。但是假如是类似于暗黑三这种按 E 计算的咋办?
+示例算法 **Double.parseDouble(String.valueOf(cost) + vipLv + mills)**
 
-目前笔者能想到的就是通过降低数值规模。例如：
-每 1w 实际经验值转换为 1 点排序经验值。即 20E 实际经验 / 1w = 20w 排序经验. 20w 完全足够 24 位二进制来表示了。
+Double的精度缺失问题，在超大整数方面(大于2^53^)情况尤其突出。
+
+```java
+int cost = 185215;
+int vipLv = 10;
+long mills = 1667212407355L; // System.currentTimeMillis();
+System.out.println(mills);
+System.out.println("" + cost + vipLv + mills);
+System.out.printf("score:%f", Double.parseDouble(String.valueOf(cost) + vipLv + mills));
+System.out.println();
+System.out.printf("score:%f", Double.parseDouble(String.valueOf(cost) + vipLv + (mills + 4_000L)));
+System.out.println();
+System.out.printf("score:%f", Double.parseDouble(String.valueOf(cost) + vipLv + (mills + 30_000L)));
+//  185215101667212407355
+//  score:185215101667212400000.000000
+//  score:185215101667212430000.000000
+//  score:185215101667212430000.000000
+//  score:9223372036854775807
+```
+
+当通关耗时，VIP等级相同时，创建记录的时间(mills + 4s)和(mills + 30s)算出来的浮点数是一样的, 而实际上这两种中间相差26s的实际时间。
+
+**总结：简单直观的拼接数据，但是需要评估双精度浮点数的就近舍去会不会导致业务极限情况下的异常。**
+
+
+### 合理的缩减数值规模
+
+在不影响业务效果的情况，可以针对性的进行各种各样形式的**缩减数据规模**，达到优化排行榜Score的目的。
+
 
 
 
