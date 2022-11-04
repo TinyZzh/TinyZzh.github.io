@@ -11,15 +11,21 @@ toc: yes
 image_scaling: true
 ---
 
+微博点赞榜，粉丝/观众活跃榜，直播打赏/热度榜，关键词热搜榜等等，你是否曾经和我一样好奇这些排行榜是怎么实现的？
 
+到底是怎样一个工具或方案支撑了这些充斥在我们生活日常方方面面的“排行榜”。
+
+本文就介绍如何使用Redis实现高性能高可用排行榜服务。
+
+## Redis [有序集合(Sorted Sets)](https://redis.io/docs/data-types/sorted-sets/)
 
 [有序集合(Sorted Sets)](https://redis.io/docs/data-types/sorted-sets/)是[Redis](https://redis.io/docs/)内置的一种基于跳跃表(skip list)，时间复杂度为O(log(N))数据类型。
 
 本文的基础都是基于Redis的有序集合。
 
-## 排行榜业务涉及的命令
+## Redis相关命令
 
-### ZADD
+### [ZADD](https://redis.io/commands/zadd/)
 
 插入一条排行榜记录，当记录存在时，替换key对应的score。
 
@@ -37,9 +43,10 @@ redis> ZRANGE myrank 0 -1 WITHSCORES
 ```
 
 
-### ZINCRBY
+### [ZINCRBY](https://redis.io/commands/zincrby/)
 
-当记录存在时，累加score的值，否则和ADD类似插入一条新记录。
+当记录存在时，值为正数时，累加score的值, 当值为负数时，减少score值.
+当记录不存在时，和 **ZADD** 类似插入一条新记录。
 
 ```powershell
 ZINCRBY key increment member
@@ -58,7 +65,7 @@ redis> ZRANGE myrank 0 -1 WITHSCORES
 2) 3.0
 ```
 
-### ZRANGE
+### [ZRANGE](https://redis.io/commands/zrange/)
 
 根据起始和结束索引获取列表，可以实现排行榜数据的分页查询。默认是**根据score值从小到大排序**。
 
@@ -83,7 +90,7 @@ ZRANGE 排行榜的key start(开始位置) stop(结束位置) REV(逆序排序) 
 4) 3.0
 ```
 
-### ZRANK
+### [ZRANK](https://redis.io/commands/zrank/)
 
 获取个人再排行榜的排名。返回**从小到大排序的排行榜位置索引(排名)**。
 往往排行榜的业务都是从大到小排序的，可以通过使用**ZREVRANK命令**获取**从大到小排序**的排名。
@@ -99,7 +106,7 @@ ZREVRANK key member
 
 更多内容命令说明见[Redis文档 - 有序集合](https://redis.io/commands/?group=sorted-set)
 
-### ZCARD
+### [ZCARD](https://redis.io/commands/zcard/)
 
 获取有序集合的元素数量。获取排行榜的总长度。
 
@@ -131,9 +138,10 @@ Redis只有一个score值但是业务中有4、5个排序影响因子该怎么�
 #### 按bit划分计算
 
 **将双精度浮点数的64位的拆分并用于表达3个排序条件值**。很明显数据所需的位数（32+8+32=72）超过64位。
-这种情况下，需要业务上做一些适当的妥协，缩减数值规模，例如：按照一定比例换算经验值和分值计算做一次除法运算，每1w点经验值为1"经验分"，这样24位的"经验分"就可以涵盖32位的整数。
+这种情况下，需要业务上做一些适当的妥协，缩减数值范围。
 
-例如：
+例如缩减等级经验值的数值范围。最简单的办法，按照一定比例换算经验值和分值计算做一次除法运算，例如：将10000游戏经验值转换为1"排行榜经验分数"，这样24bits的的"经验分"就可以涵盖32bits的整数的数值范围。
+
 第一个排序条件等级经验值，使用最高的24位，有效值范围为[0, 16777216]。
 第二个当前，占用8位，有效取值[0, 127]。
 剩余的32位，用于时间戳。
@@ -151,17 +159,18 @@ int tVipLv = (redisScore >> 32) & 0xFFL;
 int tCost = (redisScore >> 40) & 0xFFFFFFL;
 ```
 
-再举一个🌰，从上榜的时间戳这个字段入手，可以将时间戳换算为上榜时间至玩法赛季截至时间的秒数，同样可以缩减时间戳所需要的bit位数。
+当然也可以从上榜的时间戳字段入手, 假如游戏排行榜是按照赛季分，且一个周期时间为2个月，将时间戳换算为上榜时间至玩法赛季截至时间的秒数，数据有效范围为[0, 24 * 3600 * 60 = 5_184_000]，只需要23bits（2^23^=8,388,608）就满足需求。
 
-#### 大整数计算
+#### 数值字符串拼接成大整数
 
-**转换为字符串进行拼接**或者**BigInteger或BigDecimal**进行超大数据运算，然后将结果输出为双精度浮点数 **Double**。
+第二种方案就更简单粗暴了，将**数值字符串进行拼接**，然后将字符串转换为为双精度浮点数 **Double**。
 
-示例算法 **Double.parseDouble(String.valueOf(cost) + (100 - vipLv) + mills)**
-
-Double的精度缺失问题，在超大整数方面(大于2^53^)情况尤其突出。
+这个方案和上例一样会有丢失精度的问题，在大于2^53^的整数方面，情况尤其突出。
 
 ```java
+//  排行榜分数计算公式
+double score = Double.parseDouble(String.valueOf(cost) + (100 - vipLv) + mills);
+
 int cost = 185215;
 int vipLv = 10;
 long mills = 1667212407355L; // System.currentTimeMillis();
@@ -181,25 +190,20 @@ System.out.printf("score:%f", Double.parseDouble(String.valueOf(cost) + vipLv + 
 
 当通关耗时，VIP等级相同时，创建记录的时间(mills + 4s)和(mills + 30s)算出来的浮点数是一样的, 而实际上这两种中间相差26s的实际时间。
 
-**总结：简单直观的拼接数据，但是需要评估双精度浮点数的就近舍去会不会导致业务极限情况下的异常。**
+#### 分段百分比拼接
 
+结合上面两种方案，将数据通过除法换算，在根据实际需求按照十进制偏移n位后取整，再复用字符串拼接，组合出最终的Score分数。 
+例如将等级经验转换为最大值的比例程度，再精确到小数点后6位，：101w/10e = 0.001在进行十进制位偏移6位，转换为1010，无论是使用bits亦或是字符串拼接，数值范围都不是很大。
 
-#### 混合位运算和大整数计算
+这种方法更需要不断调整和结合实际业务需求。仅提供一种思路。
 
+### 合理的缩减数值范围
 
+一方面，在不影响业务效果的情况，应该尽可能的进行各种各样形式的**缩减数值范围**，达到优化排行榜Score的目的。另一方面，缩减数值范围虽然方便Score的生成和排序，也或多或少的影响了排序的数据精度。
 
+不断调整，逐步在数值和Score算法之间取得一个平衡，才能将Redis更好的应用于我们的排行榜。
 
+## 参考资料
 
-### 合理的缩减数值规模
-
-在不影响业务效果的情况，可以针对性的进行各种各样形式的**缩减数据规模**，达到优化排行榜Score的目的。
-
-
-
-
-## 总结
-
-详细可以查看 Redis 的[官方命令说明文档](http://redis.io/commands#sorted_set)
-或笔者在 Okra 框架的 example 包下的
-[示例代码](https://github.com/ogcs/Okra/blob/master/okra-examples/src/main/java/org/ogcs/okra/example/rank/RedisRankMain.java)
-。
+1. [Redis Sorted Sets Docs](https://redis.io/docs/data-types/sorted-sets/)
+2. [Try Redis IO](https://try.redis.io/)
