@@ -4,9 +4,9 @@ read_time: true
 show_date: true
 img: images/2022-11/gunfire_logo.jpg
 title: 游戏萌新快速入门之《枪火重生》
-date: 2022-11-08 10:16:00 +0800
-categories: [JAVA, 枪火重生]
-tags: [JAVA, 枪火重生]
+date: 2022-11-13 20:16:00 +0800
+categories: [Game, 枪火重生]
+tags: [Game, 枪火重生]
 toc: yes
 image_scaling: true
 ---
@@ -91,6 +91,8 @@ BOSS打法较简单，主要伤害是射线，可以利用BOSS生成的石柱来
 
 #### 打法关键点
 
+BOSS会不断释放龙飓风，带有跟踪性，躲避即可。尽量使用**火系枪械**对血肉类怪物有1.5倍增伤。
+
 ### 虬蛇
 
 <div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/gunfire_boss_qiushe.png" alt="xx" class="image-click-scaling"/></div>
@@ -98,15 +100,21 @@ BOSS打法较简单，主要伤害是射线，可以利用BOSS生成的石柱来
 主要技能列表：
 
 <div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/gunfire_boss_qiushe_skills.png" alt="xx" class="image-click-scaling"/></div>
+<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/gunfire_boss_qiushe_skills2.png" alt="xx" class="image-click-scaling"/></div>
 
 #### 打法关键点
 
+二阶段BOSS，一阶段简单的释放技能，会出现红色路径的提示，注意使用Shift快速躲避。弱点是BOSS出水之后的身体。第二阶段是多个头发动攻击。
 
 ### 极地妖王
 
+<div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/gunfire_boss_jidiyaowang.png" alt="xx" class="image-click-scaling"/></div>
+
 
 
 #### 打法关键点
+
+一阶段BOSS血量降低会开启无敌并持续的站桩打吊瓶，打掉吊瓶就好，重启BOSS战。二阶段BOSS站在中间使用全屏弹幕球攻击，注意走位躲避即可。三阶段BOSS会护盾回满，并开始倒计时，计时阶段使用强力输出武器打，推荐使用**雷电属性**枪械，计时结束BOSS开启狂暴模式，输出非常狂暴，目前只能硬扛着输出打死BOSS。
 
 
 ## 轮回难度
@@ -117,5 +125,18 @@ BOSS打法较简单，主要伤害是射线，可以利用BOSS生成的石柱来
 
 等博主攻略完成轮回八再出进阶教程。
 
+## 游戏总结
 
+整体来说前期入门门槛比较低，轻快的游戏节奏，rougelike元素前期提供趣味性。
+
+个人感觉主要是内容丰富度不足。主要以下几个方面：
+
+1. 地图通过**随机场景顺序**和**随机进出入口**实现随机。很容易出现重复感。
+2. 枪械玩法和特性较少，可靠的枪械方案不多（手感好，反馈及时，输出稳定等几个方面），近战武器在后期可搭配性较弱。目前博主主要使用织云和玉追龙等少数几种枪械。
+3. 怪物和BOSS较少，目前仅有4大关，7个BOSS。
+4. 双子铭刻种类，地图怪物属性词缀搭配很少。
+
+## 枪火重生素材提取
+
+枪火重生是Unity3D开发游戏。使用[AssetStudio](https://github.com/Perfare/AssetStudio)可以完美提取动画，模型和贴图等。详细信息参考博主的另外一个文章[逆向实验室 - 使用AssetStudio提取Unity3D素材资源](https://tinyzzh.github.io/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/unity3d/assetstudio/2022/10/27/Unity3D_AssetStudio_Resources.html)。
 
