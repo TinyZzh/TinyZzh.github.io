@@ -6,7 +6,7 @@ categories: [Redis, 排行榜]
 tags: [Redis, 排行榜]
 read_time: true
 show_date: true
-img: images/2022-04/04-24-01.jpg
+img: images/2022-10/Redis_Logo.svg
 toc: yes
 image_scaling: true
 ---

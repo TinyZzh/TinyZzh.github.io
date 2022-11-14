@@ -2,7 +2,7 @@
 layout: post
 read_time: true
 show_date: true
-img: images/2022-04/04-24-01.jpg
+img: images/2022-10/jvm-logo.jpg
 title: 详解Java的 不可变集合工厂方法of()
 date: 2022-11-03 12:16:00 +0800
 categories: [JAVA, Collection]
