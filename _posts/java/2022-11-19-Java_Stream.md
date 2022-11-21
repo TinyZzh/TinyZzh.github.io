@@ -9,6 +9,7 @@ categories: [JAVA, Stream]
 tags: [JAVA, Stream]
 toc: yes
 image_scaling: true
+mermaid: true
 ---
 
 **Stream**是Java 8引入的语法特性。 是对集合（Collection）对象功能的增强，它专注于对集合对象进行各种非常便利、高效的聚合操作（aggregate operation），或者大批量数据操作 (bulk data operation)。
