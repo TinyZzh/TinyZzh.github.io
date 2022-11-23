@@ -4,7 +4,7 @@ read_time: true
 show_date: true
 img: images/2022-10/jvm-logo.jpg
 title: 梳理Spring Framework 6.0的新特性
-date: 2022-11-19 14:16:00 +0800
+date: 2022-11-22 14:16:00 +0800
 categories: [JAVA, Spring_Framework_6]
 tags: [JAVA, Spring Framework 6, Gradle, 虚拟线程]
 toc: yes
