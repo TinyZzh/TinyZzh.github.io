@@ -1544,6 +1544,10 @@ img + br + small {
   margin: auto;
 }
 
+.page-content .emoji {
+  display: inline;
+}
+
 .header-page {
   position: relative;
   margin-bottom: 1em;
