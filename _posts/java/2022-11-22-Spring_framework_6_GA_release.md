@@ -19,17 +19,17 @@ Spring Framework在Java应用层长期的占据市场统治地位。
 
 ## Spring Framework 6.0
 
-### :one:基于Java 17
+### :one: 基于Java 17
 
 Spring框架代码全面**升级到Java 17**。得益于Java版本的升级，意味着下游用户可以使用更多更新的语法（**[Record](https://tinyzzh.github.io/java/record/2022/09/29/JVM_Record.html)、文本块、增强的Switch表达式、密封类sealed**）和系统工具（**Flight Recorder、JShell**），同时还能享受**JVM特性增强、String增强、NPE提示增强、更现代化的GC（G1，ZGC等）算法**等诸多的隐形福利。 
 
 > 
 
-### :two:全面拥抱云原生
+### :two: 全面拥抱云原生
 
 [Spring Native](https://github.com/spring-projects-experimental/spring-native)项目已经默默孵化3年多时间，全面支持Spring Framework 6和Spring Boot 3，支持GraalVM即时编译。使用AOT可以实现**亚毫秒级启动时间，大幅降低堆内存占用**。详见[Initial AOT support in Spring Framework 6.0.0-M3](https://spring.io/blog/2022/03/22/initial-aot-support-in-spring-framework-6-0-0-m3)
 
-### :three:拥抱虚拟线程Virtual Thread
+### :three: 拥抱虚拟线程Virtual Thread
 
 还记得在Spring Framework 5.0引入的响应式web框架**WebFlux**吗？ Spring WebFlux是一个异步非阻塞式的Web框架。WebFlux相比于Spring MVC可以让服务器占用内存更少，使用线程数更少，在IO密集型业务中，吞吐量更高，应用有更好的伸缩性。
 
@@ -67,7 +67,7 @@ try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
 }  // executor.close() is called implicitly, and waits
 ```
 
-### :four:其他
+### :four: 其他
 
 **J2EE现在正式迁移到jakarta**, 由eclipse基金会管理。完全开源，无任何商业使用风险。
 
