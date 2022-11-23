@@ -99,6 +99,7 @@ plugins:
   - jekyll-paginate
   - jekyll-feed
   - jekyll-sitemap
+  - jemoji
 
 include: [_pages]
 exclude: [
