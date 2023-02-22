@@ -6,7 +6,7 @@ img: assets/img/branding/TinyZ-logo.svg
 title: [实用工具] 免费开源的AI转换图片风格工具 - AnimeGANv3
 date: 2023-02-22 12:00:00 +0800
 categories: [AnimeGANv3, AI]
-tags: [AnimeGANv3, AI, AnimeGANv2, Github, Photos]
+tags: [AnimeGANv3, AI, AnimeGANv2]
 toc: yes
 image_scaling: true
 mermaid: true
