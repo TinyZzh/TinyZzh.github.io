@@ -62,6 +62,15 @@ html[data-theme="dark"] {
   background-color: inherit;
 }
 
+.code {
+  white-space: break-spaces;
+  background-color: var(--grey4);
+  border-radius: 6px;
+  padding: .2em .4em;
+  margin: 0;
+  font-size: 85%;
+}
+
 .highlight {
   line-height: 1.25;
   border-bottom-left-radius: 6px;
