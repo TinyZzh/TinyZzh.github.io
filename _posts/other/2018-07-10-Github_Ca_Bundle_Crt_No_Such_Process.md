@@ -6,12 +6,12 @@ categories: [Github]
 tags: [Github]
 ---
 
-```
+```powershell
 git config --system http.sslcainfo "C:\Program Files (x86)\git\bin\curl-ca-bundle.crt"
 ```
 
 或
 
-```
+```powershell
 git config --system http.sslverify false
 ```
