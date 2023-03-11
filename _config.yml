@@ -77,7 +77,7 @@ kramdown:
   smart_quotes: lsquo,rsquo,ldquo,rdquo
   syntax_highlighter_opts:
     line_numbers: true
-    disable_inline_lexer: true
+    default_lang: inline
 mathjax: true
 highlighter: rouge
 
