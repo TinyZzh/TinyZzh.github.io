@@ -89,3 +89,8 @@ html[data-theme="dark"] {
 .highlight table .rouge-code {
   padding-left: 6px;
 }
+
+// 处理mermaidjs code 
+.language-mermaid {
+  background-color:initial;
+}
