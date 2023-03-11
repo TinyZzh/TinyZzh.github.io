@@ -74,7 +74,7 @@ markdown: kramdown
 
 kramdown:
   highlighter: rouge
-  smart_quotes: ldquo,rdquo
+  smart_quotes: ldquo,rdquo,lsquo,rsquo
   syntax_highlighter_opts:
     line_numbers: true
 mathjax: true
