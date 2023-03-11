@@ -493,7 +493,12 @@ pre code {
 }
 code {
   font-family: monospace;
-  font-size: 0.75rem;
+  white-space: break-spaces;
+  background-color: var(--grey4);
+  border-radius: 6px;
+  padding: .2em .4em;
+  margin: 0;
+  font-size: 85%;
 }
 svg {
   vertical-align: middle;
