@@ -37,7 +37,7 @@ rustc --version
 
 插件提供代码补全，代码引用、定义导航，错误提示，代码高亮，单元测试等等，极大的改善开发者的开发环境，提高开发效率。
 
-其次，推荐微软推出的[rust anycode插件](https://marketplace.visualstudio.com/items?itemName=ms-vscode.anycode-rust)
+其次，推荐微软推出的[rust anycode插件](https://marketplace.visualstudio.com/items?itemName=ms-vscode.anycode-rust)：
 
 <div align="center"><img src="{{site.baseurl}}images/{{page.date | date: "%Y-%m"}}/rust_anucode_rust_plugin.png
 " alt="xx" class="image-click-scaling"/></div>
