@@ -46,7 +46,7 @@ egrep -irl 'apple' /path/to/directory
 
 例如，要在名为“fruits.txt”的文件中搜索单词“apple”，命令为：
 
-```powershell-interactive
+```powershell
 egrep 'apple' fruits.txt
 ```
 
