@@ -28,7 +28,7 @@ cargo --version
 输出了Cargo的版本号，说明安装成功。环境检查完成，下面开始Cargo的学习。
 
 我们先回顾一下上一篇文章中使用过的Cargo命令。
-第一格使用Cargo命令是"cargo new", 创建了我们的第一个Rust项目。没看过第一篇的同学可以尝试如下命令创建：
+第一个使用Cargo命令是"cargo new", 创建了我们的第一个Rust项目。没看过第一篇的同学可以尝试如下命令创建：
 
 ```powershell
 cargo new hello_world
