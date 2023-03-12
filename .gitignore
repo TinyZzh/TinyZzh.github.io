@@ -6,3 +6,4 @@
 .liquidrc
 .jekyll-cache/
 _site/
+pandoc_outputs/*

@@ -10,6 +10,11 @@ tags: [Rust, 从入门到精通]
 toc: yes
 image_scaling: true
 mermaid: true
+output:
+  word_document:
+    path: /pandoc_outputs/2023-03-12-rust_lang_tutorial_02_cargo.docx
+    highlight: "zenburn"
+    pandoc_args: ["--toc", "--toc-depth=2"]
 ---
 
 Cargo是Rust语言的包管理器和构建工具。它能够帮助我们管理依赖、构建项目、运行测试和发布程序等。在Rust社区中，Cargo已经成为了标准的构建工具，它为Rust的开发者提供了极大的便利。
