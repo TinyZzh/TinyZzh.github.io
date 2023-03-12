@@ -54,7 +54,7 @@ egrep 'apple' fruits.txt
 
 以下是 EGREP 命令的语法和用法的一些其他示例：
 
-- 要搜索多个模式，您可以使用“|”运算符。例如，要搜索包含“apple”或“banana”的行，命令为：
+- 要搜索多个模式，您可以使用“\|”运算符。例如，要搜索包含“apple”或“banana”的行，命令为：
 
 ```powershell
 egrep 'apple|banana' fruits.txt
