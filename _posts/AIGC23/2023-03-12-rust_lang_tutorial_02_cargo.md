@@ -17,6 +17,8 @@ output:
     pandoc_args: ["--toc", "--toc-depth=2"]
 ---
 
+![](/images/2023-03/rust_tutorial_logo.png)
+
 Cargo是Rust语言的包管理器和构建工具。它能够帮助我们管理依赖、构建项目、运行测试和发布程序等。在Rust社区中，Cargo已经成为了标准的构建工具，它为Rust的开发者提供了极大的便利。
 
 ## 安装和使用 cargo
@@ -110,6 +112,10 @@ cargo run
 - publish: 指令可以将项目发布到 crates.io 上，供其他人使用。
 
 更多指令可以通过 cargo --help 或 cargo \<command> --help 查看。
+
+### 自定义扩展指令
+
+
 
 ## 依赖管理
 

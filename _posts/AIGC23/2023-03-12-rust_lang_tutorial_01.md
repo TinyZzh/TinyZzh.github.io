@@ -12,6 +12,8 @@ image_scaling: true
 mermaid: true
 ---
 
+![](/images/2023-03/rust_tutorial_logo.png)
+
 Rust是一种系统级编程语言，由Mozilla开发，旨在提供安全性、并发性和性能。它具有内存安全和无数据竞争的特性，可以用于编写高性能的服务器端应用、操作系统、游戏等。
 
 本教程将一步一步的讲解Windows 10 操作系统下，使用Visual Studio Code编辑器搭建Rust语言开发环境。
