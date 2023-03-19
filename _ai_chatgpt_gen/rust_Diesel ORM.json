@@ -1,0 +1,46 @@
+{
+  "data": {
+    "active": 1679231216095,
+    "history": [
+      {
+        "title": "使用markdown语言，写一篇关于rust语言Diesel ORM的教程，以MySQL为例，提供示例代码，不少于8000字",
+        "uuid": 1679231216095,
+        "isEdit": false
+      }
+    ],
+    "chat": [
+      {
+        "uuid": 1679231216095,
+        "data": [
+          {
+            "dateTime": "2023/3/19 21:06:58",
+            "text": "使用markdown语言，写一篇关于rust语言Diesel ORM的教程，以MySQL为例，提供示例代码，不少于8000字",
+            "inversion": true,
+            "error": false,
+            "conversationOptions": null,
+            "requestOptions": {
+              "prompt": "使用markdown语言，写一篇关于rust语言Diesel ORM的教程，以MySQL为例，提供示例代码，不少于8000字",
+              "options": null
+            }
+          },
+          {
+            "dateTime": "2023/3/19 21:08:58",
+            "text": "# Rust语言Diesel ORM教程\n\nDiesel是一个Rust语言的ORM(Object Relational Mapping)库，它通过Rust的强类型系统保证了类型安全，并提供了简洁友好的API，以更好地操作数据库。\n\n本篇文章将介绍如何使用Diesel ORM连接MySQL数据库，提供示例代码，帮助初学者们快速上手。\n\n## 1. 安装Diesel\n\n在开始使用Diesel之前，需要将Diesel安装在本地计算机上。首先，需要使用`cargo`包管理器对Diesel进行安装。\n\n```bash\ncargo install diesel_cli --no-default-features --features mysql\n```\n\n使用上述命令安装Diesel CLI，这里我选择使用MySQL数据库。同时，我也选择关闭默认功能以减少安装的时间。\n\n## 2. 创建数据库\n\n创建数据库可以使用MySQL自带的工具，也可以在Rust代码中通过Diesel API完成。这里我们选择使用MySQL自带的工具来创建一个名为`rust_example`的数据库。\n\n```mysql\nCREATE DATABASE rust_example;\n```\n\n## 3. 配置数据库连接\n\n在使用Diesel之前，需要先配置一个数据库连接。\n\n可以使用类似以下形式的URL来配置连接：\n\n```text\nmysql://user:pass@localhost/db_name\n```\n\n在这个URL中，`user`和`pass`需要替换成具体的用户名和密码，`localhost`指定了数据库主机地址，`db_name`是数据库的名称。\n\n在我们的例子中，使用以下代码来配置数据库连接：\n\n```rust\nuse diesel::mysql::MysqlConnection;\nuse dotenv::dotenv;\nuse std::env;\n\npub fn establish_connection() -> MysqlConnection {\n    dotenv().ok();\n\n    let database_url = env::var(\"DATABASE_URL\")\n        .expect(\"DATABASE_URL must be set\");\n    \n    MysqlConnection::establish(&database_url)\n        .expect(&format!(\"Error connecting to {}\", database_url))\n}\n```\n\n这里我们使用了`dotenv` crate来读取`.env`文件中的环境变量，然后使用`MysqlConnection::establish`方法连接到MySQL数据库。\n\n## 4. 定义表格模型\n\n在实际项目中，我们需要操作一些与数据相关的结构体对象。这些结构体对象定义了我们要存储的数据，我们需要在Rust程序中定义这些结构体对象的数据类型。\n\n下面是一个简单的商品结构体：\n\n```rust\n#[derive(Queryable, Debug)]\npub struct Product {\n    pub id: i32,\n    pub name: String,\n    pub price: i32,\n}\n```\n\n这里使用了`#[derive(Queryable, Debug)]`属性宏来自动生成SQL查询。这个宏通过我们手动定义的结构体字段生成SQL查询，这样就无需写复杂的SQL语句。\n\n如果要向数据库中插入数据，我们还需要定义相应的插入结构体，例如：\n\n```rust\n#[derive(Insertable)]\n#[table_name = \"products\"]\npub struct NewProduct<'a> {\n    pub name: &'a str,\n    pub price: i32,\n}\n```\n\n这里使用了`#[derive(Insertable)]`属性宏来自动生成SQL插入语句。\n\n## 5. CRUD操作\n\n现在我们已经定义了与数据库表相关的结构体和它们的查询语句。接下来我们需要实现CRUD操作。\n\n### 5.1 查询所有商品\n\n```rust\nuse diesel::prelude::*;\n\n// ...\n\nfn show_products(conn: &MysqlConnection) -> QueryResult<Vec<Product>> {\n    use crate::schema::products::dsl::*;\n    products.load::<Product>(conn)\n}\n```\n\n在这段代码中，我们使用到了`use crate::schema::products::dsl::*`来导入了与`products`表相关的DSL(digital subscriber line)宏，这样做的好处是避免写出冗长的查询语句。\n\n注意，在调用`load`方法时需要传递一个数据库连接参数`conn`，该参数在前面我们已经配置过。\n\n### 5.2 查询商品名称和价格\n\n```rust\nfn show_product_name_price(conn: &MysqlConnection) -> QueryResult<Vec<(String, i32)>> {\n    use crate::schema::products::dsl::{name, price};\n    products.select((name, price)).load(conn)\n}\n```\n\n这段代码使用了`select`方法来选择需要查询的字段，同时可以使用`load`来获取符合查询条件的记录。\n\n### 5.3 别名查询\n\n```rust\nfn show_product_with_alias(conn: &MysqlConnection) -> QueryResult<Vec<(i32, String, i32)>> {\n    use crate::schema::products::dsl::{id as pid, name, price, category_name};\n    products.select((pid, name, price, category_name)).load(conn)\n}\n```\n\n这段代码使用了`as`关键字来设置别名，在查询结果中显示别名而不是字段名。\n\n### 5.4 去除重复项\n\n```rust\nfn show_distinct_price(conn: &MysqlConnection) -> QueryResult<Vec<i32>> {\n    use crate::schema::products::dsl::price;\n    products.select(price).distinct().load(conn)\n}\n```\n\n这段代码使用了`distinct`方法来去除重复项，并使用`load`方法加载查询结果。\n\n### 5.5 运算查询\n\n```rust\nfn show_price_plus_10(conn: &MysqlConnection) -> QueryResult<Vec<i32>> {\n    use crate::schema::products::dsl::price;\n    products.select(price + 10).load(conn)\n}\n```\n\n这段代码使用了运算符`+`将`price`字段加上10，并将结果作为查询结果返回。\n\n### 5.6 插入操作\n\n```rust\nuse crate::models::NewProduct;\n\nfn create_product<'a>(\n    conn: &MysqlConnection,\n    name: &'a str,\n    price: i32,\n) -> QueryResult<usize> {\n    let new_product = NewProduct { name, price };\n    diesel::insert_into(products::table)\n        .values(&new_product)\n        .execute(conn)\n}\n```\n\n这段代码使用了`diesel::insert_into`方法来插入一条新纪录，该方法的参数是待插入的数据结构体对象。\n\n### 5.7 更新操作\n\n```rust\nfn update_product_price(\n    conn: &MysqlConnection,\n    product_name: &str,\n    new_price: i32,\n) -> QueryResult<usize> {\n    use crate::schema::products::dsl::{name, price};\n\n    diesel::update(products::table.filter(name.eq(product_name)))\n        .set(price.eq(new_price))\n        .execute(conn)\n}\n```\n\n这段代码使用了`diesel::update`方法来更新匹配特定条件的记录，该方法的参数是一个条件表达式和一个用于更新的值。\n\n### 5.8 删除操作\n\n```rust\nfn delete_product(\n    conn: &MysqlConnection,\n    product_name: &str,\n) -> QueryResult<usize> {\n    use crate::schema::products::dsl::name;\n\n    diesel::delete(products::table.filter(name.eq(product_name)))\n        .execute(conn)\n}\n```\n\n这段代码使用了`diesel::delete`方法来删除匹配特定条件的记录，该方法的参数是一个条件表达式。\n\n## 6. 总结\n\n在本篇文章中，我们详细介绍了Rust语言的ORM库Diesel，并着重讲解了如何在Rust中使用Diesel来连接MySQL数据库，并对表格模型进行CRUD操作。\n\n希望读者们通过本文的介绍和示例代码，能够更好地掌握Diesel ORM在Rust语言中的运用。",
+            "inversion": false,
+            "error": false,
+            "loading": false,
+            "conversationOptions": {},
+            "requestOptions": {
+              "prompt": "使用markdown语言，写一篇关于rust语言Diesel ORM的教程，以MySQL为例，提供示例代码，不少于8000字",
+              "options": {
+                "conversationId": "#/chat/1679231216095"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "network": true
+  },
+  "expire": null
+}
