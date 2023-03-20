@@ -10,11 +10,6 @@ tags: [Rust, 从入门到精通, 策略模式]
 toc: yes
 image_scaling: true
 mermaid: true
-output:
-  word_document:
-    path: /pandoc_outputs/rust_lang_tutorial_203_file_operation.docx
-    highlight: "zenburn"
-    pandoc_args: ["--toc", "--toc-depth=2"]
 ---
 
 ![](/images/2023-03/rust_tutorial_logo.png)
