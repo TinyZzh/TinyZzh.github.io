@@ -1,6 +1,18 @@
-# Rust语言Panic教程
+---
+layout: post
+read_time: true
+show_date: true
+img: images/2023-03/rust_tutorial_logo.png
+title: Rust语言从入门到精通系列 - 避免Panic程序崩溃
+date: 2023-03-20 00:00:00 +0800
+categories: [Rust]
+tags: [Rust, 从入门到精通, Panic]
+toc: yes
+image_scaling: true
+mermaid: true
+---
 
-## 什么是Panic？
+![](/images/2023-03/rust_tutorial_logo.png)
 
 在Rust语言中，当发生一些不可修复的错误时，程序会崩溃并停止运行。这种崩溃被称为"panic"，其中包含了出现问题的文件名和行号等信息。
 
