@@ -1,9 +1,27 @@
-Rust Trait 教程
+---
+layout: post
+read_time: true
+show_date: true
+img: images/2023-03/rust_tutorial_logo.png
+title: Rust语言从入门到精通系列 - Trait 特征
+date: 2023-03-20 00:00:00 +0800
+categories: [Rust]
+tags: [Rust, 从入门到精通, Trait]
+toc: yes
+image_scaling: true
+mermaid: true
+---
+
+![](/images/2023-03/rust_tutorial_logo.png)
+
 在 Rust 中，Trait 是一种定义方法集合的机制。Trait 可以被用来定义一个或多个类型所共享的行为。Trait 与接口相似，但是 Trait 可以拥有默认实现，这使得 Trait 在 Rust 中的使用更加灵活。
 
 在本教程中，我们将使用一个 Animal 结构体来演示 Trait 的使用。Animal 结构体将被用于实现一些基本的动物行为，例如移动、发出声音等。
 
+> 类似于Java语言中的interface, 但是用法又有些区别.
+
 ## Animal 结构体
+
 首先，我们需要定义 Animal 结构体。Animal 结构体将包含一些基本的属性和方法，例如 name、age、move_to 和 make_sound。
 
 ```rust
@@ -29,9 +47,11 @@ impl Animal {
 现在，我们可以创建一个 Animal 的实例，并调用 move_to 和 make_sound 方法：
 
 ```rust
-let animal = Animal { name: String::from("Tiger"), age: 3 };
-animal.move_to(10, 20);
-animal.make_sound();
+fn main() {
+    let animal = Animal { name: String::from("Tiger"), age: 3 };
+    animal.move_to(10, 20);
+    animal.make_sound();
+}
 ```
 
 上面的代码将创建一个名为 Tiger 的 Animal 实例，年龄为 3 岁。我们随后调用了该实例的 move_to 和 make_sound 方法。
