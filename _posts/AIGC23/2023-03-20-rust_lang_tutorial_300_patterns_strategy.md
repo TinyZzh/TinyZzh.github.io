@@ -1,11 +1,25 @@
-
-# Rust策略模式
-
-## 简介
+---
+layout: post
+read_time: true
+show_date: true
+img: images/2023-03/rust_tutorial_logo.png
+title: Rust语言从入门到精通系列 - 玩转“策略模式”
+date: 2023-03-20 00:00:00 +0800
+categories: [Rust]
+tags: [Rust, 从入门到精通, File]
+toc: yes
+image_scaling: true
+mermaid: true
+output:
+  word_document:
+    path: /pandoc_outputs/rust_lang_tutorial_203_file_operation.docx
+    highlight: "zenburn"
+    pandoc_args: ["--toc", "--toc-depth=2"]
+---
 
 策略模式是面向对象编程中的一种设计模式，在该模式中，算法可以被独立于使用它的客户端和变化。该模式通过定义一个算法族，分别封装起来，使得它们之间可以互相替换，此模式让算法的变化独立于使用算法的客户。
 
-在Rust中，策略模式可以用于替代函数指针的使用。在本文中，我们将通过讲解常用用法和示例，进阶用法，最佳实践等几个方面，向您介绍Rust中的策略模式。
+在Rust中，策略模式可以用于替代函数指针的使用。在本文中，我们将通过讲解常用用法和示例，进阶用法，最佳实践等几个方面探讨Rust中的策略模式实践。
 
 ## 常用用法和示例
 
