@@ -2,7 +2,7 @@
 layout: post
 read_time: true
 show_date: true
-img: images/2023-03/rust_tutorial_logo.png
+img: images/2022-10/jvm-logo.jpg
 title: Spring框架实战技巧 - @Async实现代码零入侵异步化改造
 date: 2023-03-19 00:00:00 +0800
 categories: [Spring Framework]
