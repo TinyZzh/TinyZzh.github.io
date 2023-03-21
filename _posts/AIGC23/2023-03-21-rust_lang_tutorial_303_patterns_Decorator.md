@@ -1,6 +1,18 @@
-# Rust语言装饰器模式教程
+---
+layout: post
+read_time: true
+show_date: true
+img: images/2023-03/rust_tutorial_logo.png
+title: Rust语言从入门到精通系列 - 玩转“装饰器模式”
+date: 2023-03-21 00:00:00 +0800
+categories: [Rust]
+tags: [Rust, 从入门到精通, 装饰器模式]
+toc: yes
+image_scaling: true
+mermaid: true
+---
 
-## 什么是装饰器模式
+![](/images/2023-03/rust_tutorial_logo.png)
 
 装饰器模式（Decorator Pattern）是一种结构型设计模式，提供了一种动态地给对象添加功能的方式，比继承更加灵活。
 
@@ -12,7 +24,6 @@
 - 缓存：为一个类添加缓存机制，优化其性能；
 - 认证：为一个类添加认证机制，限制访问权限；
 - 数据验证：为一个类添加数据验证机制，确保存储的数据符合要求；
-- ...
 
 ## 装饰器模式应用场景示例
 
