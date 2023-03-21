@@ -2,9 +2,9 @@
 layout: post
 read_time: true
 show_date: true
-img: images/2023-03/rust_tutorial_logo.png
+img: images/2023-03/influxdb_2x_flux.png
 title: InfluxDB Flux
-date: 2023-03-20 00:00:00 +0800
+date: 2023-03-21 21:00:00 +0800
 categories: [Rust]
 tags: [Rust, 从入门到精通, 适配器模式]
 toc: yes
