@@ -5,8 +5,8 @@ show_date: true
 img: images/2023-03/influxdb_2x_flux.png
 title: InfluxDB Flux
 date: 2023-03-21 21:00:00 +0800
-categories: [Rust]
-tags: [Rust, 从入门到精通, 适配器模式]
+categories: [InfluxDB]
+tags: [InfluxDB, Flux, Flux语法]
 toc: yes
 image_scaling: true
 mermaid: true
