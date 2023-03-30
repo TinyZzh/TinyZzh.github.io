@@ -66,7 +66,7 @@ fn main() {
 
 Hash是Redis中一种特殊的数据结构，可以将多个键值对存储到一个键中。在Redis中，Hash通常用于存储对象，比如用户信息、商品信息等。
 
-```
+```rust
 use redis::{Client, Commands, RedisResult};
 
 fn main() {
@@ -89,7 +89,7 @@ fn main() {
 
 List是一种可以按下标顺序访问的数据结构，可以在一端添加元素，在另一端删除元素，非常适合用于消息队列等场景。
 
-```
+```rust
 use redis::{Client, Commands, RedisResult};
 
 fn main() {
