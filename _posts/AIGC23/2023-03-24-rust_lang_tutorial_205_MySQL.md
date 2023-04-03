@@ -54,7 +54,7 @@ fn main() {
     let pool = Pool::new(opts).unwrap();
     let mut conn = pool.get_conn().unwrap();
 
-    let result = conn.query("SELECT * FROM users").unwrap();
+    let result = conn.query_first("SELECT * FROM users").unwrap();
     for row in result {
         let name: String = row.get("name").unwrap();
         let age: i32 = row.get("age").unwrap();
@@ -93,11 +93,8 @@ fn main() {
     let mut transaction = conn.start_transaction(TxOpts::default()).unwrap();
 
     // Insert data into a table
-    transaction .prep_exec("INSERT INTO users (name, age) VALUES (?, ?)", ("Alice", 23))
-        .unwrap();
-    transaction
-        .prep_exec("INSERT INTO users (name, age) VALUES (?, ?)", ("Bob", 25))
-        .unwrap();
+    transaction .prep_exec("INSERT INTO users (name, age) VALUES (?, ?)", ("Alice", 23)).unwrap();
+    transaction.prep_exec("INSERT INTO users (name, age) VALUES (?, ?)", ("Bob", 25)).unwrap();
 
     // Commit a transaction
     transaction.commit().unwrap();
@@ -106,7 +103,7 @@ fn main() {
     for row in result {
         let name: String = row.get("name").unwrap();
         let age: i32 = row.get("age").unwrap();
- println!("{} is {} years old", name, age);
+        println!("{} is {} years old", name, age);
     }
 
     pool.disconnect().unwrap();
@@ -209,11 +206,7 @@ let pool = Pool::new(opts).unwrap();
 let name = "Alice";
 let age = 23;
 
-conn.prep_exec(
-        "INSERT INTO students (name, age) VALUES (?, ?)",
-        (name, age),
-    )
-    .unwrap();
+conn.prep_exec("INSERT INTO students (name, age) VALUES (?, ?)", (name, age),).unwrap();
 ```
 
 在将参数传递给SQL查询时，需要使用`mysql::Value::from`方法将变量转换为`mysql::Value`类型，以防止SQL注入攻击。要从`mysql::Value`转换回常规变量，可以使用`mysql::from_value`方法。使用以下示例代码：
@@ -254,11 +247,7 @@ fn main() {
         println!("Alice is {} years old", age);
     }
 
-    conn.prep_exec(
-            "INSERT INTO students (name, age) VALUES (?, ?)",
-            (name, age),
-        )
-        .unwrap();
+    conn.prep_exec("INSERT INTO students (name, age) VALUES (?, ?)",(name, age),).unwrap();
 }
 ```
 

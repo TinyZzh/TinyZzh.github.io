@@ -1,6 +1,18 @@
-# Rust语言Prost模块的使用教程
+---
+layout: post
+read_time: true
+show_date: true
+img: images/2023-03/rust_tutorial_logo.png
+title: Rust语言从入门到精通系列 - 使用prost库操作Protobuf
+date: 2023-03-30 00:00:00 +0800
+categories: [Rust]
+tags: [Rust, 从入门到精通, structopt]
+toc: yes
+image_scaling: true
+mermaid: true
+---
 
-## 模块简介
+![](/images/2023-03/rust_tutorial_logo.png)
 
 Prost是一个用于序列化和反序列化协议缓冲区数据的Rust语言库。它使用[Google Protocol Buffers](https://protobuf.dev/)语言来定义协议，并生成Rust代码以便使用该协议。 Prost具有高性能的特点，并且支持许多protobuf功能，例如嵌套消息、默认值、枚举类型以及变长编码。
 
@@ -168,19 +180,43 @@ message Animal {
 在Rust代码中，我们可以使用`prost::Message` trait的`extensions`方法来访问扩展字段。以下是一个示例代码：
 
 ```rust
-let mut animal = Animal::default();
-animal.extensions.insert("color".to_string(), b"brown".to_vec());
+use prost::{Enumeration, Message};
+use std::collections::HashMap;
 
-let mut buf = Vec::new();
-animal.encode(&mut buf).unwrap();
+#[derive(Clone, PartialEq, Message)]
+pub struct Animal {
+    #[prost(string, tag="1")]
+    pub name: String,
+    #[prost(uint32, tag="2")]
+    pub age: u32,
+    #[prost(enumeration="AnimalType", tag="3")]
+    pub animal_type: i32,
+    #[prost(map="string, bytes", tag="1000")]
+    pub extensions: HashMap<String, Vec<u8>>,
+}
 
-let decoded_animal = Animal::decode(&buf[..]).unwrap();
-assert_eq!(animal.extensions, decoded_animal.extensions);
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Enumeration)]
+pub enum AnimalType {
+    Dog = 0,
+    Cat = 1,
+    Bird = 2,
+}
+
+fn main() {
+    let mut animal = Animal::default();
+    animal.extensions.insert("color".to_string(), b"brown".to_vec());
+    
+    let mut buf = Vec::new();
+    animal.encode(&mut buf).unwrap();
+    
+    let decoded_animal = Animal::decode(&buf[..]).unwrap();
+    assert_eq!(animal.extensions, decoded_animal.extensions);
+}
 ```
 
 在这个示例代码中，我们创建了一个`Animal`对象，并向其添加了一个名为`color`的扩展字段。然后，我们将该对象序列化为字节数组，并将其反序列化为另一个`Animal`对象。最后，我们使用`assert_eq`宏比较这两个对象的扩展字段是否相等。
 
-### oneof
+### Proto Oneof
 
 有时，我们可能需要在protobuf消息中使用`oneof`语法，以表示字段中的多个可能类型。在这种情况下，我们可以使用`prost`宏的`oneof`属性来定义`oneof`字段。
 
@@ -198,15 +234,12 @@ message Animal {
         Bird bird = 5;
     }
 }
-
 message Dog {
     string breed = 1;
 }
-
 message Cat {
     bool has_tail = 1;
 }
-
 message Bird {
     uint32 wingspan = 1;
 }
@@ -217,24 +250,62 @@ message Bird {
 在Rust代码中，我们可以使用`prost::Oneof` trait来访问`oneof`字段。以下是一个示例代码：
 
 ```rust
-let mut animal = Animal::default();
-animal.name = "Tom".to_string();
-animal.age = 3;
+use prost::{Enumeration, Message, Oneof};
+use std::collections::HashMap;
+use core::option::Option;
 
-animal.cat = Some(Cat { has_tail: true });
-
-let mut buf = Vec::new();
-animal.encode(&mut buf).unwrap();
-
-let decoded_animal = Animal::decode(&buf[..]).unwrap();
-assert_eq!(animal, decoded_animal);
+#[derive(Clone, PartialEq, Message)]
+pub struct Animal {
+    #[prost(string, tag="1")]
+    pub name: String,
+    #[prost(uint32, tag="2")]
+    pub age: u32,
+    #[prost(oneof="AnimalType", tag="3,4,5")]
+    pub animal_type: Option<AnimalType>,
+}
+#[derive(Clone, Debug, PartialEq, Enumeration)]
+pub enum AnimalType {
+    #[prost(message, tag = "3", name = "Dog")]
+    Dog(Dog),
+    #[prost(message, tag = "4", name = "Cat")]
+    Cat(Cat),
+    #[prost(message, tag = "5", name = "Bird")]
+    Bird(Bird),
+}
+#[derive(Clone, PartialEq, Message)]
+pub struct Dog {
+    #[prost(string, tag="1")]
+    pub breed: String
+}
+#[derive(Clone, PartialEq, Message)]
+pub struct Cat {
+    #[prost(bool, tag="1")]
+    pub has_tail: bool
+}
+#[derive(Clone, PartialEq, Message)]
+pub struct Bird {
+    #[prost(uint32, tag="1")]
+    pub wingspan: u32
+}
+fn main() {
+    let mut animal = Animal::default();
+    animal.name = "Tom".to_string();
+    animal.age = 3;
+    animal.animal_type = Some(AnimalType::Cat(Cat { has_tail: true }));
+    
+    let mut buf = Vec::new();
+    animal.encode(&mut buf).unwrap();
+    
+    let decoded_animal = Animal::decode(&buf[..]).unwrap();
+    assert_eq!(animal, decoded_animal);
+}
 ```
 
 在这个示例代码中，我们创建了一个`Animal`对象，并将其`cat`字段设置为一个包含`has_tail`字段的`Cat`对象。然后，我们将该对象序列化为字节数组，并将其反序列化为另一个`Animal`对象。最后，我们使用`assert_eq`宏比较这两个对象是否相等。
 
 ## 
 
-## 最佳实践经验
+## prost最佳实践
 
 以下是一些使用Prost的最佳实践经验：
 
@@ -244,6 +315,6 @@ assert_eq!(animal, decoded_animal);
 - 在使用扩展字段时，请注意字段标签。扩展字段的标签必须大于1000。因此，请确保您为扩展字段选择一个大于1000的标签。
 - 在使用`oneof`语法时，请选择一个好的字段名称。`oneof`字段包含多个可能的类型，因此请为其选择一个好的字段名称。这将使代码更易于理解和维护。
 
-## 结论
+## 总结
 
 Prost是一个高性能的Rust语言库，可用于序列化和反序列化协议缓冲区数据。它支持许多protobuf功能，并且可以与其他Rust语言库和框架无缝集成。在本教程中，我们介绍了Prost的基础用法和一些高级特性，并提供了一些最佳实践经验。我们希望这个教程能够帮助您更好地使用Prost。
