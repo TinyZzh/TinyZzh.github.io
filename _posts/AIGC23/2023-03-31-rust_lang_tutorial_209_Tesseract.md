@@ -20,11 +20,11 @@ Tesseract 是一款开源的 OCR 引擎，最初由 HP 实验室开发，后被 
 
 Rust 是一种安全、高效、并发的系统编程语言，其生态系统日趋完善，对于高性能和安全性要求较高的应用场景，Rust 语言具有很强的优势。
 
-本文探讨Rust调用Tesseract进行OCR相关业务实践。
+本文探讨 Rust 调用 Tesseract 进行 OCR 相关业务实践。
 
 ## Tesseract
 
-Tesseract 开源仓库地址 [Github 仓库](https://github.com/tesseract-ocr/tesseract) 。Tesseract特点：
+Tesseract 开源仓库地址 [Github 仓库](https://github.com/tesseract-ocr/tesseract) 。Tesseract 特点：
 
 - 高精度。Tesseract 在处理印刷体字符识别时，具有很高的精度。在一些基准测试中，Tesseract 的识别率可以达到 99% 以上。
 - 多语言支持。Tesseract 支持多种语言，包括中文、日文、韩文、阿拉伯文等等。此外，Tesseract 还支持多种字体和字号的识别。
@@ -45,6 +45,7 @@ sudo apt install libtesseract-dev
 > 其他操作系统的安装请参考[官方安装教程](https://tesseract-ocr.github.io/tessdoc/Installation.html)
 
 Tesseract 是一个命令行程序，因此首先打开一个终端或命令提示符。该命令是这样使用的：
+
 ```powershell
 tesseract imagename outputbase [-l lang] [-psm pagesegmode] [configfile...]
 ```
@@ -59,7 +60,7 @@ tesseract image.png output -l eng
 
 ## 常用业务场景和用法
 
-下面介绍一些Tesseract常见的业务场景和用法。
+下面介绍一些 Tesseract 常见的业务场景和用法。
 
 ### 文本识别
 
