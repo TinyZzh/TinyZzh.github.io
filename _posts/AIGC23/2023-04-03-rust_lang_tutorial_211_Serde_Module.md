@@ -6,7 +6,7 @@ img: images/2023-03/rust_tutorial_logo.png
 title: Rust语言从入门到精通系列 - Serde序列化/反序列化模块入门指北
 date: 2023-04-03 00:00:00 +0800
 categories: [Rust]
-tags: [Rust, 从入门到精通, deref]
+tags: [Rust, 从入门到精通, Serde, 序列化, 反序列化, serde_json]
 toc: yes
 image_scaling: true
 mermaid: true
@@ -14,24 +14,24 @@ mermaid: true
 
 ![](/images/2023-03/rust_tutorial_logo.png)
 
-Serde是一个用于序列化和反序列化Rust数据结构的库。它支持JSON、BSON、YAML等多种格式，并且可以自定义序列化和反序列化方式。Serde的特点是代码简洁、易于使用、性能高效。它是Rust生态中最受欢迎的序列化库之一。
+Serde 是一个用于序列化和反序列化 Rust 数据结构的库。它支持 JSON、BSON、YAML 等多种格式，并且可以自定义序列化和反序列化方式。Serde 的特点是代码简洁、易于使用、性能高效。它是 Rust 生态中最受欢迎的序列化库之一。
 
 ## 基础用法
 
 ### 安装
 
-在Rust项目中使用Serde，需要在`Cargo.toml`文件中添加如下依赖：
+在 Rust 项目中使用 Serde，需要在`Cargo.toml`文件中添加如下依赖：
 
 ```toml
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
 ```
 
-其中`features = ["derive"]`表示使用Serde的派生宏，可以自动生成序列化和反序列化代码。
+其中`features = ["derive"]`表示使用 Serde 的派生宏，可以自动生成序列化和反序列化代码。
 
 ### 序列化
 
-使用Serde进行序列化，需要先将数据结构实现`serde::Serialize` trait。例如，我们定义一个`Animal`结构体，包含名称和年龄两个字段：
+使用 Serde 进行序列化，需要先将数据结构实现`serde::Serialize` trait。例如，我们定义一个`Animal`结构体，包含名称和年龄两个字段：
 
 ```rust
 #[derive(Serialize)]
@@ -41,7 +41,7 @@ struct Animal {
 }
 ```
 
-然后，我们可以使用`serde_json`库将`Animal`结构体序列化为JSON字符串：
+然后，我们可以使用`serde_json`库将`Animal`结构体序列化为 JSON 字符串：
 
 ```rust
 use serde_json;
@@ -56,7 +56,7 @@ println!("{}", json); // {"name":"Tom","age":3}
 
 ### 反序列化
 
-使用Serde进行反序列化，需要先将数据结构实现`serde::Deserialize` trait。例如，我们定义一个`Animal`结构体，包含名称和年龄两个字段：
+使用 Serde 进行反序列化，需要先将数据结构实现`serde::Deserialize` trait。例如，我们定义一个`Animal`结构体，包含名称和年龄两个字段：
 
 ```rust
 #[derive(Deserialize)]
@@ -66,7 +66,7 @@ struct Animal {
 }
 ```
 
-然后，我们可以使用`serde_json`库将JSON字符串反序列化为`Animal`结构体：
+然后，我们可以使用`serde_json`库将 JSON 字符串反序列化为`Animal`结构体：
 
 ```rust
 use serde_json;
@@ -112,7 +112,7 @@ where
 
 ### 序列化和反序列化枚举
 
-Serde支持序列化和反序列化枚举类型。例如，我们定义一个`Animal`枚举，包含狗和猫两种类型：
+Serde 支持序列化和反序列化枚举类型。例如，我们定义一个`Animal`枚举，包含狗和猫两种类型：
 
 ```rust
 use serde::{Serialize, Deserialize};
@@ -138,9 +138,9 @@ let dog: Animal = serde_json::from_str(json).unwrap();
 println!("{:?}", dog); // Dog { name: "Tom", age: 3 }
 ```
 
-### 序列化和反序列化结构体中的Option
+### 序列化和反序列化结构体中的 Option
 
-Serde支持序列化和反序列化结构体中的`Option`类型。例如，我们定义一个`Animal`结构体，包含名称和年龄两个字段，其中名称可以为空：
+Serde 支持序列化和反序列化结构体中的`Option`类型。例如，我们定义一个`Animal`结构体，包含名称和年龄两个字段，其中名称可以为空：
 
 ```rust
 use serde::{Serialize, Deserialize};
@@ -170,9 +170,9 @@ let animal: Animal = serde_json::from_str(json).unwrap();
 println!("{:?}", animal); // Animal { name: None, age: 3 }
 ```
 
-### 序列化和反序列化结构体中的Vec
+### 序列化和反序列化结构体中的 Vec
 
-Serde支持序列化和反序列化结构体中的`Vec`类型。例如，我们定义一个`Zoo`结构体，包含多个`Animal`：
+Serde 支持序列化和反序列化结构体中的`Vec`类型。例如，我们定义一个`Zoo`结构体，包含多个`Animal`：
 
 ```rust
 use serde::{Serialize, Deserialize};
@@ -183,7 +183,7 @@ struct Zoo {
 }
 ```
 
-在序列化和反序列化结构体中的`Vec`类型时，Serde会自动处理序列化和反序列化。例如：
+在序列化和反序列化结构体中的`Vec`类型时，Serde 会自动处理序列化和反序列化。例如：
 
 ```rust
 use serde_json;
@@ -200,9 +200,9 @@ let zoo: Zoo = serde_json::from_str(json).unwrap();
 println!("{:?}", zoo); // Zoo { animals: [Animal { name: "Tom", age: 3 }, Animal { name: "Jerry", age: 2 }] }
 ```
 
-### 序列化和反序列化结构体中的HashMap
+### 序列化和反序列化结构体中的 HashMap
 
-Serde支持序列化和反序列化结构体中的`HashMap`类型。例如，我们定义一个`Zoo`结构体，包含多个`Animal`，使用`HashMap`存储：
+Serde 支持序列化和反序列化结构体中的`HashMap`类型。例如，我们定义一个`Zoo`结构体，包含多个`Animal`，使用`HashMap`存储：
 
 ```rust
 use std::collections::HashMap;
@@ -214,7 +214,7 @@ struct Zoo {
 }
 ```
 
-在序列化和反序列化结构体中的`HashMap`类型时，Serde会自动处理序列化和反序列化。例如：
+在序列化和反序列化结构体中的`HashMap`类型时，Serde 会自动处理序列化和反序列化。例如：
 
 ```rust
 use serde_json;
@@ -233,4 +233,4 @@ println!("{:?}", zoo); // Zoo { animals: {"Tom": Animal { name: "Tom", age: 3 },
 
 ## 总结
 
-本教程介绍了如何使用Serde进行序列化和反序列化，并且介绍了如何自定义序列化和反序列化逻辑。使用Serde可以轻松地将Rust数据结构转换为任何格式，并且可以通过自定义序列化和反序列化逻辑实现更高级的功能。
+本教程介绍了如何使用 Serde 进行序列化和反序列化，并且介绍了如何自定义序列化和反序列化逻辑。使用 Serde 可以轻松地将 Rust 数据结构转换为任何格式，并且可以通过自定义序列化和反序列化逻辑实现更高级的功能。

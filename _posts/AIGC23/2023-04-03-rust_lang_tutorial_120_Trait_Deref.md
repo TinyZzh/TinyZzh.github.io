@@ -14,7 +14,6 @@ mermaid: true
 
 ![](/images/2023-03/rust_tutorial_logo.png)
 
-
 在 Rust 语言中，Deref 特征用于将一个类型的引用转换为另一个类型的引用。这个特征在 Rust 中非常常见，特别是在处理数据结构中，例如字符串、向量等。Deref 特征的作用是让代码更加简洁，同时也提高了代码的可读性。
 
 ## 基础用法
@@ -40,11 +39,11 @@ fn main() {
 }
 ```
 
-在这个示例代码中，我们定义了一个 MyString 结构体，并实现了 Deref trait。在 deref 方法中，我们返回了一个指向 MyString 结构体中的 String 类型的引用。在 main 函数中，我们通过解引用运算符（*）来获取 MyString 结构体中的 String 类型的值，并将其打印出来。
+在这个示例代码中，我们定义了一个 MyString 结构体，并实现了 Deref trait。在 deref 方法中，我们返回了一个指向 MyString 结构体中的 String 类型的引用。在 main 函数中，我们通过解引用运算符（\*）来获取 MyString 结构体中的 String 类型的值，并将其打印出来。
 
 下面是更多的示例代码：
 
-###  使用 Deref 转换字符串类型
+### 使用 Deref 转换字符串类型
 
 ```rust
 fn main() {
@@ -56,7 +55,7 @@ fn main() {
 
 在这个示例代码中，我们使用 Deref 将 MyString 结构体中的 String 类型转换为字符串类型，并将其赋值给 s 变量。最后，我们将 s 变量打印出来。
 
-###  使用 Deref 转换向量类型
+### 使用 Deref 转换向量类型
 
 ```rust
 struct MyVec<T> {
@@ -80,7 +79,7 @@ fn main() {
 
 在这个示例代码中，我们定义了一个 MyVec 结构体，并实现了 Deref trait。在 deref 方法中，我们返回了一个指向 MyVec 结构体中的 Vec<T> 类型的引用。在 main 函数中，我们使用 Deref 将 MyVec 结构体中的 Vec<T> 类型转换为 Vec<i32> 类型，并将其赋值给 v 变量。最后，我们将 v 变量打印出来。
 
-###  使用 Deref 转换智能指针类型
+### 使用 Deref 转换智能指针类型
 
 ```rust
 struct MyBox<T>(T);
@@ -102,7 +101,7 @@ fn main() {
 
 在这个示例代码中，我们定义了一个 MyBox 结构体，并实现了 Deref trait。在 deref 方法中，我们返回了一个指向 MyBox 结构体中的 T 类型的引用。在 main 函数中，我们使用 Deref 将 MyBox 结构体中的 String 类型转换为字符串类型，并将其赋值给 s 变量。最后，我们将 s 变量打印出来。
 
-###  使用 Deref 转换元组类型
+### 使用 Deref 转换元组类型
 
 ```rust
 struct MyTuple<T>(T);
@@ -124,7 +123,7 @@ fn main() {
 
 在这个示例代码中，我们定义了一个 MyTuple 结构体，并实现了 Deref trait。在 deref 方法中，我们返回了一个指向 MyTuple 结构体中的 T 类型的引用。在 main 函数中，我们使用 Deref 将 MyTuple 结构体中的元组类型转换为元组类型，并将其赋值给 t 变量。最后，我们将 t 变量打印出来。
 
-###  使用 Deref 转换可变引用类型
+### 使用 Deref 转换可变引用类型
 
 ```rust
 struct MyString {
@@ -154,7 +153,7 @@ fn main() {
 
 在这个示例代码中，我们定义了一个 MyString 结构体，并实现了 Deref trait。在 deref 方法中，我们返回了一个指向 MyString 结构体中的 String 类型的引用。在 MyString 结构体中，我们定义了一个 to_uppercase 方法，用于将字符串转换为大写。在 main 函数中，我们使用 Deref 将 MyString 结构体中的 String 类型转换为可变引用类型，并调用 to_uppercase 方法将字符串转换为大写。最后，我们将转换后的字符串打印出来。
 
-###  使用 Deref 转换为裸指针类型
+### 使用 Deref 转换为裸指针类型
 
 ```rust
 struct MyString {
@@ -178,7 +177,7 @@ fn main() {
 
 在这个示例代码中，我们定义了一个 MyString 结构体，并实现了 Deref trait。在 deref 方法中，我们返回了一个指向 MyString 结构体中的 String 类型的引用。在 main 函数中，我们使用 Deref 将 MyString 结构体中的 String 类型转换为裸指针类型，并将其赋值给 p 变量。最后，我们将 p 变量打印出来。
 
-###  使用 Deref 转换为引用计数类型
+### 使用 Deref 转换为引用计数类型
 
 ```rust
 use std::rc::Rc;
@@ -206,7 +205,7 @@ fn main() {
 
 在这个示例代码中，我们定义了一个 MyString 结构体，并实现了 Deref trait。在 deref 方法中，我们返回了一个指向 MyString 结构体中的 Rc<String> 类型的引用。在 main 函数中，我们使用 Deref 将 MyString 结构体中的 String 类型转换为字符串类型，并将其赋值给 s 变量。然后，我们使用 Rc::clone 方法克隆 my_string 变量，并将其赋值给 my_string2 变量。最后，我们将 my_string 和 my_string2 变量中的字符串打印出来。
 
-###  使用 Deref 转换为切片类型
+### 使用 Deref 转换为切片类型
 
 ```rust
 struct MyVec<T> {
@@ -234,7 +233,7 @@ fn main() {
 
 在 Rust 中，Deref 特征不仅可以用于简单的类型转换，还可以用于更复杂的场景。下面是一些进阶用法的示例代码：
 
-###  使用 Deref 进行方法调用
+### 使用 Deref 进行方法调用
 
 ```rust
 struct MyString {
@@ -268,7 +267,7 @@ fn main() {
 
 在这个示例代码中，我们定义了一个 MyString 结构体，并实现了 Deref trait。在 deref 方法中，我们返回了一个指向 MyString 结构体中的 String 类型的引用。在 MyString 结构体中，我们定义了一个 new 方法，用于创建 MyString 结构体。我们还定义了一个 to_uppercase 方法，用于将字符串转换为大写。在 main 函数中，我们使用 Deref 将 MyString 结构体中的 String 类型转换为可变引用类型，并调用 to_uppercase 方法将字符串转换为大写。最后，我们将转换后的字符串打印出来。
 
-###  使用 Deref 进行运算符重载
+### 使用 Deref 进行运算符重载
 
 ```rust
 use std::ops::Add;
@@ -303,7 +302,7 @@ fn main() {
 
 在这个示例代码中，我们定义了一个 MyString 结构体，并实现了 Deref trait。在 deref 方法中，我们返回了一个指向 MyString 结构体中的 String 类型的引用。我们还实现了 Add trait，用于将两个 MyString 结构体合并为一个。在 main 函数中，我们使用 Deref 将 MyString 结构体中的 String 类型转换为引用类型，并使用 + 运算符将两个 MyString 结构体合并为一个。最后，我们将合并后的字符串打印出来。
 
-###  使用 Deref 进行类型转换
+### 使用 Deref 进行类型转换
 
 ```rust
 use std::convert::From;
@@ -335,7 +334,7 @@ fn main() {
 
 在这个示例代码中，我们定义了一个 MyString 结构体，并实现了 Deref trait。在 deref 方法中，我们返回了一个指向 MyString 结构体中的 String 类型的引用。我们还实现了 From trait，用于将 MyString 结构体转换为 u32 类型。在 main 函数中，我们使用 Deref 将 MyString 结构体中的 String 类型转换为字符串类型，并使用 From trait 将字符串类型转换为 u32 类型。最后，我们将 u32 类型的值打印出来。
 
-###  使用 Deref 进行类型推导
+### 使用 Deref 进行类型推导
 
 ```rust
 struct MyString {
@@ -367,7 +366,7 @@ fn main() {
 在 Rust 中，Deref 特征是一个非常有用的特征，可以帮助我们编写更加简洁、易读的代码。以下是一些最佳实践：
 
 - 在定义数据结构时，考虑是否需要实现 Deref trait，以方便类型转换。
-- 在使用 Deref 特征时，尽量避免使用 * 运算符，而是使用 & 运算符将类型转换为引用类型。
+- 在使用 Deref 特征时，尽量避免使用 \* 运算符，而是使用 & 运算符将类型转换为引用类型。
 - 在实现 Deref trait 时，使用 type Target = T; 来指定目标类型。
 - 在使用 Deref 特征时，注意类型转换的顺序，以避免出现类型错误。
 - 在使用 Deref 特征时，注意避免引用循环，以避免出现内存泄漏。
@@ -393,4 +392,4 @@ fn main() {
 }
 ```
 
-在这个示例代码中，我们定义了一个 MyString 结构体，并实现了 Deref trait。在 deref 方法中，我们返回了一个指向 MyString 结构体中的 String 类型的引用。在 main 函数中，我们使用 MyString 结构体的 len 方法来获取字符串的长度，而不需要使用 * 运算符来解引用 MyString 结构体。这样可以让代码更加简洁、易读。
+在这个示例代码中，我们定义了一个 MyString 结构体，并实现了 Deref trait。在 deref 方法中，我们返回了一个指向 MyString 结构体中的 String 类型的引用。在 main 函数中，我们使用 MyString 结构体的 len 方法来获取字符串的长度，而不需要使用 \* 运算符来解引用 MyString 结构体。这样可以让代码更加简洁、易读。
