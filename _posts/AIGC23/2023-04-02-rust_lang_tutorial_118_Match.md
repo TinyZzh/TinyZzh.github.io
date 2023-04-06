@@ -38,7 +38,7 @@ match value {
 
 接下来，我们将通过一些示例来介绍 match 语句的基础用法。
 
-### 示例 1：匹配整数
+###   匹配整数
 
 ```rust
 let x = 1;
@@ -52,7 +52,7 @@ match x {
 
 在这个示例中，我们定义了一个整数变量 x，并使用 match 语句匹配它。如果 x 等于 1，就会执行第一个代码块，输出"x is one"；如果 x 等于 2，就会执行第二个代码块，输出"x is two"；如果 x 不等于 1 或 2，就会执行默认的代码块，输出"x is not one or two"。
 
-### 示例 2：匹配枚举类型
+###   匹配枚举类型
 
 ```rust
 enum Color {
@@ -72,7 +72,7 @@ match color {
 
 在这个示例中，我们定义了一个枚举类型 Color，并将变量 color 赋值为 Color::Green。然后，我们使用 match 语句匹配 color。如果 color 等于 Color::Red，就会执行第一个代码块，输出"The color is red"；如果 color 等于 Color::Green，就会执行第二个代码块，输出"The color is green"；如果 color 等于 Color::Blue，就会执行第三个代码块，输出"The color is blue"。
 
-### 示例 3：匹配元组
+###   匹配元组
 
 ```rust
 let point = (1, 2);
@@ -87,7 +87,7 @@ match point {
 
 在这个示例中，我们定义了一个元组变量 point，并使用 match 语句匹配它。如果 point 等于(0, 0)，就会执行第一个代码块，输出"The point is at the origin"；如果 point 的第二个元素等于 0，就会执行第二个代码块，输出"The point is on the x-axis"；如果 point 的第一个元素等于 0，就会执行第三个代码块，输出"The point is on the y-axis"；否则，就会执行第四个代码块，输出"The point is at ({}, {})"。
 
-### 示例 4：匹配范围
+###   匹配范围
 
 ```rust
 let age = 20;
@@ -101,7 +101,7 @@ match age {
 
 在这个示例中，我们定义了一个整数变量 age，并使用 match 语句匹配它。如果 age 的值在 0 到 17 之间，就会执行第一个代码块，输出"You are a minor"；如果 age 的值在 18 到 64 之间，就会执行第二个代码块，输出"You are an adult"；否则，就会执行默认的代码块，输出"You are a senior"。
 
-### 示例 5：匹配引用
+###   匹配引用
 
 ```rust
 let x = 1;
@@ -115,7 +115,7 @@ match y {
 
 在这个示例中，我们定义了一个整数变量 x 和一个指向 x 的引用 y。然后，我们使用 match 语句匹配 y。由于 y 是一个引用，所以我们需要在模式中使用&符号来匹配它。如果 y 指向的值等于 1，就会执行第一个代码块，输出"The value is one"；否则，就会执行默认的代码块，输出"The value is not one"。
 
-### 示例 6：匹配守卫
+###   匹配守卫
 
 ```rust
 let x = 5;
@@ -133,7 +133,7 @@ match x {
 
 除了上面介绍的基础用法，match 语句还有一些进阶用法，可以让我们更加灵活地使用它。接下来，我们将介绍 match 语句的一些进阶用法，并通过示例来演示它们的用法。
 
-### 示例 1：使用|匹配多个模式
+###   使用|匹配多个模式
 
 ```rust
 let x = 1;
@@ -146,7 +146,7 @@ match x {
 
 在这个示例中，我们定义了一个整数变量 x，并使用 match 语句匹配它。在模式中，我们使用|符号来匹配多个模式。如果 x 等于 1 或 2，就会执行第一个代码块，输出"The value is one or two"；否则，就会执行默认的代码块，输出"The value is not one or two"。
 
-### 示例 2：使用..=匹配范围
+###   使用..=匹配范围
 
 ```rust
 let age = 20;
@@ -160,7 +160,7 @@ match age {
 
 在这个示例中，我们定义了一个整数变量 age，并使用 match 语句匹配它。在模式中，我们使用..=符号来匹配范围。如果 age 的值在 0 到 17 之间，就会执行第一个代码块，输出"You are a minor"；如果 age 的值在 18 到 64 之间，就会执行第二个代码块，输出"You are an adult"；否则，就会执行默认的代码块，输出"You are a senior"。
 
-### 示例 3：使用@绑定变量
+###   使用@绑定变量
 
 ```rust
 let x = Some(5);
@@ -175,7 +175,7 @@ match x {
 
 在这个示例中，我们定义了一个 Option 类型的变量 x，并使用 match 语句匹配它。在模式中，我们使用@符号来绑定一个变量。如果 x 是一个 Some 类型，并且它的值在 1 到 10 之间，就会执行第一个代码块，输出"The value is between 1 and 10"；如果 x 是一个 Some 类型，并且它的值在 11 到 20 之间，就会执行第二个代码块，输出"The value is between 11 and 20"；如果 x 是一个 Some 类型，但它的值不在 1 到 20 之间，就会执行第三个代码块，输出"The value is not between 1 and 20"；如果 x 是一个 None 类型，就不会执行任何代码。
 
-### 示例 4：使用\_忽略模式
+###   使用\_忽略模式
 
 ```rust
 let x = Some(5);
@@ -188,7 +188,7 @@ match x {
 
 在这个示例中，我们定义了一个 Option 类型的变量 x，并使用 match 语句匹配它。在模式中，我们使用\_符号来忽略模式。如果 x 是一个 Some 类型，就会执行第一个代码块，输出"The value is some"；如果 x 是一个 None 类型，就会执行第二个代码块，输出"The value is none"。
 
-### 示例 5：使用 if let 简化模式匹配
+###   使用 if let 简化模式匹配
 
 ```rust
 let x = Some(5);
@@ -202,7 +202,7 @@ if let Some(n) = x {
 
 在这个示例中，我们定义了一个 Option 类型的变量 x，并使用 if let 语句匹配它。如果 x 是一个 Some 类型，就会执行 if 语句块，输出"The value is x"；如果 x 是一个 None 类型，就会执行 else 语句块，输出"The value is None"。使用 if let 语句可以简化模式匹配的代码，使代码更加清晰和简洁。
 
-### 示例 6：使用 while let 遍历迭代器
+###   使用 while let 遍历迭代器
 
 ```rust
 let mut v = vec![1, 2, 3];
