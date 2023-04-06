@@ -14,13 +14,13 @@ mermaid: true
 
 ![](/images/2023-03/rust_tutorial_logo.png)
 
-在Rust语言中，PartialEq和Eq是两个非常重要的trait。它们用于比较类型的值，PartialEq用于比较部分相等（不需要完全相等），而Eq用于比较完全相等。
+在 Rust 语言中，PartialEq 和 Eq 是两个非常重要的 trait。它们用于比较类型的值，PartialEq 用于比较部分相等（不需要完全相等），而 Eq 用于比较完全相等。
 
-在Rust中，任何类型都可以实现PartialEq和Eq，因此这两个trait非常灵活。
+在 Rust 中，任何类型都可以实现 PartialEq 和 Eq，因此这两个 trait 非常灵活。
 
 ## 基础用法
 
-###  比较整数
+### 比较整数
 
 ```rust
 fn main() {
@@ -40,7 +40,7 @@ fn main() {
 a does not equal b
 ```
 
-###  比较字符串
+### 比较字符串
 
 ```rust
 fn main() {
@@ -60,7 +60,7 @@ fn main() {
 a does not equal b
 ```
 
-###  比较自定义类型
+### 比较自定义类型
 
 ```rust
 #[derive(PartialEq, Eq)]
@@ -92,7 +92,7 @@ fn main() {
 p1 does not equal p2
 ```
 
-###  比较浮点数
+### 比较浮点数
 
 ```rust
 fn main() {
@@ -112,7 +112,7 @@ fn main() {
 a does not equal b
 ```
 
-###  自定义比较函数
+### 自定义比较函数
 
 ```rust
 #[derive(PartialEq, Eq)]
@@ -152,7 +152,7 @@ fn main() {
 p1 equals p2
 ```
 
-###  比较枚举类型
+### 比较枚举类型
 
 ```rust
 #[derive(PartialEq, Eq)]
@@ -178,7 +178,7 @@ fn main() {
 c1 does not equal c2
 ```
 
-###  使用assert_eq!宏
+### 使用 assert_eq!宏
 
 ```rust
 fn main() {
@@ -197,7 +197,7 @@ thread 'main' panicked at 'assertion failed: `(left == right)`
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
 
-###  使用assert_ne!宏
+### 使用 assert_ne!宏
 
 ```rust
 fn main() {
@@ -218,7 +218,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 ## 进阶用法
 
-###  自定义比较函数
+### 自定义比较函数
 
 ```rust
 #[derive(PartialEq, Eq)]
@@ -258,7 +258,7 @@ fn main() {
 p1 does not equal p2
 ```
 
-###  使用泛型
+### 使用泛型
 
 ```rust
 #[derive(PartialEq, Eq)]
@@ -290,7 +290,7 @@ fn main() {
 p1 does not equal p2
 ```
 
-###  使用PartialOrd和Ord
+### 使用 PartialOrd 和 Ord
 
 ```rust
 #[derive(PartialEq, Eq, PartialOrd, Ord)]
@@ -322,7 +322,7 @@ fn main() {
 p1 is younger than p2
 ```
 
-###  使用Debug和Display
+### 使用 Debug 和 Display
 
 ```rust
 #[derive(Debug, PartialEq, Eq)]
@@ -362,13 +362,13 @@ p2: Bob (40)
 
 ## 最佳实践
 
-在实现PartialEq和Eq时，应该考虑以下几点：
+在实现 PartialEq 和 Eq 时，应该考虑以下几点：
 
 - 对于自定义类型，应该比较所有的成员变量，而不仅仅是一部分。
 - 对于浮点数，应该使用近似比较而不是精确比较。
 - 对于枚举类型，应该比较所有的成员变量，而不仅仅是枚举值本身。
-- 如果需要比较的类型实现了PartialOrd和Ord，应该优先使用这两个trait。
+- 如果需要比较的类型实现了 PartialOrd 和 Ord，应该优先使用这两个 trait。
 
 ## 结论
 
-在Rust语言中，PartialEq和Eq是非常重要的trait，用于比较类型的值。这两个trait非常灵活，任何类型都可以实现它们。在实现PartialEq和Eq时，应该考虑到类型的特点，比较所有的成员变量，使用近似比较等。
+在 Rust 语言中，PartialEq 和 Eq 是非常重要的 trait，用于比较类型的值。这两个 trait 非常灵活，任何类型都可以实现它们。在实现 PartialEq 和 Eq 时，应该考虑到类型的特点，比较所有的成员变量，使用近似比较等。

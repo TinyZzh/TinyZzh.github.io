@@ -14,13 +14,13 @@ mermaid: true
 
 ![](/images/2023-03/rust_tutorial_logo.png)
 
-gRPC是Google开源的高性能、通用的RPC框架，它采用了基于HTTP/2协议的二进制传输协议，支持多种语言，包括Rust。Rust语言GRPC模块是一个用于Rust语言的gRPC客户端和服务器实现，它提供了一个简单易用的API，可以方便地创建和使用gRPC服务。
+gRPC 是 Google 开源的高性能、通用的 RPC 框架，它采用了基于 HTTP/2 协议的二进制传输协议，支持多种语言，包括 Rust。Rust 语言 GRPC 模块是一个用于 Rust 语言的 gRPC 客户端和服务器实现，它提供了一个简单易用的 API，可以方便地创建和使用 gRPC 服务。
 
 ## 基础用法
 
-###   创建gRPC服务器
+### 创建 gRPC 服务器
 
-在Rust语言GRPC模块中，可以使用`ServerBuilder`结构体来创建gRPC服务器。下面是一个简单的示例：
+在 Rust 语言 GRPC 模块中，可以使用`ServerBuilder`结构体来创建 gRPC 服务器。下面是一个简单的示例：
 
 ```rust
 use grpc::{Server, ServerBuilder};
@@ -47,9 +47,9 @@ impl proto::greeter_server::Greeter for GreeterImpl {
 
 这个示例中，我们创建了一个`ServerBuilder`对象，并通过`http`字段设置了服务器的端口号。然后我们使用`add_service`方法将我们实现的`Greeter`服务添加到服务器中。最后，我们通过`build`方法构建了服务器，并通过`start`方法启动了服务器。服务器启动后，我们通过`wait`方法等待客户端连接。
 
-###   创建gRPC客户端
+### 创建 gRPC 客户端
 
-在Rust语言GRPC模块中，可以使用`Client`结构体来创建gRPC客户端。下面是一个简单的示例：
+在 Rust 语言 GRPC 模块中，可以使用`Client`结构体来创建 gRPC 客户端。下面是一个简单的示例：
 
 ```rust
 use grpc::{ChannelBuilder, Client};
@@ -64,11 +64,11 @@ fn main() {
 }
 ```
 
-这个示例中，我们创建了一个`ChannelBuilder`对象，并使用`Client`结构体创建了一个gRPC客户端。然后我们创建了一个`HelloRequest`对象，并设置了它的`name`字段。最后，我们使用`say_hello`方法向服务器发送请求，并通过`wait`方法等待响应。响应对象是一个`SingleResponse`对象，我们通过`unwrap`方法获取了它的值，并打印了它的`message`字段。
+这个示例中，我们创建了一个`ChannelBuilder`对象，并使用`Client`结构体创建了一个 gRPC 客户端。然后我们创建了一个`HelloRequest`对象，并设置了它的`name`字段。最后，我们使用`say_hello`方法向服务器发送请求，并通过`wait`方法等待响应。响应对象是一个`SingleResponse`对象，我们通过`unwrap`方法获取了它的值，并打印了它的`message`字段。
 
-###   使用流式RPC
+### 使用流式 RPC
 
-在Rust语言GRPC模块中，可以使用流式RPC来传输流数据。下面是一个简单的示例：
+在 Rust 语言 GRPC 模块中，可以使用流式 RPC 来传输流数据。下面是一个简单的示例：
 
 ```rust
 use grpc::{Client, ClientStreamingSink, Server, ServerBuilder, ServerStreamingSink, WriteFlags};
@@ -122,9 +122,9 @@ impl proto::streaming::Greeter for GreeterImpl {
 
 在客户端中，我们创建了一个`say_hello_stream`方法，并使用`send`方法向服务器发送请求。然后我们通过`wait`方法等待响应，并打印了响应的`message`字段。
 
-###   使用双向流式RPC
+### 使用双向流式 RPC
 
-在Rust语言GRPC模块中，可以使用双向流式RPC来传输双向流数据。下面是一个简单的示例：
+在 Rust 语言 GRPC 模块中，可以使用双向流式 RPC 来传输双向流数据。下面是一个简单的示例：
 
 ```rust
 use grpc::{Client, ClientStreamingSink, Server, ServerBuilder, ServerStreamingSink, StreamingSink, WriteFlags};
@@ -179,9 +179,9 @@ impl proto::streaming::Greeter for GreeterImpl {
 
 ## 进阶用法
 
-###   使用tokio
+### 使用 tokio
 
-在Rust语言GRPC模块中，可以使用tokio来实现异步RPC。下面是一个简单的示例：
+在 Rust 语言 GRPC 模块中，可以使用 tokio 来实现异步 RPC。下面是一个简单的示例：
 
 ```rust
 use grpc::{Client, ClientStreamingSink, Server, ServerBuilder, ServerStreamingSink, StreamingSink, WriteFlags};
@@ -216,9 +216,9 @@ impl proto::greeter_server::Greeter for GreeterImpl {
 
 这个示例中，我们使用`tokio::main`宏来创建异步运行时。在服务器和客户端中，我们使用`async`关键字来定义异步函数。在客户端中，我们使用`await`关键字来等待异步响应。
 
-### tokio使用流式RPC
+### tokio 使用流式 RPC
 
-下面是一个使用tokio和流式RPC的示例：
+下面是一个使用 tokio 和流式 RPC 的示例：
 
 ```rust
 use grpc::{Client, ClientStreamingSink, Server, ServerBuilder, ServerStreamingSink, StreamingSink, WriteFlags};
@@ -278,9 +278,9 @@ impl proto::streaming::Greeter for GreeterImpl {
 
 这个示例中，我们使用`tokio::sync::mpsc`库来创建一个通道，用于传输流数据。在客户端中，我们使用`say_hello_streaming`方法向服务器发送请求，并将请求通过通道发送给异步任务。在异步任务中，我们使用`into_async_iter`方法将请求流转换成异步迭代器，并将响应通过通道发送给客户端。在客户端中，我们使用`into_stream`方法将响应流转换成异步流，并等待响应。
 
-###   使用TLS加密
+### 使用 TLS 加密
 
-在Rust语言GRPC模块中，可以使用TLS加密来保护通信安全。下面是一个简单的示例：
+在 Rust 语言 GRPC 模块中，可以使用 TLS 加密来保护通信安全。下面是一个简单的示例：
 
 ```rust
 use grpc::{ChannelBuilder, Client};
@@ -327,8 +327,8 @@ impl proto::greeter_server::Greeter for GreeterImpl {
 }
 ```
 
-这个示例中，我们使用`rustls`库来创建TLS配置，并使用`grpc_tls::ServerBuilder`和`ChannelBuilder::new_tls`方法来创建带有TLS加密的服务器和客户端。在服务器中，我们使用`set_single_cert`方法来设置服务器证书和私钥。在客户端中，我们使用`set_single_client_cert`方法来设置客户端证书和私钥。
+这个示例中，我们使用`rustls`库来创建 TLS 配置，并使用`grpc_tls::ServerBuilder`和`ChannelBuilder::new_tls`方法来创建带有 TLS 加密的服务器和客户端。在服务器中，我们使用`set_single_cert`方法来设置服务器证书和私钥。在客户端中，我们使用`set_single_client_cert`方法来设置客户端证书和私钥。
 
 ## 总结
 
-本教程介绍了GRPC的基础使用方法，并针对tokio结合GRPC的进阶使用进入入门级的探讨。希望能帮助同学们掌握Rust语言GRPC的应用。
+本教程介绍了 GRPC 的基础使用方法，并针对 tokio 结合 GRPC 的进阶使用进入入门级的探讨。希望能帮助同学们掌握 Rust 语言 GRPC 的应用。
