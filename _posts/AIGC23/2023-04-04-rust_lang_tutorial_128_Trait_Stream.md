@@ -25,7 +25,7 @@ Stream的核心概念是将数据视为流，每次处理一个元素，而不�
 在Rust中，我们可以使用`iter`方法来创建Stream。例如，我们可以使用以下代码来创建一个包含1到5的Stream：
 
 ```rust
-let stream = (1..=5).into_iter();
+let stream = (1..5).into_iter();
 ```
 
 这里使用了`into_iter`方法将一个范围转换为Stream。
@@ -45,7 +45,7 @@ stream.for_each(|x| println!("{}", x));
 我们可以使用`filter`方法来过滤Stream中的元素，例如：
 
 ```rust
-let stream = (1..=5).into_iter().filter(|x| x % 2 == 0);
+let stream = (1..5).into_iter().filter(|x| x % 2 == 0);
 ```
 
 这里使用了闭包来判断元素是否为偶数。
@@ -55,7 +55,7 @@ let stream = (1..=5).into_iter().filter(|x| x % 2 == 0);
 我们可以使用`map`方法来对Stream中的元素进行映射，例如：
 
 ```rust
-let stream = (1..=5).into_iter().map(|x| x * 2);
+let stream = (1..5).into_iter().map(|x| x * 2);
 ```
 
 这里使用了闭包来将每个元素乘以2。
@@ -65,8 +65,8 @@ let stream = (1..=5).into_iter().map(|x| x * 2);
 我们可以使用`chain`方法来合并多个Stream，例如：
 
 ```rust
-let stream1 = (1..=3).into_iter();
-let stream2 = (4..=6).into_iter();
+let stream1 = (1..3).into_iter();
+let stream2 = (4..6).into_iter();
 let stream = stream1.chain(stream2);
 ```
 
@@ -87,7 +87,7 @@ let stream = vec![3, 1, 4, 1, 5, 9].into_iter().sorted();
 我们可以使用`take`方法来取Stream中的前n个元素，例如：
 
 ```rust
-let stream = (1..=5).into_iter().take(3);
+let stream = (1..5).into_iter().take(3);
 ```
 
 这里使用了`take`方法取Stream中的前3个元素。
@@ -97,7 +97,7 @@ let stream = (1..=5).into_iter().take(3);
 我们可以使用`skip`方法来跳过Stream中的前n个元素，例如：
 
 ```rust
-let stream = (1..=5).into_iter().skip(2);
+let stream = (1..5).into_iter().skip(2);
 ```
 
 这里使用了`skip`方法跳过Stream中的前2个元素。
@@ -107,7 +107,7 @@ let stream = (1..=5).into_iter().skip(2);
 我们可以使用`count`方法来统计Stream中的元素个数，例如：
 
 ```rust
-let stream = (1..=5).into_iter();
+let stream = (1..5).into_iter();
 let count = stream.count();
 println!("{}", count);
 ```
@@ -132,10 +132,14 @@ let stream = futures::stream::iter(vec![1, 2, 3]);
 
 在Rust中，我们可以使用`rayon`库来创建并行Stream。例如，我们可以使用以下代码来创建一个并行Stream：
 
+```toml
+rayon = "1.7"
+```
+
 ```rust
 use rayon::iter::ParallelIterator;
 
-let stream = (1..=5).into_par_iter();
+let stream = (1..5).into_par_iter();
 ```
 
 这里使用了`into_par_iter`方法将一个范围转换为并行Stream。
@@ -227,6 +231,12 @@ let stream = vec!["a", "b", "bc", "cd", "de", "ef"].into_iter().dedup_by(|a, b| 
 
 下面是一个完整的示例代码，演示了如何使用Stream来处理数据：
 
+```toml
+itertools = "0.10.5"
+rayon = "1.7"
+futures = "0.3.28"
+```
+
 ```rust
 use futures::stream::StreamExt;
 use itertools::Itertools;
@@ -234,22 +244,22 @@ use rayon::iter::ParallelIterator;
 
 fn main() {
     // 创建Stream
-    let stream = (1..=5).into_iter();
+    let stream = (1..5).into_iter();
 
     // 遍历Stream
     stream.for_each(|x| println!("{}", x));
 
     // 过滤Stream
-    let stream = (1..=5).into_iter().filter(|x| x % 2 == 0);
+    let stream = (1..5).into_iter().filter(|x| x % 2 == 0);
     stream.for_each(|x| println!("{}", x));
 
     // 映射Stream
-    let stream = (1..=5).into_iter().map(|x| x * 2);
+    let stream = (1..5).into_iter().map(|x| x * 2);
     stream.for_each(|x| println!("{}", x));
 
     // 合并Stream
-    let stream1 = (1..=3).into_iter();
-    let stream2 = (4..=6).into_iter();
+    let stream1 = (1..3).into_iter();
+    let stream2 = (4..6).into_iter();
     let stream = stream1.chain(stream2);
     stream.for_each(|x| println!("{}", x));
 
@@ -258,15 +268,15 @@ fn main() {
     stream.for_each(|x| println!("{}", x));
 
     // 取前n个元素
-    let stream = (1..=5).into_iter().take(3);
+    let stream = (1..5).into_iter().take(3);
     stream.for_each(|x| println!("{}", x));
 
     // 跳过前n个元素
-    let stream = (1..=5).into_iter().skip(2);
+    let stream = (1..5).into_iter().skip(2);
     stream.for_each(|x| println!("{}", x));
 
     // 统计元素个数
-    let stream = (1..=5).into_iter();
+    let stream = (1..5).into_iter();
     let count = stream.count();
     println!("{}", count);
 
@@ -279,7 +289,7 @@ fn main() {
     });
 
     // 并行Stream
-    let stream = (1..=5).into_par_iter();
+    let stream = (1..5).into_par_iter();
     stream.for_each(|x| println!("{}", x));
 
     // 处理Stream中的错误
