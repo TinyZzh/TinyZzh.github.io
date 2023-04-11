@@ -20,7 +20,7 @@ mermaid: true
 
 ## 基础用法
 
-### 创建RefCell
+### 创建 RefCell
 
 首先，我们需要创建一个 `RefCell` 对象。可以使用 `new()` 方法来创建一个新的 `RefCell`，示例代码如下：
 
@@ -32,7 +32,7 @@ let my_cell = RefCell::new(42);
 
 这里，我们创建了一个名为 `my_cell` 的 `RefCell`，并将其初始化为整数 42。
 
-### 获取RefCell中的值
+### 获取 RefCell 中的值
 
 要访问 `RefCell` 中的值，我们需要使用 `borrow()` 方法。这个方法返回一个 `Ref` 对象，它像一个不可变引用一样使用，但是它可以访问 `RefCell` 中的值。示例代码如下：
 
@@ -47,7 +47,7 @@ println!("The value in my_cell is: {}", *my_ref);
 
 这里，我们首先创建了一个 `RefCell`，然后使用 `borrow()` 方法获取了一个 `Ref` 对象。我们可以使用 `*` 运算符来访问 `Ref` 中的值。
 
-### 修改RefCell中的值
+### 修改 RefCell 中的值
 
 要修改 `RefCell` 中的值，我们需要使用 `borrow_mut()` 方法。这个方法返回一个 `RefMut` 对象，它像一个可变引用一样使用，但是它可以修改 `RefCell` 中的值。示例代码如下：
 
@@ -63,7 +63,7 @@ println!("The new value in my_cell is: {}", *my_ref);
 
 这里，我们首先创建了一个 `RefCell`，然后使用 `borrow_mut()` 方法获取了一个 `RefMut` 对象。我们可以使用 `*` 运算符来修改 `RefMut` 中的值。
 
-### 获取RefCell中的不可变引用
+### 获取 RefCell 中的不可变引用
 
 如果我们在获取 `RefCell` 的可变引用之前，已经获取了一个不可变引用，那么 Rust 会在运行时检查，如果发现了错误，就会 panic。示例代码如下：
 
@@ -78,7 +78,7 @@ let my_mut_ref = my_cell.borrow_mut(); // panic!
 
 这里，我们首先获取了一个不可变引用 `my_ref`，然后试图获取一个可变引用 `my_mut_ref`。由于我们已经有了一个不可变引用，所以 Rust 会在运行时检查，发现了错误，就会 panic。
 
-### 获取RefCell中的可变引用
+### 获取 RefCell 中的可变引用
 
 如果我们在获取 `RefCell` 的可变引用之前，已经获取了一个可变引用，那么 Rust 会在编译时检查，如果发现了错误，就会报错。示例代码如下：
 
@@ -93,7 +93,7 @@ let my_ref = my_cell.borrow(); // compile error!
 
 这里，我们首先获取了一个可变引用 `my_mut_ref`，然后试图获取一个不可变引用 `my_ref`。由于我们已经有了一个可变引用，所以 Rust 会在编译时检查，发现了错误，就会报错。
 
-### 获取RefCell中的多个不可变引用
+### 获取 RefCell 中的多个不可变引用
 
 如果我们在获取 `RefCell` 的多个不可变引用时，其中一个引用已经被转换为可变引用，那么 Rust 会在运行时检查，如果发现了错误，就会 panic。示例代码如下：
 
@@ -109,7 +109,7 @@ let mut my_mut_ref = my_cell.borrow_mut(); // panic!
 
 这里，我们首先获取了两个不可变引用 `my_ref1` 和 `my_ref2`，然后试图获取一个可变引用 `my_mut_ref`。由于我们已经有了两个不可变引用，所以 Rust 会在运行时检查，发现了错误，就会 panic。
 
-### 获取RefCell中的多个可变引用
+### 获取 RefCell 中的多个可变引用
 
 如果我们在获取 `RefCell` 的多个可变引用时，其中一个引用已经被转换为不可变引用，那么 Rust 会在编译时检查，如果发现了错误，就会报错。示例代码如下：
 
@@ -124,7 +124,7 @@ let my_mut_ref2 = my_cell.borrow_mut(); // compile error!
 
 这里，我们首先获取了一个可变引用 `my_mut_ref1`，然后试图获取另一个可变引用 `my_mut_ref2`。由于我们已经有了一个可变引用，所以 Rust 会在编译时检查，发现了错误，就会报错。
 
-### 使用RefCell来实现引用计数
+### 使用 RefCell 来实现引用计数
 
 `RefCell` 还可以用来实现引用计数。我们可以将 `RefCell` 包装在一个 `Rc` 中，这样就可以在多个地方共享 `RefCell`。示例代码如下：
 
@@ -148,7 +148,7 @@ println!("The value in my_cell is: {}", *my_ref2);
 
 ## 进阶用法
 
-### 使用RefCell来实现线程安全的可变变量
+### 使用 RefCell 来实现线程安全的可变变量
 
 在 Rust 中，如果我们需要在线程之间共享可变变量，通常会使用 `Mutex` 或 `RwLock`。但是，这些类型的性能可能不太好，因为它们需要在每个访问上进行加锁和解锁操作。如果我们只需要在单个线程中共享可变变量，那么可以使用 `RefCell` 来实现，这样可以避免加锁和解锁的开销。
 
@@ -169,7 +169,7 @@ println!("The value in my_cell is: {}", *my_mut_ref1);
 
 这里，我们首先创建了一个 `RefCell<i32>`，然后获取了两个可变引用 `my_mut_ref1` 和 `my_mut_ref2`，并分别修改了它们。由于我们只在单个线程中使用 `RefCell`，所以不需要加锁和解锁。
 
-### 使用RefCell来实现循环引用
+### 使用 RefCell 来实现循环引用
 
 在 Rust 中，如果两个对象互相引用，那么它们之间就会形成一个循环引用。这时候，就可以使用 `RefCell` 来实现。示例代码如下：
 
@@ -194,7 +194,7 @@ println!("The value of node2 is: {}", node2.borrow().value);
 
 这里，我们创建了两个 `Rc<RefCell<Node>>`，然后将它们互相引用。由于我们使用了 `RefCell`，所以可以在创建时互相引用，而不需要先创建一个对象，然后再修改它们的引用。
 
-### 使用RefCell来实现可变借用嵌套
+### 使用 RefCell 来实现可变借用嵌套
 
 在 Rust 中，如果我们需要在一个可变引用中嵌套另一个可变引用，通常会出现编译时错误。但是，如果我们使用 `RefCell`，就可以实现可变借用嵌套。示例代码如下：
 
@@ -218,7 +218,7 @@ println!("The value of node2 is: {}", node2.borrow().value);
 
 这里，我们创建了两个 `Box<RefCell<Node>>`，然后将它们互相引用。由于我们使用了 `RefCell`，所以可以在可变引用中嵌套另一个可变引用。
 
-### 使用RefCell来实现内部可变性
+### 使用 RefCell 来实现内部可变性
 
 在 Rust 中，如果我们需要在一个结构体中存储一个可变变量，通常会使用 `mut` 关键字来标记结构体字段。但是，如果我们使用 `RefCell`，就可以实现内部可变性。示例代码如下：
 
@@ -246,7 +246,7 @@ println!("{} is now {} years old.", person.name, *person.age.borrow());
 
 虽然 `RefCell` 可以在不可变引用的情况下修改数据，但是过多的可变引用会导致代码难以维护。因此，应该尽量避免过多的可变引用。
 
-### 使用RefCell来实现状态机
+### 使用 RefCell 来实现状态机
 
 `RefCell` 可以用于实现状态机。在状态机中，状态之间的转换通常需要修改状态机中的某些变量。由于状态机本身是不可变的，因此可以使用 `RefCell` 来存储状态机中的可变变量。
 
@@ -304,7 +304,7 @@ println!("State is {:?}, count is {}", *sm.state.borrow(), *sm.count.borrow());
 
 这里，我们创建了一个 `StateMachine` 结构体，其中包含一个 `RefCell<State>` 类型的 `state` 字段和一个 `RefCell<i32>` 类型的 `count` 字段。我们可以在不可变引用的情况下修改 `state` 和 `count` 字段中的值。
 
-### 使用RefCell来实现链表
+### 使用 RefCell 来实现链表
 
 `RefCell` 可以用于实现链表。在链表中，每个节点通常包含一个指向下一个节点的指针。由于每个节点的指针是可变的，因此可以使用 `RefCell` 来存储节点中的指针。
 

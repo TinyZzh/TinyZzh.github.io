@@ -14,25 +14,25 @@ mermaid: true
 
 ![](/images/2023-03/rust_tutorial_logo.png)
 
-Stream是Rust语言中的一种迭代器，它可以使得我们在处理数据时更加高效、灵活。Stream不仅可以处理大量数据，还可以进行异步操作，这使得它在处理网络请求等IO操作时非常有用。
+Stream 是 Rust 语言中的一种迭代器，它可以使得我们在处理数据时更加高效、灵活。Stream 不仅可以处理大量数据，还可以进行异步操作，这使得它在处理网络请求等 IO 操作时非常有用。
 
-Stream的核心概念是将数据视为流，每次处理一个元素，而不是将整个数据集加载到内存中。这样可以避免内存占用过大的问题，同时也能够提高程序的效率。
+Stream 的核心概念是将数据视为流，每次处理一个元素，而不是将整个数据集加载到内存中。这样可以避免内存占用过大的问题，同时也能够提高程序的效率。
 
 ## 基础用法
 
-### 创建Stream
+### 创建 Stream
 
-在Rust中，我们可以使用`iter`方法来创建Stream。例如，我们可以使用以下代码来创建一个包含1到5的Stream：
+在 Rust 中，我们可以使用`iter`方法来创建 Stream。例如，我们可以使用以下代码来创建一个包含 1 到 5 的 Stream：
 
 ```rust
 let stream = (1..5).into_iter();
 ```
 
-这里使用了`into_iter`方法将一个范围转换为Stream。
+这里使用了`into_iter`方法将一个范围转换为 Stream。
 
-### 遍历Stream
+### 遍历 Stream
 
-遍历Stream可以使用`for_each`方法，例如：
+遍历 Stream 可以使用`for_each`方法，例如：
 
 ```rust
 stream.for_each(|x| println!("{}", x));
@@ -40,9 +40,9 @@ stream.for_each(|x| println!("{}", x));
 
 这里使用了闭包来打印每个元素。
 
-### 过滤Stream
+### 过滤 Stream
 
-我们可以使用`filter`方法来过滤Stream中的元素，例如：
+我们可以使用`filter`方法来过滤 Stream 中的元素，例如：
 
 ```rust
 let stream = (1..5).into_iter().filter(|x| x % 2 == 0);
@@ -50,19 +50,19 @@ let stream = (1..5).into_iter().filter(|x| x % 2 == 0);
 
 这里使用了闭包来判断元素是否为偶数。
 
-### 映射Stream
+### 映射 Stream
 
-我们可以使用`map`方法来对Stream中的元素进行映射，例如：
+我们可以使用`map`方法来对 Stream 中的元素进行映射，例如：
 
 ```rust
 let stream = (1..5).into_iter().map(|x| x * 2);
 ```
 
-这里使用了闭包来将每个元素乘以2。
+这里使用了闭包来将每个元素乘以 2。
 
-### 合并Stream
+### 合并 Stream
 
-我们可以使用`chain`方法来合并多个Stream，例如：
+我们可以使用`chain`方法来合并多个 Stream，例如：
 
 ```rust
 let stream1 = (1..3).into_iter();
@@ -70,41 +70,41 @@ let stream2 = (4..6).into_iter();
 let stream = stream1.chain(stream2);
 ```
 
-这里使用了`chain`方法将两个Stream合并为一个。
+这里使用了`chain`方法将两个 Stream 合并为一个。
 
-### 排序Stream
+### 排序 Stream
 
-我们可以使用`sorted`方法来对Stream中的元素进行排序，例如：
+我们可以使用`sorted`方法来对 Stream 中的元素进行排序，例如：
 
 ```rust
 let stream = vec![3, 1, 4, 1, 5, 9].into_iter().sorted();
 ```
 
-这里使用了`sorted`方法将Stream中的元素按照升序排序。
+这里使用了`sorted`方法将 Stream 中的元素按照升序排序。
 
-### 取前n个元素
+### 取前 n 个元素
 
-我们可以使用`take`方法来取Stream中的前n个元素，例如：
+我们可以使用`take`方法来取 Stream 中的前 n 个元素，例如：
 
 ```rust
 let stream = (1..5).into_iter().take(3);
 ```
 
-这里使用了`take`方法取Stream中的前3个元素。
+这里使用了`take`方法取 Stream 中的前 3 个元素。
 
-### 跳过前n个元素
+### 跳过前 n 个元素
 
-我们可以使用`skip`方法来跳过Stream中的前n个元素，例如：
+我们可以使用`skip`方法来跳过 Stream 中的前 n 个元素，例如：
 
 ```rust
 let stream = (1..5).into_iter().skip(2);
 ```
 
-这里使用了`skip`方法跳过Stream中的前2个元素。
+这里使用了`skip`方法跳过 Stream 中的前 2 个元素。
 
 ### 统计元素个数
 
-我们可以使用`count`方法来统计Stream中的元素个数，例如：
+我们可以使用`count`方法来统计 Stream 中的元素个数，例如：
 
 ```rust
 let stream = (1..5).into_iter();
@@ -112,13 +112,13 @@ let count = stream.count();
 println!("{}", count);
 ```
 
-这里使用了`count`方法统计Stream中的元素个数，并打印出来。
+这里使用了`count`方法统计 Stream 中的元素个数，并打印出来。
 
 ## 进阶用法
 
-### 异步Stream
+### 异步 Stream
 
-在Rust中，我们可以使用`futures`库来创建异步Stream。例如，我们可以使用以下代码来创建一个异步Stream：
+在 Rust 中，我们可以使用`futures`库来创建异步 Stream。例如，我们可以使用以下代码来创建一个异步 Stream：
 
 ```rust
 use futures::stream::StreamExt;
@@ -126,11 +126,11 @@ use futures::stream::StreamExt;
 let stream = futures::stream::iter(vec![1, 2, 3]);
 ```
 
-这里使用了`iter`方法来创建一个包含1到3的异步Stream。
+这里使用了`iter`方法来创建一个包含 1 到 3 的异步 Stream。
 
-### 并行Stream
+### 并行 Stream
 
-在Rust中，我们可以使用`rayon`库来创建并行Stream。例如，我们可以使用以下代码来创建一个并行Stream：
+在 Rust 中，我们可以使用`rayon`库来创建并行 Stream。例如，我们可以使用以下代码来创建一个并行 Stream：
 
 ```toml
 rayon = "1.7"
@@ -142,11 +142,11 @@ use rayon::iter::ParallelIterator;
 let stream = (1..5).into_par_iter();
 ```
 
-这里使用了`into_par_iter`方法将一个范围转换为并行Stream。
+这里使用了`into_par_iter`方法将一个范围转换为并行 Stream。
 
-### 处理Stream中的错误
+### 处理 Stream 中的错误
 
-在处理Stream时，有时候会出现错误。我们可以使用`Result`来处理这些错误。例如，我们可以使用以下代码来处理Stream中的错误：
+在处理 Stream 时，有时候会出现错误。我们可以使用`Result`来处理这些错误。例如，我们可以使用以下代码来处理 Stream 中的错误：
 
 ```rust
 let stream = vec![1, 2, "a", 3].into_iter().map(|x| {
@@ -167,69 +167,69 @@ for item in stream {
 
 这里使用了`downcast_ref`方法将元素转换为`i32`类型，如果转换失败则返回错误。
 
-### 无限Stream
+### 无限 Stream
 
-在Rust中，我们可以使用`repeat`方法来创建一个无限Stream。例如，我们可以使用以下代码来创建一个包含无限个1的Stream：
+在 Rust 中，我们可以使用`repeat`方法来创建一个无限 Stream。例如，我们可以使用以下代码来创建一个包含无限个 1 的 Stream：
 
 ```rust
 let stream = std::iter::repeat(1);
 ```
 
-这里使用了`repeat`方法将1重复无限次。
+这里使用了`repeat`方法将 1 重复无限次。
 
-### 处理Stream中的重复元素
+### 处理 Stream 中的重复元素
 
-在处理Stream时，有时候会出现重复元素的情况。我们可以使用`dedup`方法来去除Stream中的重复元素。例如：
+在处理 Stream 时，有时候会出现重复元素的情况。我们可以使用`dedup`方法来去除 Stream 中的重复元素。例如：
 
 ```rust
 let stream = vec![1, 2, 2, 3, 3, 3].into_iter().dedup();
 ```
 
-这里使用了`dedup`方法去除Stream中的重复元素。
+这里使用了`dedup`方法去除 Stream 中的重复元素。
 
-### 处理Stream中的空元素
+### 处理 Stream 中的空元素
 
-在处理Stream时，有时候会出现空元素的情况。我们可以使用`filter`方法来过滤掉Stream中的空元素。例如：
+在处理 Stream 时，有时候会出现空元素的情况。我们可以使用`filter`方法来过滤掉 Stream 中的空元素。例如：
 
 ```rust
 let stream = vec![1, 2, "", 3, "", ""].into_iter().filter(|x| !x.is_empty());
 ```
 
-这里使用了`filter`方法过滤掉Stream中的空元素。
+这里使用了`filter`方法过滤掉 Stream 中的空元素。
 
-### 处理Stream中的None值
+### 处理 Stream 中的 None 值
 
-在处理Stream时，有时候会出现None值的情况。我们可以使用`filter_map`方法来过滤掉Stream中的None值。例如：
+在处理 Stream 时，有时候会出现 None 值的情况。我们可以使用`filter_map`方法来过滤掉 Stream 中的 None 值。例如：
 
 ```rust
 let stream = vec![Some(1), None, Some(2), None, Some(3)].into_iter().filter_map(|x| x);
 ```
 
-这里使用了`filter_map`方法过滤掉Stream中的None值。
+这里使用了`filter_map`方法过滤掉 Stream 中的 None 值。
 
-### 处理Stream中的重复元素
+### 处理 Stream 中的重复元素
 
-在处理Stream时，有时候会出现重复元素的情况。我们可以使用`dedup_by`方法来去除Stream中的重复元素。例如：
+在处理 Stream 时，有时候会出现重复元素的情况。我们可以使用`dedup_by`方法来去除 Stream 中的重复元素。例如：
 
 ```rust
 let stream = vec!["a", "b", "bc", "cd", "de", "ef"].into_iter().dedup_by(|a, b| a.chars().next() == b.chars().next());
 ```
 
-这里使用了`dedup_by`方法去除Stream中的重复元素，去重条件是元素的首字母相同。
+这里使用了`dedup_by`方法去除 Stream 中的重复元素，去重条件是元素的首字母相同。
 
 ## 最佳实践
 
-在使用Stream时，我们应该注意以下几点：
+在使用 Stream 时，我们应该注意以下几点：
 
-- 尽量使用异步Stream来处理IO操作，这样可以避免阻塞线程。
-- 在处理大量数据时，应该使用并行Stream来提高程序的效率。
+- 尽量使用异步 Stream 来处理 IO 操作，这样可以避免阻塞线程。
+- 在处理大量数据时，应该使用并行 Stream 来提高程序的效率。
 - 在处理错误时，应该使用`Result`来处理错误，避免程序崩溃。
-- 在处理无限Stream时，应该使用`take`方法限制Stream的大小，避免程序无限运行。
+- 在处理无限 Stream 时，应该使用`take`方法限制 Stream 的大小，避免程序无限运行。
 - 在处理重复元素时，应该使用`dedup`或`dedup_by`方法去除重复元素，避免重复计算。
 
 ## 示例代码
 
-下面是一个完整的示例代码，演示了如何使用Stream来处理数据：
+下面是一个完整的示例代码，演示了如何使用 Stream 来处理数据：
 
 ```toml
 itertools = "0.10.5"
@@ -332,4 +332,4 @@ fn main() {
 
 ## 总结
 
-Stream是Rust语言中非常重要的一个概念，它可以使得我们在处理数据时更加高效、灵活。在使用Stream时，我们应该注意异步、并行、错误处理、无限Stream、重复元素等问题，这样才能写出高效、健壮的程序。
+Stream 是 Rust 语言中非常重要的一个概念，它可以使得我们在处理数据时更加高效、灵活。在使用 Stream 时，我们应该注意异步、并行、错误处理、无限 Stream、重复元素等问题，这样才能写出高效、健壮的程序。
