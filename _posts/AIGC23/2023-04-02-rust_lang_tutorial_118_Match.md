@@ -34,20 +34,23 @@ match value {
 }
 ```
 
-其中，value 是要匹配的变量，pattern 是匹配模式，=>后面是要执行的代码块。如果 value 匹配了某个模式，就会执行对应的代码块。如果 value 没有匹配任何模式，就会执行默认的代码块（即\_ => {...}）。
+其中，value 是要匹配的变量，pattern 是匹配模式，=>后面是要执行的代码块。如果 value 匹配了某个模式，就会执行对应的代码块。如果 value 没有匹配任何模式，就会执行默认的代码块（即_ => {...}）。
 
 接下来，我们将通过一些示例来介绍 match 语句的基础用法。
 
 ###   匹配整数
 
 ```rust
-let x = 1;
-
-match x {
-    1 => println!("x is one"),
-    2 => println!("x is two"),
-    _ => println!("x is not one or two"),
+fn main() {
+    let x = 1;
+    
+    match x {
+        1 => println!("x is one"),
+        2 => println!("x is two"),
+        _ => println!("x is not one or two"),
+    }
 }
+//  x is one
 ```
 
 在这个示例中，我们定义了一个整数变量 x，并使用 match 语句匹配它。如果 x 等于 1，就会执行第一个代码块，输出"x is one"；如果 x 等于 2，就会执行第二个代码块，输出"x is two"；如果 x 不等于 1 或 2，就会执行默认的代码块，输出"x is not one or two"。
@@ -175,7 +178,7 @@ match x {
 
 在这个示例中，我们定义了一个 Option 类型的变量 x，并使用 match 语句匹配它。在模式中，我们使用@符号来绑定一个变量。如果 x 是一个 Some 类型，并且它的值在 1 到 10 之间，就会执行第一个代码块，输出"The value is between 1 and 10"；如果 x 是一个 Some 类型，并且它的值在 11 到 20 之间，就会执行第二个代码块，输出"The value is between 11 and 20"；如果 x 是一个 Some 类型，但它的值不在 1 到 20 之间，就会执行第三个代码块，输出"The value is not between 1 and 20"；如果 x 是一个 None 类型，就不会执行任何代码。
 
-###   使用\_忽略模式
+###   使用_忽略模式
 
 ```rust
 let x = Some(5);
@@ -186,7 +189,7 @@ match x {
 }
 ```
 
-在这个示例中，我们定义了一个 Option 类型的变量 x，并使用 match 语句匹配它。在模式中，我们使用\_符号来忽略模式。如果 x 是一个 Some 类型，就会执行第一个代码块，输出"The value is some"；如果 x 是一个 None 类型，就会执行第二个代码块，输出"The value is none"。
+在这个示例中，我们定义了一个 Option 类型的变量 x，并使用 match 语句匹配它。在模式中，我们使用_符号来忽略模式。如果 x 是一个 Some 类型，就会执行第一个代码块，输出"The value is some"；如果 x 是一个 None 类型，就会执行第二个代码块，输出"The value is none"。
 
 ###   使用 if let 简化模式匹配
 
@@ -222,25 +225,29 @@ while let Some(n) = v.pop() {
 在 match 语句中，每个分支的代码块通常都比较复杂，因此我们应该给每个分支加上花括号，以便更好地阅读和维护代码。例如：
 
 ```rust
-let x = 1;
-
-match x {
-    1 => {
-        println!("The value is one");
-        println!("This is a long message");
-    }
-    2 => {
-        println!("The value is two");
-    }
-    _ => {
-        println!("The value is not one or two");
+fn main() {
+    let x = 1;
+    
+    match x {
+        1 => {
+            println!("The value is one");
+            println!("This is a long message");
+        }
+        2 => {
+            println!("The value is two");
+        }
+        _ => {
+            println!("The value is not one or two");
+        }
     }
 }
+// The value is one
+// This is a long message
 ```
 
-### 使用\_忽略不需要的变量
+### 使用_忽略不需要的变量
 
-在 match 语句中，我们可以使用\_符号来忽略不需要的变量。这样可以简化代码，并且让代码更加清晰。例如：
+在 match 语句中，我们可以使用_符号来忽略不需要的变量。这样可以简化代码，并且让代码更加清晰。例如：
 
 ```rust
 let x = (1, 2);
@@ -252,7 +259,7 @@ match x {
 }
 ```
 
-在这个示例中，我们使用\_符号来忽略第二个元素，因为我们只关心第一个元素是否等于 1。
+在这个示例中，我们使用_符号来忽略第二个元素，因为我们只关心第一个元素是否等于 1。
 
 ### 使用 if let 简化模式匹配
 
