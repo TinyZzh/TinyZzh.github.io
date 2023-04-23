@@ -14,9 +14,9 @@ mermaid: true
 
 ![](/images/2023-03/rust_tutorial_logo.png)
 
-Rust是一种系统编程语言，它具有高性能、内存安全和并发性等特点。InfluxDB是一个开源的时序数据库，它专门用于存储和查询时间序列数据。InfluxDB2是InfluxDB的新版本，它提供了更好的性能和更好的用户体验。Rust语言提供了InfluxDB2的官方客户端库，可以方便地在Rust项目中使用InfluxDB2。
+Rust是一种系统编程语言，它具有高性能、内存安全和并发性等特点。InfluxDB是一个开源的时序数据库，它专门用于存储和查询时间序列数据。InfluxDB 2.x是InfluxDB的新版本，它提供了更好的性能和更好的用户体验。Rust语言提供了InfluxDB 2.x的官方客户端库，可以方便地在Rust项目中使用InfluxDB 2.x。
 
-本教程将介绍如何在Rust项目中使用InfluxDB2，包括基础用法和进阶用法。我们将提供示例代码，帮助读者更好地理解和使用InfluxDB2。
+本教程将介绍如何在Rust项目中使用InfluxDB 2.x，包括基础用法和进阶用法。我们将提供示例代码，帮助读者更好地理解和使用InfluxDB 2.x。
 
 > InfluxDB 2.x版本重写了查询系统, 引入了全新的Flux语言查询。相比于SQL，个人感觉是一种退步。详细的Flux语法参考官方文档。
 
@@ -24,7 +24,7 @@ Rust是一种系统编程语言，它具有高性能、内存安全和并发性�
 
 ### 创建数据库
 
-在使用InfluxDB2之前，需要先创建一个数据库。可以使用InfluxDB2的Web界面或命令行工具来创建数据库。在本教程中，我们将使用命令行工具来创建数据库。
+在使用InfluxDB 2.x之前，需要先创建一个数据库。可以使用InfluxDB 2.x的Web界面或命令行工具来创建数据库。在本教程中，我们将使用命令行工具来创建数据库。
 
 ```rust
 use influxdb2::Client;
@@ -40,7 +40,7 @@ fn main() {
 
 ### 写入数据
 
-写入数据是InfluxDB2的主要功能之一。可以使用InfluxDB2的客户端库来写入数据。在写入数据之前，需要先创建一个Bucket。
+写入数据是InfluxDB 2.x的主要功能之一。可以使用InfluxDB 2.x的客户端库来写入数据。在写入数据之前，需要先创建一个Bucket。
 
 ```rust
 use influxdb2::Client;
@@ -64,7 +64,7 @@ fn main() {
 
 ### 查询数据
 
-查询数据是InfluxDB2的另一个主要功能。可以使用InfluxDB2的客户端库来查询数据。在查询数据之前，需要先创建一个查询语句。
+查询数据是InfluxDB 2.x的另一个主要功能。可以使用InfluxDB 2.x的客户端库来查询数据。在查询数据之前，需要先创建一个查询语句。
 
 ```rust
 use influxdb2::Client;
@@ -81,7 +81,7 @@ fn main() {
 
 ### 删除数据
 
-删除数据是InfluxDB2的另一个功能。可以使用InfluxDB2的客户端库来删除数据。在删除数据之前，需要先创建一个删除语句。
+删除数据是InfluxDB 2.x的另一个功能。可以使用InfluxDB 2.x的客户端库来删除数据。在删除数据之前，需要先创建一个删除语句。
 
 ```rust
 use influxdb2::Client;
@@ -97,7 +97,7 @@ fn main() {
 
 ### 创建用户
 
-在使用InfluxDB2之前，需要先创建一个用户。可以使用InfluxDB2的Web界面或命令行工具来创建用户。在本教程中，我们将使用命令行工具来创建用户。
+在使用InfluxDB 2.x之前，需要先创建一个用户。可以使用InfluxDB 2.x的Web界面或命令行工具来创建用户。在本教程中，我们将使用命令行工具来创建用户。
 
 ```rust
 use influxdb2::Client;
@@ -117,7 +117,7 @@ fn main() {
 
 ### 创建授权令牌
 
-在使用InfluxDB2之前，需要先创建一个授权令牌。可以使用InfluxDB2的Web界面或命令行工具来创建授权令牌。在本教程中，我们将使用命令行工具来创建授权令牌。
+在使用InfluxDB 2.x之前，需要先创建一个授权令牌。可以使用InfluxDB 2.x的Web界面或命令行工具来创建授权令牌。在本教程中，我们将使用命令行工具来创建授权令牌。
 
 ```rust
 use influxdb2::Client;
@@ -133,7 +133,7 @@ fn main() {
 
 ### 创建任务
 
-在InfluxDB2中，任务是一种自动化的操作。可以使用InfluxDB2的Web界面或命令行工具来创建任务。在本教程中，我们将使用命令行工具来创建任务。
+在InfluxDB 2.x中，任务是一种自动化的操作。可以使用InfluxDB 2.x的Web界面或命令行工具来创建任务。在本教程中，我们将使用命令行工具来创建任务。
 
 ```rust
 use influxdb2::Client;
@@ -152,7 +152,7 @@ fn main() {
 
 ### 使用Flux查询语言
 
-Flux是InfluxDB2的查询语言，它提供了更强大的查询功能。可以使用InfluxDB2的客户端库来查询Flux语句。
+Flux是InfluxDB 2.x的查询语言，它提供了更强大的查询功能。可以使用InfluxDB 2.x的客户端库来查询Flux语句。
 
 ```rust
 use influxdb2::Client;
@@ -169,7 +169,7 @@ fn main() {
 
 ### 使用Task API创建任务
 
-可以使用Task API来创建任务，这样可以更方便地管理任务。可以使用InfluxDB2的客户端库来创建任务。
+可以使用Task API来创建任务，这样可以更方便地管理任务。可以使用InfluxDB 2.x的客户端库来创建任务。
 
 ```rust
 use influxdb2::Client;
@@ -189,7 +189,7 @@ fn main() {
 
 ### 使用Write API批量写入数据
 
-可以使用Write API来批量写入数据，这样可以提高写入数据的效率。可以使用InfluxDB2的客户端库来批量写入数据。
+可以使用Write API来批量写入数据，这样可以提高写入数据的效率。可以使用InfluxDB 2.x的客户端库来批量写入数据。
 
 ```rust
 use influxdb2::Client;
@@ -214,7 +214,7 @@ fn main() {
 
 ### 使用Query API查询数据
 
-可以使用Query API来查询数据，这样可以更方便地查询数据。可以使用InfluxDB2的客户端库来查询数据。
+可以使用Query API来查询数据，这样可以更方便地查询数据。可以使用InfluxDB 2.x的客户端库来查询数据。
 
 ```rust
 use influxdb2::Client;
@@ -310,4 +310,4 @@ fn main() {
 
 ## 结论
 
-本教程介绍了如何在Rust项目中使用InfluxDB2，包括基础用法和进阶用法。我们提供了示例代码，帮助读者更好地理解和使用InfluxDB2。最后，我们提供了一些最佳实践，帮助读者更好地使用InfluxDB2。
+本教程介绍了如何在Rust项目中使用InfluxDB 2.x，包括基础用法和进阶用法。我们提供了示例代码，帮助读者更好地理解和使用InfluxDB 2.x。最后，我们提供了一些最佳实践，帮助读者更好地使用InfluxDB 2.x。

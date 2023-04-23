@@ -3,7 +3,7 @@ layout: post
 read_time: true
 show_date: true
 img: images/2023-03/rust_tutorial_logo.png
-title: Rust语言从入门到精通系列 - Cargo
+title: Rust语言从入门到精通系列 - 包管理和编译工具Cargo
 date: 2023-03-12 12:01:00 +0800
 categories: [Rust]
 tags: [Rust, 从入门到精通]
