@@ -14,15 +14,15 @@ mermaid: true
 
 ![](/images/2023-03/rust_tutorial_logo.png)
 
-Plotters是一个基于Rust语言的绘图库，由Eonil和其他贡献者开发。它的目标是提供一个简单易用的API，可以轻松地创建各种类型的图表，并支持多种输出格式。Plotters使用Rust语言的强类型系统和高性能，可以生成高质量的图表。
+Plotters 是一个基于 Rust 语言的绘图库，由 Eonil 和其他贡献者开发。它的目标是提供一个简单易用的 API，可以轻松地创建各种类型的图表，并支持多种输出格式。Plotters 使用 Rust 语言的强类型系统和高性能，可以生成高质量的图表。
 
-Plotters提供了多种类型的图表，包括线图、柱状图、散点图等等。它还支持多种输出格式，包括PNG、SVG、PDF等等。使用Plotters可以轻松地创建高质量的图表，同时还可以自定义图表的样式和布局。
+Plotters 提供了多种类型的图表，包括线图、柱状图、散点图等等。它还支持多种输出格式，包括 PNG、SVG、PDF 等等。使用 Plotters 可以轻松地创建高质量的图表，同时还可以自定义图表的样式和布局。
 
 ## 用法实战
 
-### 安装Plotters
+### 安装 Plotters
 
-在使用Plotters之前，需要安装Plotters。可以通过以下命令安装Plotters：
+在使用 Plotters 之前，需要安装 Plotters。可以通过以下命令安装 Plotters：
 
 ```bash
 cargo install plotters
@@ -30,7 +30,7 @@ cargo install plotters
 
 ### 绘制折线图
 
-下面是一个简单的例子，演示如何使用Plotters绘制折线图：
+下面是一个简单的例子，演示如何使用 Plotters 绘制折线图：
 
 ```rust
 use plotters::prelude::*;
@@ -58,11 +58,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-这个例子中，我们首先创建了一个`BitMapBackend`对象，用于输出PNG格式的图片。然后，我们创建了一个`ChartBuilder`对象，用于构建图表。在`ChartBuilder`对象上，我们设置了标题、坐标轴标签和网格线。最后，我们使用`LineSeries`对象绘制了一条折线。`LineSeries`对象需要一个元组列表作为输入，每个元组包含一个x坐标和一个y坐标。在这个例子中，我们绘制了一条从(0,0)到(9,9)的折线。
+这个例子中，我们首先创建了一个`BitMapBackend`对象，用于输出 PNG 格式的图片。然后，我们创建了一个`ChartBuilder`对象，用于构建图表。在`ChartBuilder`对象上，我们设置了标题、坐标轴标签和网格线。最后，我们使用`LineSeries`对象绘制了一条折线。`LineSeries`对象需要一个元组列表作为输入，每个元组包含一个 x 坐标和一个 y 坐标。在这个例子中，我们绘制了一条从(0,0)到(9,9)的折线。
 
 ### 绘制柱状图
 
-下面是一个简单的例子，演示如何使用Plotters绘制柱状图：
+下面是一个简单的例子，演示如何使用 Plotters 绘制柱状图：
 
 ```rust
 use plotters::prelude::*;
@@ -90,11 +90,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-这个例子中，我们首先创建了一个`BitMapBackend`对象，用于输出PNG格式的图片。然后，我们创建了一个`ChartBuilder`对象，用于构建图表。在`ChartBuilder`对象上，我们设置了标题、坐标轴标签和网格线。最后，我们使用`Histogram`对象绘制了一组柱状。`Histogram`对象需要一个整数向量作为输入，每个整数表示一个柱状的高度。在这个例子中，我们绘制了一组高度为2到9的柱状。
+这个例子中，我们首先创建了一个`BitMapBackend`对象，用于输出 PNG 格式的图片。然后，我们创建了一个`ChartBuilder`对象，用于构建图表。在`ChartBuilder`对象上，我们设置了标题、坐标轴标签和网格线。最后，我们使用`Histogram`对象绘制了一组柱状。`Histogram`对象需要一个整数向量作为输入，每个整数表示一个柱状的高度。在这个例子中，我们绘制了一组高度为 2 到 9 的柱状。
 
 ### 绘制散点图
 
-下面是一个简单的例子，演示如何使用Plotters绘制散点图：
+下面是一个简单的例子，演示如何使用 Plotters 绘制散点图：
 
 ```rust
 use plotters::prelude::*;
@@ -126,11 +126,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-这个例子中，我们首先创建了一个`BitMapBackend`对象，用于输出PNG格式的图片。然后，我们创建了一个`ChartBuilder`对象，用于构建图表。在`ChartBuilder`对象上，我们设置了标题、坐标轴标签和网格线。最后，我们使用`PointSeries`对象绘制了一组散点。`PointSeries`对象需要一个元组列表作为输入，每个元组包含一个x坐标和一个y坐标。在这个例子中，我们绘制了一组从(0,0)到(9,9)的散点。
+这个例子中，我们首先创建了一个`BitMapBackend`对象，用于输出 PNG 格式的图片。然后，我们创建了一个`ChartBuilder`对象，用于构建图表。在`ChartBuilder`对象上，我们设置了标题、坐标轴标签和网格线。最后，我们使用`PointSeries`对象绘制了一组散点。`PointSeries`对象需要一个元组列表作为输入，每个元组包含一个 x 坐标和一个 y 坐标。在这个例子中，我们绘制了一组从(0,0)到(9,9)的散点。
 
 ### 绘制饼图
 
-下面是一个简单的例子，演示如何使用Plotters绘制饼图：
+下面是一个简单的例子，演示如何使用 Plotters 绘制饼图：
 
 ```rust
 use plotters::prelude::*;
@@ -169,11 +169,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-这个例子中，我们首先创建了一个`BitMapBackend`对象，用于输出PNG格式的图片。然后，我们创建了一个`ChartBuilder`对象，用于构建图表。在`ChartBuilder`对象上，我们设置了标题。最后，我们使用`Sector`对象绘制了一组扇形。`Sector`对象需要一个位置、角度、半径、颜色和标签等参数。在这个例子中，我们绘制了一组占比为10%、20%、30%和40%的扇形。
+这个例子中，我们首先创建了一个`BitMapBackend`对象，用于输出 PNG 格式的图片。然后，我们创建了一个`ChartBuilder`对象，用于构建图表。在`ChartBuilder`对象上，我们设置了标题。最后，我们使用`Sector`对象绘制了一组扇形。`Sector`对象需要一个位置、角度、半径、颜色和标签等参数。在这个例子中，我们绘制了一组占比为 10%、20%、30%和 40%的扇形。
 
 ### 绘制等高线图
 
-下面是一个简单的例子，演示如何使用Plotters绘制等高线图：
+下面是一个简单的例子，演示如何使用 Plotters 绘制等高线图：
 
 ```rust
 use plotters::prelude::*;
@@ -210,11 +210,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-这个例子中，我们首先创建了一个`BitMapBackend`对象，用于输出PNG格式的图片。然后，我们创建了一个`ChartBuilder`对象，用于构建图表。在`ChartBuilder`对象上，我们设置了标题、坐标轴标签和网格线。最后，我们使用`ContourSeries`对象绘制了一组等高线。`ContourSeries`对象需要一个元组列表作为输入，每个元组包含一个x坐标、一个y坐标和一个高度。在这个例子中，我们绘制了一个以(0,0)为中心的高斯分布等高线。
+这个例子中，我们首先创建了一个`BitMapBackend`对象，用于输出 PNG 格式的图片。然后，我们创建了一个`ChartBuilder`对象，用于构建图表。在`ChartBuilder`对象上，我们设置了标题、坐标轴标签和网格线。最后，我们使用`ContourSeries`对象绘制了一组等高线。`ContourSeries`对象需要一个元组列表作为输入，每个元组包含一个 x 坐标、一个 y 坐标和一个高度。在这个例子中，我们绘制了一个以(0,0)为中心的高斯分布等高线。
 
 ### 绘制热力图
 
-下面是一个简单的例子，演示如何使用Plotters绘制热力图：
+下面是一个简单的例子，演示如何使用 Plotters 绘制热力图：
 
 ```rust
 use plotters::prelude::*;
@@ -247,11 +247,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-这个例子中，我们首先创建了一个`BitMapBackend`对象，用于输出PNG格式的图片。然后，我们创建了一个`ChartBuilder`对象，用于构建图表。在`ChartBuilder`对象上，我们设置了标题、坐标轴标签和网格线。最后，我们使用`Heatmap`对象绘制了一个热力图。`Heatmap`对象需要一个元组列表作为输入，每个元组包含一个x坐标、一个y坐标和一个高度。在这个例子中，我们绘制了一个以(0,0)为中心的高斯分布热力图。
+这个例子中，我们首先创建了一个`BitMapBackend`对象，用于输出 PNG 格式的图片。然后，我们创建了一个`ChartBuilder`对象，用于构建图表。在`ChartBuilder`对象上，我们设置了标题、坐标轴标签和网格线。最后，我们使用`Heatmap`对象绘制了一个热力图。`Heatmap`对象需要一个元组列表作为输入，每个元组包含一个 x 坐标、一个 y 坐标和一个高度。在这个例子中，我们绘制了一个以(0,0)为中心的高斯分布热力图。
 
 ### 绘制箱线图
 
-下面是一个简单的例子，演示如何使用Plotters绘制箱线图：
+下面是一个简单的例子，演示如何使用 Plotters 绘制箱线图：
 
 ```rust
 use plotters::prelude::*;
@@ -293,11 +293,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-这个例子中，我们首先创建了一个`BitMapBackend`对象，用于输出PNG格式的图片。然后，我们创建了一个`ChartBuilder`对象，用于构建图表。在`ChartBuilder`对象上，我们设置了标题、坐标轴标签和网格线。最后，我们使用`BoxPlot`对象绘制了一组箱线。`BoxPlot`对象需要一个浮点数向量作为输入，每个浮点数表示一个箱线的高度。在这个例子中，我们绘制了一组包含四个箱线的箱线图。
+这个例子中，我们首先创建了一个`BitMapBackend`对象，用于输出 PNG 格式的图片。然后，我们创建了一个`ChartBuilder`对象，用于构建图表。在`ChartBuilder`对象上，我们设置了标题、坐标轴标签和网格线。最后，我们使用`BoxPlot`对象绘制了一组箱线。`BoxPlot`对象需要一个浮点数向量作为输入，每个浮点数表示一个箱线的高度。在这个例子中，我们绘制了一组包含四个箱线的箱线图。
 
 ### 绘制极坐标图
 
-下面是一个简单的例子，演示如何使用Plotters绘制极坐标图：
+下面是一个简单的例子，演示如何使用 Plotters 绘制极坐标图：
 
 ```rust
 use plotters::prelude::*;
@@ -326,7 +326,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-这个例子中，我们首先创建了一个`BitMapBackend`对象，用于输出PNG格式的图片。然后，我们创建了一个`ChartBuilder`对象，用于构建图表。在`ChartBuilder`对象上，我们设置了标题。最后，我们使用`LineSeries`对象绘制了一条极坐标线。`LineSeries`对象需要一个元组列表作为输入，每个元组包含一个角度和一个半径。在这个例子中，我们绘制了一条从0度到360度的极坐标线。
+这个例子中，我们首先创建了一个`BitMapBackend`对象，用于输出 PNG 格式的图片。然后，我们创建了一个`ChartBuilder`对象，用于构建图表。在`ChartBuilder`对象上，我们设置了标题。最后，我们使用`LineSeries`对象绘制了一条极坐标线。`LineSeries`对象需要一个元组列表作为输入，每个元组包含一个角度和一个半径。在这个例子中，我们绘制了一条从 0 度到 360 度的极坐标线。
 
 ### 自定义样式
 
@@ -371,9 +371,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 这个示例创建了一个自定义样式的图表。我们使用`stroke_width`方法设置了线段的宽度，使用`mix`方法设置了标签的背景色。我们还使用`border_style`方法设置了标签的边框颜色。
 
-### 使用CSV文件绘制线图
+### 使用 CSV 文件绘制线图
 
-下面是一个使用CSV文件绘制线图的示例代码：
+下面是一个使用 CSV 文件绘制线图的示例代码：
 
 ```rust
 use plotters::prelude::*;
@@ -412,7 +412,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-在上述代码中，我们首先创建了一个`BitMapBackend`对象，用于指定输出格式和大小。然后，我们创建了一个`ChartBuilder`对象，用于指定图表的标题和坐标轴等属性。接着，我们读取了一个名为`data.csv`的CSV文件，并将其转换为一个包含`(i32, i32)`元组的向量。最后，我们通过`chart.draw_series`方法将线图绘制到图表中。
+在上述代码中，我们首先创建了一个`BitMapBackend`对象，用于指定输出格式和大小。然后，我们创建了一个`ChartBuilder`对象，用于指定图表的标题和坐标轴等属性。接着，我们读取了一个名为`data.csv`的 CSV 文件，并将其转换为一个包含`(i32, i32)`元组的向量。最后，我们通过`chart.draw_series`方法将线图绘制到图表中。
 
 ### 绘制带有标签的散点图
 
@@ -519,4 +519,4 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 ## 总结
 
-Plotters是一个强大的绘图库，可以用于创建各种类型的图表。它提供了易于使用的API，可以轻松地创建高质量的图表，并支持多种输出格式。在使用Plotters时，我们可以遵循最佳实践，以提高代码的可读性和可维护性。
+Plotters 是一个强大的绘图库，可以用于创建各种类型的图表。它提供了易于使用的 API，可以轻松地创建高质量的图表，并支持多种输出格式。在使用 Plotters 时，我们可以遵循最佳实践，以提高代码的可读性和可维护性。

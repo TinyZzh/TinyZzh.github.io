@@ -13,4 +13,3 @@ mermaid: true
 ---
 
 ![](/images/2023-03/rust_tutorial_logo.png)
-

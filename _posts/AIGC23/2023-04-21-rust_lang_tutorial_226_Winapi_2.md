@@ -14,13 +14,13 @@ mermaid: true
 
 ![](/images/2023-03/rust_tutorial_logo.png)
 
-Rust语言是一种快速、安全、并发的系统编程语言。它的设计目标是为了提供更好的内存安全和线程安全，同时保持高性能。而winapi模块则是Rust语言的一个重要组成部分，它提供了与Windows操作系统API的交互能力。本教程将介绍winapi模块的基础用法和进阶用法，以及最佳实践。
+Rust 语言是一种快速、安全、并发的系统编程语言。它的设计目标是为了提供更好的内存安全和线程安全，同时保持高性能。而 winapi 模块则是 Rust 语言的一个重要组成部分，它提供了与 Windows 操作系统 API 的交互能力。本教程将介绍 winapi 模块的基础用法和进阶用法，以及最佳实践。
 
-上一篇 `Rust语言从入门到精通系列 - 零基础入门Win32 API开发(上)` 介绍了Win32 API的一些基础用法，本篇主要介绍一些进阶用法。
+上一篇 `Rust语言从入门到精通系列 - 零基础入门Win32 API开发(上)` 介绍了 Win32 API 的一些基础用法，本篇主要介绍一些进阶用法。
 
 ## 进阶用法
 
-### 使用Rust风格的COM组件
+### 使用 Rust 风格的 COM 组件
 
 ```rust
 use std::ptr::null_mut;
@@ -70,7 +70,7 @@ fn main() {
 
 ### 打印屏幕截图
 
-以下代码使用winapi模块的函数和结构体，实现在Windows操作系统下截取屏幕并打印。
+以下代码使用 winapi 模块的函数和结构体，实现在 Windows 操作系统下截取屏幕并打印。
 
 ```rust
 use winapi::um::winuser::{GetDC, GetSystemMetrics, ReleaseDC, CreateCompatibleDC, CreateCompatibleBitmap, SelectObject, BitBlt, DeleteDC, DeleteObject, SM_CXSCREEN, SM_CYSCREEN, SRCCOPY};
@@ -137,11 +137,11 @@ fn main() {
 }
 ```
 
-上述代码使用了许多winapi模块中的函数和结构体，包括GetDC、GetSystemMetrics、ReleaseDC、CreateCompatibleDC、CreateCompatibleBitmap、SelectObject、BitBlt、DeleteDC、DeleteObject、BITMAPINFO、BITMAPINFOHEADER、BI_RGB、RGBQUAD、GetDIBits、SetDIBitsToDevice、GetDesktopWindow、GetWindowRect、SRCCOPY、DIB_RGB_COLORS等。
+上述代码使用了许多 winapi 模块中的函数和结构体，包括 GetDC、GetSystemMetrics、ReleaseDC、CreateCompatibleDC、CreateCompatibleBitmap、SelectObject、BitBlt、DeleteDC、DeleteObject、BITMAPINFO、BITMAPINFOHEADER、BI_RGB、RGBQUAD、GetDIBits、SetDIBitsToDevice、GetDesktopWindow、GetWindowRect、SRCCOPY、DIB_RGB_COLORS 等。
 
 ### 获取硬件信息
 
-以下代码使用winapi模块的函数和结构体，实现在Windows操作系统下获取硬件信息。
+以下代码使用 winapi 模块的函数和结构体，实现在 Windows 操作系统下获取硬件信息。
 
 ```rust
 use winapi::um::winbase::{GetSystemFirmwareTable, SYSTEM_FIRMWARE_TABLE_PROVIDER_ACPI, SYSTEM_FIRMWARE_TABLE_ACPI, SYSTEM_FIRMWARE_TABLE_ACTION_READ};
@@ -178,11 +178,11 @@ fn main() {
 }
 ```
 
-上述代码使用了winapi模块中的函数和结构体，包括GetSystemFirmwareTable、SYSTEM_FIRMWARE_TABLE_PROVIDER_ACPI、SYSTEM_FIRMWARE_TABLE_ACPI、SYSTEM_FIRMWARE_TABLE_ACTION_READ、HANDLE、PVOID和ULONG等。
+上述代码使用了 winapi 模块中的函数和结构体，包括 GetSystemFirmwareTable、SYSTEM_FIRMWARE_TABLE_PROVIDER_ACPI、SYSTEM_FIRMWARE_TABLE_ACPI、SYSTEM_FIRMWARE_TABLE_ACTION_READ、HANDLE、PVOID 和 ULONG 等。
 
 ### 获取系统信息
 
-以下代码使用winapi模块的函数和结构体，实现在Windows操作系统下获取系统信息。
+以下代码使用 winapi 模块的函数和结构体，实现在 Windows 操作系统下获取系统信息。
 
 ```rust
 use winapi::um::sysinfoapi::{GetSystemInfo, SYSTEM_INFO};
@@ -199,11 +199,11 @@ fn main() {
 }
 ```
 
-上述代码使用了winapi模块中的函数和结构体，包括GetSystemInfo和SYSTEM_INFO等。
+上述代码使用了 winapi 模块中的函数和结构体，包括 GetSystemInfo 和 SYSTEM_INFO 等。
 
 ### 获取网络信息
 
-以下代码使用winapi模块的函数和结构体，实现在Windows操作系统下获取网络信息。
+以下代码使用 winapi 模块的函数和结构体，实现在 Windows 操作系统下获取网络信息。
 
 ```rust
 use winapi::um::iphlpapi::{GetAdaptersInfo, PIP_ADAPTER_INFO};
@@ -222,11 +222,11 @@ fn main() {
 }
 ```
 
-上述代码使用了winapi模块中的函数和结构体，包括GetAdaptersInfo和PIP_ADAPTER_INFO等。
+上述代码使用了 winapi 模块中的函数和结构体，包括 GetAdaptersInfo 和 PIP_ADAPTER_INFO 等。
 
-### 使用Windows API发送邮件
+### 使用 Windows API 发送邮件
 
-发送邮件是一种常见的网络操作，可以用于发送电子邮件、短信等。下面是一个使用winapi模块发送邮件的示例：
+发送邮件是一种常见的网络操作，可以用于发送电子邮件、短信等。下面是一个使用 winapi 模块发送邮件的示例：
 
 ```rust
 use winapi::um::mapi::{MAPISendMailW, MapiMessage, MapiFileDesc, MapiRecipDesc, MAPI_LOGON_UI, MAPI_DIALOG};
@@ -260,8 +260,6 @@ fn main() {
 }
 ```
 
-在这个示例中，我们使用了mapi模块中的MAPISendMailW函数发送邮件。该函数的参数包括邮件消息、登录标志和对话框标志等。我们创建了一个MapiMessage结构体msg，并设置了邮件主题、正文和收件人等信息。我们还创建了一个MapiRecipDesc结构体recip，并设置了收件人姓名和地址。最后，我们创建了一个MapiFileDesc结构体file，并设置了附件的路径和文件名。
+在这个示例中，我们使用了 mapi 模块中的 MAPISendMailW 函数发送邮件。该函数的参数包括邮件消息、登录标志和对话框标志等。我们创建了一个 MapiMessage 结构体 msg，并设置了邮件主题、正文和收件人等信息。我们还创建了一个 MapiRecipDesc 结构体 recip，并设置了收件人姓名和地址。最后，我们创建了一个 MapiFileDesc 结构体 file，并设置了附件的路径和文件名。
 
-接着，我们将msg.lpRecips和msg.lpFiles分别设置为&mut recip和&mut file，以便将收件人和附件信息添加到邮件消息中。最后，我们使用MAPISendMailW函数发送邮件，并使用println!函数打印出错误信息（如果有）。
-
-
+接着，我们将 msg.lpRecips 和 msg.lpFiles 分别设置为&mut recip 和&mut file，以便将收件人和附件信息添加到邮件消息中。最后，我们使用 MAPISendMailW 函数发送邮件，并使用 println!函数打印出错误信息（如果有）。

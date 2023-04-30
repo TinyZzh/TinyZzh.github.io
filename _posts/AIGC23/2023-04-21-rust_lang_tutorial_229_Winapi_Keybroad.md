@@ -14,15 +14,13 @@ mermaid: true
 
 ![](/images/2023-03/rust_tutorial_logo.png)
 
-
 在本文中，我们将介绍如何使用 Rust 编程语言和 WinAPI 库来获取鼠标光标的位置并监听键盘事件。我们将在 Windows 操作系统上实现这个功能，并且将使用 Rust 的 winapi 模块来访问 Windows API。
 
 我们将首先介绍如何获取鼠标光标的位置，然后我们将介绍如何监听键盘事件。最后，我们将把这些知识结合起来，实现在光标位置接收用户输入的功能。
 
-
 ## 获取鼠标光标位置
 
-要获取鼠标光标的位置，需要使用Windows API函数GetCursorPos。该函数返回一个POINT结构体，其中包含鼠标光标的x和y坐标。以下是获取鼠标光标位置的示例代码：
+要获取鼠标光标的位置，需要使用 Windows API 函数 GetCursorPos。该函数返回一个 POINT 结构体，其中包含鼠标光标的 x 和 y 坐标。以下是获取鼠标光标位置的示例代码：
 
 ```rust
 use winapi::um::winuser::GetCursorPos;
@@ -37,12 +35,11 @@ fn main() {
 }
 ```
 
-在上面的代码中，我们首先导入了winapi模块中的GetCursorPos函数和POINT结构体。然后，我们创建了一个POINT结构体实例，并将其传递给GetCursorPos函数。最后，我们打印出鼠标光标的x和y坐标。
-
+在上面的代码中，我们首先导入了 winapi 模块中的 GetCursorPos 函数和 POINT 结构体。然后，我们创建了一个 POINT 结构体实例，并将其传递给 GetCursorPos 函数。最后，我们打印出鼠标光标的 x 和 y 坐标。
 
 ## 监听键盘事件
 
-在Rust语言中，可以使用winapi模块中的SetWindowsHookEx函数来监听键盘事件。该函数的定义如下：
+在 Rust 语言中，可以使用 winapi 模块中的 SetWindowsHookEx 函数来监听键盘事件。该函数的定义如下：
 
 ```rust
 pub fn SetWindowsHookExW(
@@ -53,15 +50,15 @@ pub fn SetWindowsHookExW(
 ) -> HHOOK;
 ```
 
-该函数的参数idHook表示要监听的事件类型，可以使用WH_KEYBOARD_LL常量来表示监听键盘事件。lpfn是一个回调函数，用于处理键盘事件。hmod表示当前模块的句柄，可以使用GetModuleHandleW函数获取。dwThreadId表示要监听的线程ID，可以使用0表示监听所有线程。
+该函数的参数 idHook 表示要监听的事件类型，可以使用 WH_KEYBOARD_LL 常量来表示监听键盘事件。lpfn 是一个回调函数，用于处理键盘事件。hmod 表示当前模块的句柄，可以使用 GetModuleHandleW 函数获取。dwThreadId 表示要监听的线程 ID，可以使用 0 表示监听所有线程。
 
-在回调函数中，可以使用GetAsyncKeyState函数获取键盘状态。该函数的定义如下：
+在回调函数中，可以使用 GetAsyncKeyState 函数获取键盘状态。该函数的定义如下：
 
 ```rust
 pub fn GetAsyncKeyState(vKey: c_int) -> SHORT;
 ```
 
-该函数的参数vKey表示要查询的键盘键码，返回值为SHORT类型，表示键盘状态。如果返回值的最高位为1，表示键盘按键处于按下状态，否则表示键盘按键处于弹起状态。
+该函数的参数 vKey 表示要查询的键盘键码，返回值为 SHORT 类型，表示键盘状态。如果返回值的最高位为 1，表示键盘按键处于按下状态，否则表示键盘按键处于弹起状态。
 
 钩子函数是一个回调函数，用于处理截获的事件。在 Rust 中，我们可以使用 extern "system" 语法来定义钩子函数。这个语法用于指定函数的调用约定，以便它可以与 Windows API 进行交互。我们将在下面的代码中看到它的用法。
 使用 winapi::um::winuser 模块中的 SetWindowsHookEx 函数来调用 Windows API。代码如下：
@@ -245,4 +242,3 @@ fn main() {
 在本文中，我们介绍了如何使用 Rust 编程语言和 WinAPI 库来获取鼠标光标的位置并监听键盘事件。我们首先介绍了如何获取鼠标光标的位置，然后我们介绍了如何监听键盘事件。最后，我们将这些知识结合起来，实现了在光标位置接收用户输入的功能。
 
 这个功能可以用于许多应用程序，例如屏幕取词工具、虚拟键盘等。我们希望这篇文章能够帮助你了解如何在 Rust 中使用 WinAPI 库来实现这些功能。
-

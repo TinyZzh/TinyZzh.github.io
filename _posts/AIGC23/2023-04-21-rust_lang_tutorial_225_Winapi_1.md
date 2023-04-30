@@ -14,13 +14,13 @@ mermaid: true
 
 ![](/images/2023-03/rust_tutorial_logo.png)
 
-Rust语言是一种快速、安全、并发的系统编程语言。它的设计目标是为了提供更好的内存安全和线程安全，同时保持高性能。而winapi模块则是Rust语言的一个重要组成部分，它提供了与Windows操作系统API的交互能力。本教程将介绍winapi模块的基础用法和进阶用法，以及最佳实践。
+Rust 语言是一种快速、安全、并发的系统编程语言。它的设计目标是为了提供更好的内存安全和线程安全，同时保持高性能。而 winapi 模块则是 Rust 语言的一个重要组成部分，它提供了与 Windows 操作系统 API 的交互能力。本教程将介绍 winapi 模块的基础用法和进阶用法，以及最佳实践。
 
-> 本篇主要介绍Win32 API基础用法，进阶相关的内容在 `Rust语言从入门到精通系列 - 零基础入门Win32 API开发(下)` 
+> 本篇主要介绍 Win32 API 基础用法，进阶相关的内容在 `Rust语言从入门到精通系列 - 零基础入门Win32 API开发(下)`
 
 ## 基础用法
 
-Cargo.toml文件引入依赖。
+Cargo.toml 文件引入依赖。
 
 ```toml
 [target.'cfg(windows)'.dependencies]
@@ -50,7 +50,7 @@ fn main() {
 }
 ```
 
-在代码中，使用GetDesktopWindow函数获取桌面窗口句柄。使用unsafe关键字调用该函数，因为该函数是一个裸指针函数，需要手动管理内存安全。
+在代码中，使用 GetDesktopWindow 函数获取桌面窗口句柄。使用 unsafe 关键字调用该函数，因为该函数是一个裸指针函数，需要手动管理内存安全。
 
 ### 创建窗口
 
@@ -200,11 +200,11 @@ fn main() {
 }
 ```
 
-在代码中，使用RegisterHotKey函数注册一个热键，当用户按下Ctrl+C时，会收到WM_HOTKEY消息。使用GetMessageW函数获取消息，使用TranslateMessage函数翻译消息，使用DispatchMessageW函数分发消息。使用UnregisterHotKey函数注销热键。
+在代码中，使用 RegisterHotKey 函数注册一个热键，当用户按下 Ctrl+C 时，会收到 WM_HOTKEY 消息。使用 GetMessageW 函数获取消息，使用 TranslateMessage 函数翻译消息，使用 DispatchMessageW 函数分发消息。使用 UnregisterHotKey 函数注销热键。
 
 ### 创建进程
 
-在Windows系统中，可以使用CreateProcess函数创建一个进程。使用winapi模块可以方便地调用CreateProcess函数。
+在 Windows 系统中，可以使用 CreateProcess 函数创建一个进程。使用 winapi 模块可以方便地调用 CreateProcess 函数。
 
 ```rust
 use winapi::um::processthreadsapi::CreateProcessA;
@@ -241,8 +241,7 @@ fn main() {
 }
 ```
 
-上述代码中，首先使用CString将字符串转换为C类型的字符串，然后使用CreateProcessA函数创建进程。CreateProcessA函数的第一个参数是可执行文件的路径，第二个参数是命令行参数，第三个参数是进程的安全属性，第四个参数是主线程的安全属性，第五个参数是是否继承句柄，第六个参数是创建进程的标志，第七个参数是环境变量，第八个参数是当前目录，第九个参数是启动信息，第十个参数是进程信息。在这个示例中，使用了null_mut()表示不设置进程和主线程的安全属性，使用了CREATE_NEW_CONSOLE表示创建一个新的控制台窗口。如果CreateProcessA函数返回0，则说明创建进程失败。否则，创建进程成功。
-
+上述代码中，首先使用 CString 将字符串转换为 C 类型的字符串，然后使用 CreateProcessA 函数创建进程。CreateProcessA 函数的第一个参数是可执行文件的路径，第二个参数是命令行参数，第三个参数是进程的安全属性，第四个参数是主线程的安全属性，第五个参数是是否继承句柄，第六个参数是创建进程的标志，第七个参数是环境变量，第八个参数是当前目录，第九个参数是启动信息，第十个参数是进程信息。在这个示例中，使用了 null_mut()表示不设置进程和主线程的安全属性，使用了 CREATE_NEW_CONSOLE 表示创建一个新的控制台窗口。如果 CreateProcessA 函数返回 0，则说明创建进程失败。否则，创建进程成功。
 
 ### 创建线程
 
@@ -318,7 +317,7 @@ fn main() {
 
 ### 获取系统时间
 
-获取系统时间是一个常见的操作，可以用于记录日志或计算时间差等。下面是一个使用winapi模块获取系统时间的示例：
+获取系统时间是一个常见的操作，可以用于记录日志或计算时间差等。下面是一个使用 winapi 模块获取系统时间的示例：
 
 ```rust
 use winapi::um::sysinfoapi::GetSystemTime;
@@ -333,9 +332,9 @@ fn main() {
 }
 ```
 
-在这个示例中，我们使用了sysinfoapi模块中的GetSystemTime函数来获取系统时间。该函数的参数为一个SYSTEMTIME结构体指针，用于存储系统时间。我们使用std::mem::zeroed()创建了一个空的SYSTEMTIME结构体，然后将其地址传递给GetSystemTime函数。最后，我们将获取到的系统时间打印出来。
+在这个示例中，我们使用了 sysinfoapi 模块中的 GetSystemTime 函数来获取系统时间。该函数的参数为一个 SYSTEMTIME 结构体指针，用于存储系统时间。我们使用 std::mem::zeroed()创建了一个空的 SYSTEMTIME 结构体，然后将其地址传递给 GetSystemTime 函数。最后，我们将获取到的系统时间打印出来。
 
-### 使用COM组件
+### 使用 COM 组件
 
 ```rust
 use std::ptr::null_mut;
@@ -405,4 +404,4 @@ fn main() {
 
 ## 结论
 
-本教程介绍了winapi模块的基础用法和进阶用法，并提供了示例代码。在使用winapi模块时，需要注意数据类型、结构体、常量和指针类型的正确使用。通过使用winapi模块，Rust程序可以访问Windows操作系统的核心功能，实现更加丰富的功能。
+本教程介绍了 winapi 模块的基础用法和进阶用法，并提供了示例代码。在使用 winapi 模块时，需要注意数据类型、结构体、常量和指针类型的正确使用。通过使用 winapi 模块，Rust 程序可以访问 Windows 操作系统的核心功能，实现更加丰富的功能。
