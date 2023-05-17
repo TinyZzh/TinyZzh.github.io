@@ -13,7 +13,12 @@ mermaid: true
 ---
 
 ![](/images/2023-03/rust_tutorial_logo.png)
+<<<<<<< Updated upstream
 zbox 是一个基于 Rust 语言的轻量级分布式存储库，它提供了高效、安全、可靠的数据存储和访问。zbox 的设计目的是提供简单易用的 API，使得开发者能够快速构建分布式存储系统。zbox 采用了 Zero-copy、Copy-on-write、引用计数等技术，使得数据访问更加高效。
+=======
+
+zbox是一个基于Rust语言的轻量级分布式存储库，它提供了高效、安全、可靠的数据存储和访问。zbox的设计目的是提供简单易用的API，使得开发者能够快速构建分布式存储系统。zbox采用了Zero-copy、Copy-on-write、引用计数等技术，使得数据访问更加高效。
+>>>>>>> Stashed changes
 
 ## 基础用法
 

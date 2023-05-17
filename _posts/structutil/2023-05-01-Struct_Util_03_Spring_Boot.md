@@ -19,24 +19,37 @@ Struct Util 是一个 Java 语言开发的结构化数据映射处理工具。St
 
 struct-spring-boot-starter 主要是针对 struct-spring 的扩展，用于支持 Spring Boot 框架，通过自动化配置，降低 struct-spring 的使用门槛。
 
+> 模块依赖 **Spring Boot 2.5.x** 版本, 更高版本未经过测试.
+
 首先引入依赖包
 
 ```gradle
 implementation('org.structutil:struct-spring-boot-starter:{VERSION}')
 ```
 
-### struct.store 配置
+### 前缀 struct 配置
+
+| 注解名称   |         缺省值         | 可选字段 |                                                                         备注 |
+| :--------- | :--------------------: | :------: | ---------------------------------------------------------------------------: |
+| structRequiredDefault   |           false           |  Y   |                   字段依赖缺省值, 字段必须不为null |
+| ignoreEmptyRow  |        true        |    Y     |                                    是否忽略数据源中的空行 |
+| arrayConverter.stringSeparator |           '\|'            |    Y     | 数组转换器的分隔符 |
+| arrayConverter.stringTrim |           true            |    Y     | 是否调用trim方法处理字符串 |
+| arrayConverter.ignoreBlank |           false            |    Y     | 是否忽略空字符串 |
+
+### 前缀 struct.store.service 配置
 
 定义数据文件的结构.
 
 | 注解名称   |         缺省值         | 可选字段 |                                                                         备注 |
-| :--------- | :--------------------: | :------: | ---------------------------------------------------------------------------: |
-| fileName   |           ''           |  **N**   |                               数据文件名称, 带文件的后缀名. e.g. struct.xlsx |
-| sheetName  |        'Sheet1'        |    Y     |                                    表单名称. 针对 Excel 文件的包含多个 Sheet |
-| startOrder |           1            |    Y     | 控制文件读取的开始. 缺省为: 1 从 excel 的 1 行(第一行为 0)或文件的第一行开始 |
-| endOrder   |           -1           |    Y     |                                                控制文件读取的结束. 缺省为:-1 |
-| matcher    |  WorkerMatcher.class   |    Y     |                    自定义 WorkHandler, 可以根据条件指定处理的 StructHandler. |
-| filter     | StructBeanFilter.class |    Y     |                                                     过滤、筛选符合条件的 JO. |
+| :--------- | :--------------------: | :------: | ---------------------------------------------: |
+| workspace   |           './data/'           |  **N**   |                               工作空间根目录路径 |
+| lazyLoad  |        true        |    Y     |                                    是否按需加载，异步加载. |
+| watchFile |           true            |    Y     | 是否启用文件变动监听 |
+| scheduleInitialDelay   |           10000           |    Y     |         watchFile为true时有效，初始定时检查任务的时间. |
+| scheduleDelay    |  5000   |    Y     |                    watchFile为true时有效，定时检查任务的间隔时间. |
+| scheduleTimeUnit     | SECONDS |    Y     |    watchFile为true时有效，定时检查任务的时间单位. |
+| banner     | true |    Y     |                                                     打印Struct Util的Banner. |
 
 ### Spring 框架 缺省配置
 

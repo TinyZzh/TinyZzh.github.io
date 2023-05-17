@@ -39,10 +39,14 @@ let my_cell = RefCell::new(42);
 ```rust
 use std::cell::RefCell;
 
-let my_cell = RefCell::new(42);
+fn main() {
+    let my_cell = RefCell::new(42);
 
-let my_ref = my_cell.borrow();
-println!("The value in my_cell is: {}", *my_ref);
+    let my_ref = my_cell.borrow();
+    println!("The value in my_cell is: {}", *my_ref);
+}
+//    输出结果
+//    The value in my_cell is: 42
 ```
 
 这里，我们首先创建了一个 `RefCell`，然后使用 `borrow()` 方法获取了一个 `Ref` 对象。我们可以使用 `*` 运算符来访问 `Ref` 中的值。
@@ -54,11 +58,15 @@ println!("The value in my_cell is: {}", *my_ref);
 ```rust
 use std::cell::RefCell;
 
-let my_cell = RefCell::new(42);
+fn main() {
+    let my_cell = RefCell::new(42);
 
-let mut my_ref = my_cell.borrow_mut();
-*my_ref = 100;
-println!("The new value in my_cell is: {}", *my_ref);
+    let mut my_ref = my_cell.borrow_mut();
+    *my_ref = 100;
+    println!("The new value in my_cell is: {}", *my_ref);
+}
+//    输出结果
+//    The new value in my_cell is: 100
 ```
 
 这里，我们首先创建了一个 `RefCell`，然后使用 `borrow_mut()` 方法获取了一个 `RefMut` 对象。我们可以使用 `*` 运算符来修改 `RefMut` 中的值。
@@ -70,10 +78,14 @@ println!("The new value in my_cell is: {}", *my_ref);
 ```rust
 use std::cell::RefCell;
 
-let my_cell = RefCell::new(42);
+fn main() {
+    let my_cell = RefCell::new(42);
 
-let my_ref = my_cell.borrow();
-let my_mut_ref = my_cell.borrow_mut(); // panic!
+    let my_ref = my_cell.borrow();
+    let my_mut_ref = my_cell.borrow_mut(); // panic!
+}
+//    输出结果
+// thread 'main' panicked at 'already borrowed: BorrowMutError', src/main.rs:17:26
 ```
 
 这里，我们首先获取了一个不可变引用 `my_ref`，然后试图获取一个可变引用 `my_mut_ref`。由于我们已经有了一个不可变引用，所以 Rust 会在运行时检查，发现了错误，就会 panic。
@@ -89,6 +101,8 @@ let my_cell = RefCell::new(42);
 
 let mut my_mut_ref = my_cell.borrow_mut();
 let my_ref = my_cell.borrow(); // compile error!
+//    输出结果
+// thread 'main' panicked at 'already borrowed: BorrowMutError', src/main.rs:17:22
 ```
 
 这里，我们首先获取了一个可变引用 `my_mut_ref`，然后试图获取一个不可变引用 `my_ref`。由于我们已经有了一个可变引用，所以 Rust 会在编译时检查，发现了错误，就会报错。
@@ -105,6 +119,7 @@ let my_cell = RefCell::new(42);
 let my_ref1 = my_cell.borrow();
 let my_ref2 = my_cell.borrow();
 let mut my_mut_ref = my_cell.borrow_mut(); // panic!
+//    thread 'main' panicked at 'already borrowed: BorrowMutError', src/main.rs:18:30
 ```
 
 这里，我们首先获取了两个不可变引用 `my_ref1` 和 `my_ref2`，然后试图获取一个可变引用 `my_mut_ref`。由于我们已经有了两个不可变引用，所以 Rust 会在运行时检查，发现了错误，就会 panic。
@@ -132,16 +147,18 @@ let my_mut_ref2 = my_cell.borrow_mut(); // compile error!
 use std::cell::RefCell;
 use std::rc::Rc;
 
-let my_cell = Rc::new(RefCell::new(42));
+fn main() {
+    let my_cell = Rc::new(RefCell::new(42));
 
-let my_ref1 = my_cell.borrow();
-let my_ref2 = my_cell.borrow();
-let mut my_mut_ref = my_cell.borrow_mut();
-
-*my_mut_ref = 100;
-
-println!("The value in my_cell is: {}", *my_ref1);
-println!("The value in my_cell is: {}", *my_ref2);
+    let my_ref1 = my_cell.borrow().clone();
+    let my_ref2 = my_cell.borrow().clone();
+    {
+        let mut my_mut_ref = my_cell.borrow_mut();
+        *my_mut_ref = 100;
+    }
+    println!("The value in my_cell is: {:?}", my_ref1);
+    println!("The value in my_cell is: {:?}", my_ref2);
+}
 ```
 
 这里，我们首先创建了一个 `Rc<RefCell<i32>>`，然后分别获取了两个不可变引用 `my_ref1` 和 `my_ref2`，以及一个可变引用 `my_mut_ref`。我们可以使用 `*` 运算符来访问 `Ref` 和 `RefMut` 中的值。
@@ -182,14 +199,29 @@ struct Node {
     next: Option<Rc<RefCell<Node>>>,
 }
 
-let node1 = Rc::new(RefCell::new(Node { value: 1, next: None }));
-let node2 = Rc::new(RefCell::new(Node { value: 2, next: None }));
+fn main() {
+    let node1 = Rc::new(RefCell::new(Node {
+        value: 1,
+        next: None,
+    }));
+    let node2 = Rc::new(RefCell::new(Node {
+        value: 2,
+        next: None,
+    }));
 
-node1.borrow_mut().next = Some(node2.clone());
-node2.borrow_mut().next = Some(node1.clone());
+    {
+        node1.borrow_mut().next = Some(node2.clone());
+    }
+    {
+        node2.borrow_mut().next = Some(node1.clone());
+    }
 
-println!("The value of node1 is: {}", node1.borrow().value);
-println!("The value of node2 is: {}", node2.borrow().value);
+    println!("The value of node1 is: {}", node1.borrow().value);
+    println!("The value of node2 is: {}", node2.borrow().value);
+}
+//    输出结果
+// The value of node1 is: 1
+// The value of node2 is: 2
 ```
 
 这里，我们创建了两个 `Rc<RefCell<Node>>`，然后将它们互相引用。由于我们使用了 `RefCell`，所以可以在创建时互相引用，而不需要先创建一个对象，然后再修改它们的引用。
@@ -206,14 +238,18 @@ struct Node {
     next: Option<Box<RefCell<Node>>>,
 }
 
-let mut node1 = Box::new(RefCell::new(Node { value: 1, next: None }));
-let mut node2 = Box::new(RefCell::new(Node { value: 2, next: None }));
-
-node1.borrow_mut().next = Some(node2);
-node2.borrow_mut().next = Some(node1);
-
-println!("The value of node1 is: {}", node1.borrow().value);
-println!("The value of node2 is: {}", node2.borrow().value);
+fn main() {
+    let mut node1 = Box::new(RefCell::new(Node { value: 1, next: None }));
+    let mut node2 = Box::new(RefCell::new(Node { value: 2, next: None }));
+    
+    {
+        node1.borrow_mut().next = Some(node2);
+    node2.borrow_mut().next = Some(node1);
+    }
+    
+    println!("The value of node1 is: {}", node1.borrow().value);
+    println!("The value of node2 is: {}", node2.borrow().value);
+}
 ```
 
 这里，我们创建了两个 `Box<RefCell<Node>>`，然后将它们互相引用。由于我们使用了 `RefCell`，所以可以在可变引用中嵌套另一个可变引用。
@@ -230,12 +266,16 @@ struct Person {
     age: RefCell<i32>,
 }
 
-let person = Person { name: "Alice".to_string(), age: RefCell::new(30) };
-
-let mut my_age = person.age.borrow_mut();
-*my_age += 1;
-
-println!("{} is now {} years old.", person.name, *person.age.borrow());
+fn main() {
+    let person = Person { name: "Alice".to_string(), age: RefCell::new(30) };
+    {
+        let mut my_age = person.age.borrow_mut();
+        *my_age += 1;
+    }
+    println!("{} is now {} years old.", person.name, *person.age.borrow());
+}
+//    输出结果
+//    Alice is now 31 years old.
 ```
 
 这里，我们创建了一个 `Person` 结构体，其中包含一个 `String` 类型的 `name` 字段和一个 `RefCell<i32>` 类型的 `age` 字段。我们可以在不可变引用的情况下修改 `age` 字段中的值。
@@ -255,12 +295,14 @@ println!("{} is now {} years old.", person.name, *person.age.borrow());
 ```rust
 use std::cell::RefCell;
 
+#[derive(Debug)]
 enum State {
     A,
     B,
     C,
 }
 
+#[derive(Debug)]
 struct StateMachine {
     state: RefCell<State>,
     count: RefCell<i32>,
@@ -292,14 +334,20 @@ impl StateMachine {
     }
 }
 
-let sm = StateMachine::new();
-
-sm.next();
-println!("State is {:?}, count is {}", *sm.state.borrow(), *sm.count.borrow());
-sm.next();
-println!("State is {:?}, count is {}", *sm.state.borrow(), *sm.count.borrow());
-sm.next();
-println!("State is {:?}, count is {}", *sm.state.borrow(), *sm.count.borrow());
+fn main() {
+    let sm = StateMachine::new();
+    
+    sm.next();
+    println!("State is {:?}, count is {}", *sm.state.borrow(), *sm.count.borrow());
+    sm.next();
+    println!("State is {:?}, count is {}", *sm.state.borrow(), *sm.count.borrow());
+    sm.next();
+    println!("State is {:?}, count is {}", *sm.state.borrow(), *sm.count.borrow());
+}
+//    输出结果
+// State is B, count is 1
+// State is C, count is 3
+// State is A, count is 6
 ```
 
 这里，我们创建了一个 `StateMachine` 结构体，其中包含一个 `RefCell<State>` 类型的 `state` 字段和一个 `RefCell<i32>` 类型的 `count` 字段。我们可以在不可变引用的情况下修改 `state` 和 `count` 字段中的值。
@@ -329,7 +377,7 @@ fn main() {
 
     let mut node = node1;
     while let Some(next) = node.borrow().next.clone() {
-        println!("The value of node is: {}", node.borrow().value);
+        println!("The value of node is: {}", next.borrow().value);
         node = next;
     }
     println!("The value of node is: {}", node.borrow().value);

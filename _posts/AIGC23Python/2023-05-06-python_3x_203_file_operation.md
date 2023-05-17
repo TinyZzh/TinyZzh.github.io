@@ -3,8 +3,8 @@ layout: post
 read_time: true
 show_date: true
 img: images/2023-04/python-logo-big.png
-title: Python 3.x从基础到实战 - 检查内存可用大小
-date: 2023-04-27 12:00:00 +0800
+title: Python 3.x从基础到实战 - 文件相关操作
+date: 2023-05-06 12:00:00 +0800
 categories: [python3]
 tags: [python3, python]
 toc: yes

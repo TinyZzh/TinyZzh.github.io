@@ -149,7 +149,7 @@ Service 中总结和内置博主业务中常用的一些方法。列表如下：
 
 以 Map 的形式管理 Struct 数据。
 
-## StructKeyResolver
+### StructKeyResolver
 
 通过传入 Bean 并获取 MapStructStore 的 key 字段值。
 

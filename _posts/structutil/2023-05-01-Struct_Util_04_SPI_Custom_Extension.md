@@ -64,6 +64,8 @@ ExtensionDefinition createExtensionDefinition(String clzName, ClassLoader loader
 
 ### 自定义 Converter
 
+Struct Util内置了常用的类型转换器, 当用户有特殊转换需求时，可以通过扩展 `Converter` 接口实现转换业务，并通过 `SPI` 机制自动注册到系统中。以下是一个简单的字符串转数组的转换器实例。
+
 ```java
 public class StringToArrayConverter implements Converter {
 
