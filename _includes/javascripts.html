@@ -203,7 +203,7 @@
         sign = document.createElement('div');
         sign.className = "toc-sign";
         sign.innerHTML = chevron_down;
-        coll[i].insertBefore(sign, coll[i].childNodes[0].nextSibling);
+        coll[i].insertBefore(sign, coll[i].firstElementChild.nextSibling);
         coll[i].addEventListener("click", function() {
           var content = this.lastElementChild;
           if (content.style.maxHeight){
