@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang='zh'>
+  
+
+
+
+
+<head>
+	<meta charset="utf-8">
+	<title>Rust语言从入门到精通系列 - Closure 闭包 - TinyZ's Blog</title>
+	<link rel="canonical" href="https://tinyzzh.github.io/rust/2023/03/16/rust_lang_tutorial_100_Closure.html">
+	<meta name="description" content="专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://tinyzzh.github.io"},
+  "headline": "Rust语言从入门到精通系列 - Closure 闭包",
+  "abstract": "",
+    "keywords": "Rust, 从入门到精通, Closure",
+    "wordcount": "924",
+    "image": ["https://tinyzzh.github.io/assets/imgimages/2023-03/rust_tutorial_logo.png"],
+  "datePublished": "2023-03-16 01:00:00 +0800",
+  "dateModified": "2023-03-16 01:00:00 +0800",
+  "author": {
+    "@type": "Person",
+    "name": ""},
+  "publisher": {
+    "@type":  "Organization",
+    "logo": {
+        "@type": "ImageObject",
+        "encodingFormat": "image/png",
+        "contentUrl": "https://tinyzzh.github.io/assets/img/branding/TinyZ-symbol-black.png",
+        "url": "https://tinyzzh.github.io/assets/img/branding/TinyZ-symbol-black.png"},
+    "name" : "TinyZ's Blog"}
+}
+</script>
+<!-- Open Graph data -->
+<meta property="og:url" content="https://tinyzzh.github.io/rust/2023/03/16/rust_lang_tutorial_100_Closure.html"/>
+<meta property="og:type" content="article"/>
+<meta property="og:title" content="Rust语言从入门到精通系列 - Closure 闭包"/>
+<meta property="og:description" content=""/>
+<meta property="og:image" content="https://tinyzzh.github.io/assets/imgimages/2023-03/rust_tutorial_logo.png"/>
+<meta property="og:image:alt" content="Rust语言从入门到精通系列 - Closure 闭包"/>
+<meta property="og:site_name" content="TinyZ's Blog" />
+<meta property="article:published_time" content="2023-03-16 01:00:00 +0800" />
+<meta property="article:modified_time" content="2023-03-16 01:00:00 +0800" />
+<meta property="article:tag" content="Rust, 从入门到精通, Closure" />
+<meta property="fb:admins" content="" />
+<!-- Schema.org markup for Google -->
+<meta itemprop="name" content="Rust语言从入门到精通系列 - Closure 闭包">
+<meta itemprop="description" content="">
+<meta itemprop="image" content="https://tinyzzh.github.io/assets/imgimages/2023-03/rust_tutorial_logo.png">
+<!-- Twitter Card data -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="">
+<meta name="twitter:title" content="Rust语言从入门到精通系列 - Closure 闭包">
+<meta name="twitter:description" content="">
+<meta name="twitter:creator" content="">
+<meta data-rh="true" name="twitter:label1" content="Word count"/>
+<meta data-rh="true" name="twitter:data1" content="924"/>
+<meta name="twitter:image:src" content="https://tinyzzh.github.io/assets/img/images/2023-03/rust_tutorial_logo.png">
+	<!-- Windows Phone -->
+	<meta name="msapplication-navbutton-color" content="#311e3e">
+	<!-- iOS Safari -->
+	<meta name="apple-mobile-web-app-status-bar-style" content="#311e3e">
+	<!-- Google Fonts -->
+	<link rel="preconnect" href="https://fonts.gstatic.com" />
+	<style>
+/* latin */
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/lora/v17/0QIvMX1D_JOuMwr7I_FMl_E.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin */
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 600;
+  src: url(https://fonts.gstatic.com/s/lora/v17/0QIvMX1D_JOuMwr7I_FMl_E.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin */
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-style: normal;
+  font-weight: 200;
+  src: url(https://fonts.gstatic.com/s/sourcesanspro/v14/6xKydSBYKcSV-LCoeQqfX1RYOo3i94_wlxdu3cOWxw.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin */
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/sourcesanspro/v14/6xK3dSBYKcSV-LCoeQqfX1RYOo3qOK7lujVj9w.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin */
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-style: normal;
+  font-weight: 700;
+  src: url(https://fonts.gstatic.com/s/sourcesanspro/v14/6xKydSBYKcSV-LCoeQqfX1RYOo3ig4vwlxdu3cOWxw.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+	</style>
+	<!-- <link href="https://fonts.googleapis.com/css?family=Lora:400,600|Source+Sans+Pro:200,400,700" rel="stylesheet"> -->
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="../../../../assets/fonts/font-awesome/css/font-awesome.min.css">
+	<!-- Styles -->
+	<link rel="stylesheet" href="../../../../assets/css/main.css">
+	<link rel="stylesheet" href="../../../../assets/css/sass/syntax.css">
+	
+
+
+
+
+<link rel="icon" href="../../../../assets/img/favicon/favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="../../../../assets/img/favicon/favicon.ico">
+<link rel="apple-touch-icon" sizes="72x72" href="../../../../assets/img/favicon/favicon.ico">
+<link rel="apple-touch-icon" sizes="114x114" href="../../../../assets/img/favicon/favicon.ico">
+
+  
+	<script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?f5d72321042a4068a214bb314ca29e38";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+	
+  
+</head>
+
+  <body>
+    
+
+
+
+
+<section class="hidden">
+  <div class="post">
+      <a  class="post-list-title" href="../../../../rust/2023/03/16/rust_lang_tutorial_100_Closure.html">Rust语言从入门到精通系列 - Closure 闭包</a>
+      
+
+  <span class = "post-card-meta">
+  
+  
+    <span class="meta-pre"></span>
+  
+  
+    
+      
+      
+      <span class="page_meta-date">
+        <time datetime="2023-03-16T01:00:00+08:00">2023-03-16</time>
+      </span>
+    
+    
+      <span class="meta-sep"></span>
+    
+  
+  
+    
+    
+    <span class="page_meta-readtime">
+      
+        4 分钟阅读
+      
+    </span>
+  
+  
+  </span>
+
+        <div class="post-excerpt">
+            <p><img src="/images/2023-03/rust_tutorial_logo.png" alt="" /></p>
+<a class="read-more" href="../../../../rust/2023/03/16/rust_lang_tutorial_100_Closure.html"> 点击阅读</a>
+        </div>
+  </div>
+</section>
+<div class="flex-container transparent">
+  
+
+
+
+
+<header class="main-header">
+  <div class="wrapper">
+    <div class="header-flex">
+      <div class="menu-icon-container">
+        <span class="menu-icon"><i class="fa fa-bars" aria-hidden="true"></i></span>
+      </div>
+      <nav class="main-nav">
+        <span class="menu-icon-close"><i class="fa fa-times" aria-hidden="true"></i></span>
+        <ul>
+          <li>
+            <div class="theme-toggle night">
+    <input class="night" type="checkbox" id="theme-switch">
+    <label class="night" for="theme-switch">
+        <div class="toggle night"></div>
+        <div class="names night">             
+        <p class="light night"><svg class="night" width="20" viewBox="0 0 25 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path class="night" d="M12.5 2.49871C11.3401 2.50016 10.2282 2.96156 9.40801 3.78171C8.58785 4.60187 8.12645 5.71383 8.125 6.87371C8.125 7.03947 8.19085 7.19844 8.30806 7.31565C8.42527 7.43286 8.58424 7.49871 8.75 7.49871C8.91576 7.49871 9.07473 7.43286 9.19194 7.31565C9.30915 7.19844 9.375 7.03947 9.375 6.87371C9.37593 6.04519 9.70547 5.25088 10.2913 4.66503C10.8772 4.07918 11.6715 3.74964 12.5 3.74871C12.6658 3.74871 12.8247 3.68286 12.9419 3.56565C13.0592 3.44844 13.125 3.28947 13.125 3.12371C13.125 2.95795 13.0592 2.79898 12.9419 2.68177C12.8247 2.56456 12.6658 2.49871 12.5 2.49871V2.49871ZM12.5 -0.00129131C8.47891 -0.00129131 5.62031 3.26238 5.625 6.88269C5.62487 8.54403 6.22974 10.1486 7.32656 11.3964C8.32891 12.5378 9.29062 14.4007 9.375 14.9987L9.37734 17.9358C9.37744 18.0587 9.41402 18.1787 9.48242 18.2807L10.4395 19.7198C10.4964 19.8055 10.5737 19.8758 10.6644 19.9245C10.7551 19.9731 10.8564 19.9986 10.9594 19.9987H14.0395C14.1426 19.9988 14.2441 19.9734 14.3351 19.9247C14.426 19.8761 14.5034 19.8057 14.5605 19.7198L15.5176 18.28C15.5854 18.1776 15.6219 18.0578 15.6227 17.935L15.625 14.9987C15.7129 14.3846 16.6797 12.5303 17.6734 11.3964C18.5434 10.4028 19.1087 9.17963 19.3015 7.87318C19.4944 6.56673 19.3066 5.23238 18.7608 4.02985C18.215 2.82732 17.3342 1.80757 16.2238 1.09264C15.1135 0.377721 13.8206 -0.00207746 12.5 -0.00129131V-0.00129131ZM14.3727 17.7452L13.7047 18.7487H11.2937L10.6273 17.7452V17.4987H14.3738L14.3727 17.7452ZM14.375 16.2487H10.625L10.6227 14.9987H14.375V16.2487ZM16.7348 10.5725C16.1879 11.1956 15.316 12.4511 14.7594 13.7479H10.243C9.68516 12.4507 8.81328 11.1956 8.26641 10.5725C7.36971 9.5491 6.87599 8.2344 6.87734 6.87371C6.87031 3.8659 9.23594 1.24871 12.5 1.24871C15.602 1.24871 18.125 3.77176 18.125 6.87371C18.1249 8.23456 17.6305 9.54904 16.7336 10.5725H16.7348ZM3.75 6.87371C3.75 6.70795 3.68415 6.54898 3.56694 6.43177C3.44973 6.31456 3.29076 6.24871 3.125 6.24871H0.625C0.45924 6.24871 0.300269 6.31456 0.183058 6.43177C0.065848 6.54898 0 6.70795 0 6.87371C0 7.03947 0.065848 7.19844 0.183058 7.31565C0.300269 7.43286 0.45924 7.49871 0.625 7.49871H3.125C3.29076 7.49871 3.44973 7.43286 3.56694 7.31565C3.68415 7.19844 3.75 7.03947 3.75 6.87371ZM20.625 2.49871C20.7221 2.49849 20.8178 2.4759 20.9047 2.43269L23.4047 1.18269C23.5529 1.10852 23.6657 0.978483 23.718 0.821201C23.7704 0.66392 23.7582 0.492273 23.684 0.344021C23.6473 0.270614 23.5964 0.205161 23.5344 0.151397C23.4724 0.0976336 23.4004 0.0566132 23.3225 0.0306781C23.1652 -0.0217002 22.9936 -0.00945342 22.8453 0.0647243L20.3453 1.31472C20.2194 1.37771 20.1184 1.48136 20.0588 1.60889C19.9991 1.73643 19.9843 1.88037 20.0166 2.0174C20.049 2.15442 20.1267 2.2765 20.2371 2.36386C20.3475 2.45122 20.4842 2.49873 20.625 2.49871ZM24.375 6.24871H21.875C21.7092 6.24871 21.5503 6.31456 21.4331 6.43177C21.3158 6.54898 21.25 6.70795 21.25 6.87371C21.25 7.03947 21.3158 7.19844 21.4331 7.31565C21.5503 7.43286 21.7092 7.49871 21.875 7.49871H24.375C24.5408 7.49871 24.6997 7.43286 24.8169 7.31565C24.9342 7.19844 25 7.03947 25 6.87371C25 6.70795 24.9342 6.54898 24.8169 6.43177C24.6997 6.31456 24.5408 6.24871 24.375 6.24871ZM4.65469 1.31472L2.15469 0.0647243C2.08128 0.0279952 2.00136 0.00608435 1.91948 0.00024269C1.83761 -0.00559897 1.75539 0.004743 1.67751 0.0306781C1.52023 0.0830564 1.39019 0.195769 1.31602 0.344021C1.24184 0.492273 1.22959 0.66392 1.28197 0.821201C1.33435 0.978483 1.44706 1.10852 1.59531 1.18269L4.09531 2.43269C4.18223 2.4759 4.27794 2.49849 4.375 2.49871C4.5158 2.49873 4.65248 2.45122 4.7629 2.36386C4.87332 2.2765 4.951 2.15442 4.98337 2.0174C5.01574 1.88037 5.0009 1.73643 4.94124 1.60889C4.88158 1.48136 4.78061 1.37771 4.65469 1.31472ZM23.4047 12.5647L20.9047 11.3147C20.7564 11.2405 20.5847 11.2283 20.4274 11.2807C20.2701 11.3332 20.14 11.4459 20.0658 11.5942C19.9916 11.7425 19.9794 11.9142 20.0318 12.0715C20.0842 12.2289 20.197 12.3589 20.3453 12.4331L22.8453 13.6831C22.9936 13.7573 23.1653 13.7695 23.3226 13.7171C23.4799 13.6647 23.61 13.5519 23.6842 13.4036C23.7584 13.2553 23.7706 13.0836 23.7182 12.9263C23.6658 12.769 23.553 12.6389 23.4047 12.5647V12.5647ZM4.375 11.2487C4.27794 11.2489 4.18223 11.2715 4.09531 11.3147L1.59531 12.5647C1.44701 12.6389 1.33425 12.769 1.28183 12.9263C1.25588 13.0042 1.24552 13.0864 1.25135 13.1683C1.25719 13.2502 1.27909 13.3302 1.31582 13.4036C1.35255 13.477 1.40338 13.5425 1.46542 13.5963C1.52745 13.6501 1.59947 13.6911 1.67737 13.7171C1.83469 13.7695 2.00638 13.7573 2.15469 13.6831L4.65469 12.4331C4.78083 12.3702 4.88202 12.2666 4.94183 12.1389C5.00164 12.0113 5.01656 11.8672 4.98417 11.7301C4.95178 11.5929 4.87397 11.4707 4.76339 11.3833C4.65281 11.2959 4.51594 11.2485 4.375 11.2487V11.2487Z" /></svg></p>
+        <p class="dark night"><svg class="night" width="20" viewBox="0 0 25 21" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path class="night" d="M6.39614 3.72646C7.50591 1.56178 9.72622 0.00900831 12.4782 0.00114817C13.8006 -0.00388798 15.0965 0.375153 16.2101 1.09278C17.3237 1.8104 18.2079 2.83612 18.7564 4.04682C19.3049 5.25751 19.4945 6.60175 19.3024 7.91818C19.1103 9.23461 18.5447 10.4673 17.6735 11.4683C17.5227 11.6416 17.3516 11.859 17.1739 12.1069L9.47856 6.12184C9.65443 5.45016 10.046 4.85578 10.5924 4.43118C11.1387 4.00657 11.8093 3.77554 12.4997 3.77401C12.6654 3.77401 12.8244 3.70776 12.9416 3.58984C13.0588 3.47191 13.1247 3.31197 13.1247 3.1452C13.1247 2.97843 13.0588 2.81849 12.9416 2.70057C12.8244 2.58264 12.6654 2.51639 12.4997 2.51639C11.6212 2.5173 10.7634 2.78383 10.0374 3.28141C9.31146 3.77899 8.75092 4.48463 8.42856 5.30674L6.39614 3.72646ZM6.39614 10.0841C6.64968 10.5817 6.96225 11.0465 7.327 11.4683C7.97231 12.2091 8.98169 13.7568 9.36645 15.0624C9.36645 15.0726 9.36919 15.0828 9.37075 15.093H12.8372L6.39614 10.0841ZM9.37466 16.3502V17.8574C9.37584 18.1045 9.44934 18.3458 9.58599 18.5511L10.2536 19.5607C10.3675 19.7335 10.5221 19.8753 10.7037 19.9734C10.8852 20.0715 11.0881 20.1229 11.2942 20.1231H13.7047C13.9107 20.1231 14.1135 20.0718 14.2951 19.9739C14.4766 19.876 14.6313 19.7345 14.7454 19.5619L15.4129 18.5511C15.5492 18.3451 15.622 18.1033 15.6223 17.8558V17.2581L14.4528 16.3502H9.37466Z"/>
+            <path class="night" d="M0.131556 1.2363L0.898352 0.243172C0.948738 0.177883 1.01142 0.123229 1.08282 0.0823368C1.15423 0.0414448 1.23294 0.0151171 1.31446 0.00486006C1.39598 -0.00539702 1.47872 0.000617709 1.55793 0.0225602C1.63714 0.0445026 1.71127 0.0819422 1.77609 0.132737L24.7585 18.0039C24.8894 18.1062 24.9745 18.2567 24.9952 18.4221C25.0158 18.5876 24.9703 18.7545 24.8687 18.8862L24.1015 19.8794C24.0511 19.9446 23.9884 19.9992 23.917 20.0401C23.8457 20.0809 23.767 20.1072 23.6855 20.1175C23.6041 20.1277 23.5214 20.1217 23.4422 20.0998C23.363 20.0779 23.2889 20.0405 23.2241 19.9898L0.241322 2.1186C0.110489 2.01624 0.0254259 1.86578 0.00484145 1.70032C-0.015743 1.53486 0.0298368 1.36795 0.131556 1.2363V1.2363Z"/>
+            </svg></p>
+        </div>
+    </label>
+</div>
+          </li>
+          <li>
+            <a href="../../../../">
+              <div class="left">
+                首页
+              </div>  
+              <div class="right">
+                <svg width="24px" aria-hidden="true" focusable="false" role="img" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g><rect x="83.534" y="40.929" width="3.997" height="20.071"/></g><path d="M16.466,41.931l33.548-25.123L92.81,48.877l2.396-3.198L50.015,11.814L4.794,45.679l2.396,3.199l5.279-3.954v42.763h75.062  V61h-3.997v22.69H64.598V54.068H35.402V83.69H16.466V41.931z M39.399,58.065h21.202V83.69H39.399V58.065z"/></svg>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="../../../../archive.html">
+              <div class="left">
+                归档
+              </div>
+              <div class="right">
+                <svg width="24px" aria-hidden="true" focusable="false" role="img" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="-3 3 64 64"><g><path d="M60.992,31.985c0-15.979-13-28.978-28.979-28.978c-15.994,0-29.006,12.999-29.006,28.978   c0,15.994,13.012,29.007,29.006,29.007v-2c-14.891,0-27.006-12.115-27.006-27.007c0-14.875,12.115-26.978,27.006-26.978   c14.876,0,26.979,12.103,26.979,26.978c0,8.945-4.479,17.329-11.804,22.338l0.874-10.062l-1.992-0.174l-1.135,13.071l13.042,1.136   l0.174-1.992l-9.183-0.799C56.443,50.079,60.992,41.321,60.992,31.985z"/><polygon points="33.014,12.682 31.014,12.682 31.014,32.398 39.811,41.224 41.227,39.812 33.014,31.572  "/></g></svg>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="../../../../tags.html">
+              <div class="left">
+                标签
+              </div>
+              <div class="right">
+                <svg width="24px" aria-hidden="true" focusable="false" role="img" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g><path d="M75.244,15.066c-2.59,0-5.027,1.012-6.857,2.843c-3.781,3.785-3.778,9.94,0.002,13.724    c1.831,1.833,4.266,2.843,6.857,2.843s5.026-1.01,6.861-2.843c3.781-3.785,3.781-9.943-0.002-13.724    C80.275,16.076,77.838,15.066,75.244,15.066z M78.766,28.252c-1.871,1.869-5.129,1.869-6.996,0c-1.929-1.931-1.931-5.069-0.002-7    c0.934-0.934,2.175-1.448,3.498-1.448c1.322,0,2.564,0.515,3.5,1.448C80.691,23.183,80.691,26.321,78.766,28.252z M94.632,41.027    l0.005-28.872c0-3.745-3.05-6.792-6.792-6.792L58.973,5.368l-1.237-0.004c-1.893,0-4.75,0-6.617,1.869L7.008,51.342    c-1.06,1.059-1.645,2.467-1.645,3.966s0.583,2.908,1.644,3.968l33.717,33.717c1.058,1.06,2.467,1.645,3.966,1.645    s2.908-0.585,3.968-1.645l44.106-44.111c1.893-1.886,1.88-4.604,1.869-7.227L94.632,41.027z M90.022,46.139L45.913,90.25    c-0.654,0.65-1.792,0.652-2.443,0L9.752,56.532c-0.328-0.327-0.507-0.762-0.507-1.225c0-0.462,0.18-0.894,0.507-1.221    L53.861,9.976c0.676-0.674,2.284-0.731,3.874-0.731l1.237,0.004l28.872-0.004c1.604,0,2.909,1.306,2.909,2.911l-0.005,28.872    l0.005,0.642C90.76,43.585,90.769,45.392,90.022,46.139z"/></g></svg>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="../../../../about.html">
+              <div class="left">
+                关于
+              </div>
+              <div class="right">
+                <svg width='24px' aria-hidden="true" focusable="false" role="img" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 846.66 846.66"><g><path d="M351.26 453.22c-276.42,134.06 -224.86,336.22 -224.73,336.8 6.03,25.41 -32.58,34.56 -38.6,9.15 -0.15,-0.65 -55.78,-219.32 218.87,-367.66 -60.98,-39 -100.02,-106.82 -100.02,-182.56 0,-119.6 96.95,-216.55 216.55,-216.55 119.6,0 216.55,96.95 216.55,216.55 0,75.74 -39.04,143.56 -100.02,182.56 274.65,148.34 219.02,367.01 218.87,367.66 -6.02,25.41 -44.63,16.26 -38.6,-9.15 0.13,-0.58 51.69,-202.74 -224.73,-336.8 -22.55,7.96 -46.8,12.29 -72.07,12.29 -25.27,0 -49.52,-4.33 -72.07,-12.29zm72.07 -381.14c-97.68,0 -176.87,79.19 -176.87,176.87 0,97.69 79.19,176.87 176.87,176.87 97.68,0 176.87,-79.18 176.87,-176.87 0,-97.68 -79.19,-176.87 -176.87,-176.87z"/></g></svg>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="../../../../feed.xml">
+              <div class="left">
+                FEED
+              </div>
+              <div class="right">
+                <svg width='24px' aria-hidden="true" focusable="false" role="img" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M80 352c26.467 0 48 21.533 48 48s-21.533 48-48 48-48-21.533-48-48 21.533-48 48-48m0-32c-44.183 0-80 35.817-80 80s35.817 80 80 80 80-35.817 80-80-35.817-80-80-80zm367.996 147.615c-6.448-237.848-198.06-429.164-435.61-435.61C5.609 31.821 0 37.229 0 44.007v8.006c0 6.482 5.146 11.816 11.626 11.994 220.81 6.05 398.319 183.913 404.367 404.367.178 6.48 5.512 11.626 11.994 11.626h8.007c6.778 0 12.185-5.609 12.002-12.385zm-144.245-.05c-6.347-158.132-133.207-284.97-291.316-291.316C5.643 175.976 0 181.45 0 188.247v8.005c0 6.459 5.114 11.72 11.567 11.989 141.134 5.891 254.301 119.079 260.192 260.192.269 6.453 5.531 11.567 11.989 11.567h8.005c6.798 0 12.271-5.643 11.998-12.435z"></path></svg>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      
+      <div class="logo"><a href="../../../../"><img class="logo" id="logo" src="../../../../assets/img/branding/TinyZ-logo.svg" alt="TinyZ's Blog"></a></div>
+      <div class="search-icon-container">
+        <span class="search-icon"><a><i class="fa fa-search" aria-hidden="true"></i></a></span>
+      </div>
+    </div>
+  </div>
+</header> <!-- End Header -->
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Rust语言从入门到精通系列 - Closure 闭包">
+
+<meta itemprop="datePublished" content="2023-03-16T01:00:00+08:00">
+
+    <div class="page-image">
+      <div class="cover-image" style="background: url('../../../../images/2023-03/rust_tutorial_logo.png') center no-repeat; background-size: cover;"></div>
+    </div>
+    <div class="wrapper">
+      <div class="page-content">
+        <div class="header-page">
+          <h1 class="page-title">Rust语言从入门到精通系列 - Closure 闭包</h1>
+          
+
+  <span class = "post-page-meta">
+  
+    <p class="page_meta">
+  
+  
+  
+    
+      
+      
+      <span class="page_meta-date">
+        <time datetime="2023-03-16T01:00:00+08:00">2023-03-16</time>
+      </span>
+    
+    
+      <span class="meta-sep"></span>
+    
+  
+  
+    
+    
+    <span class="page_meta-readtime">
+      
+        4 分钟阅读
+      
+    </span>
+  
+  
+    </p>
+  
+  </span>
+
+        </div>
+        <aside class="sidebar side" id="sidebar">
+    
+
+
+
+<div class="tag-cloud">
+    
+        <ul class="tags side">
+            
+                <li><a href="../../../../tag.html?tag=Rust" class="tag side">Rust</a></li>
+            
+                <li><a href="../../../../tag.html?tag=%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A" class="tag side">从入门到精通</a></li>
+            
+                <li><a href="../../../../tag.html?tag=Closure" class="tag side">Closure</a></li>
+            
+    
+        </ul>
+</div>
+    <div class="share-options side">
+    <div class="share-hover side">
+        <span class="share-button side"><svg fill="currentColor" width="25" height="25" class="side"><g fill-rule="evenodd"><path d="M15.6 5a.42.42 0 0 0 .17-.3.42.42 0 0 0-.12-.33l-2.8-2.79a.5.5 0 0 0-.7 0l-2.8 2.8a.4.4 0 0 0-.1.32c0 .12.07.23.16.3h.02a.45.45 0 0 0 .57-.04l2-2V10c0 .28.23.5.5.5s.5-.22.5-.5V2.93l2.02 2.02c.08.07.18.12.3.13.11.01.21-.02.3-.08v.01"></path><path d="M18 7h-1.5a.5.5 0 0 0 0 1h1.6c.5 0 .9.4.9.9v10.2c0 .5-.4.9-.9.9H6.9a.9.9 0 0 1-.9-.9V8.9c0-.5.4-.9.9-.9h1.6a.5.5 0 0 0 .35-.15A.5.5 0 0 0 9 7.5a.5.5 0 0 0-.15-.35A.5.5 0 0 0 8.5 7H7a2 2 0 0 0-2 2v10c0 1.1.9 2 2 2h11a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2"></path></g></svg></span>
+        <div class="share-icons side" id="sidebar-icons">
+            <a class="twitter" href="https://twitter.com/intent/tweet?text=Rust语言从入门到精通系列 - Closure 闭包&url=https://tinyzzh.github.io/rust/2023/03/16/rust_lang_tutorial_100_Closure.html" title="Share on Twitter" rel="nofollow" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+            <a class="facebook" href="https://facebook.com/sharer.php?u=https://tinyzzh.github.io/rust/2023/03/16/rust_lang_tutorial_100_Closure.html" title="Share on Facebook" rel="nofollow" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+            <a class="reddit" href="http://www.reddit.com/submit?url=https://tinyzzh.github.io/rust/2023/03/16/rust_lang_tutorial_100_Closure.html&title=Rust语言从入门到精通系列 - Closure 闭包" title="Submit to Reddit" rel="nofollow" target="_blank"><i class="fa fa-reddit" aria-hidden="true"></i></a>
+            <a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https://tinyzzh.github.io/rust/2023/03/16/rust_lang_tutorial_100_Closure.html&title=Rust语言从入门到精通系列 - Closure 闭包&summary=&source=https://tinyzzh.github.io/rust/2023/03/16/rust_lang_tutorial_100_Closure.html" title="Share on LinkedIn" rel="nofollow" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+            <a class="email" href="mailto:?subject=Rust语言从入门到精通系列 - Closure 闭包&body=%0A%0ARead more here: https://tinyzzh.github.io/rust/2023/03/16/rust_lang_tutorial_100_Closure.html" title="Share via e-mail" rel="nofollow" target="_blank"><i class="fa fa-envelope" aria-hidden="true"></i></a>
+            <a class="copy-link" onclick="copyToClipboard()" title="Copy to clipboard" rel="nofollow" target="_blank"><svg width="20px" fill="currentColor" class="side" viewBox="0 0 18 18"><path d="M16.94 1.1A3.7 3.7 0 0 0 14.3 0c-1 0-1.94.39-2.64 1.1L7.43 5.3c-.91.92-2.09 3.2 0 5.27a.75.75 0 0 0 .82.16c.09-.03.17-.09.24-.15a.74.74 0 0 0 0-1.06c-1.16-1.15-.77-2.39-.02-3.16l4.24-4.22a2.2 2.2 0 0 1 1.58-.65c.6 0 1.16.23 1.58.65.86.87.86 2.29 0 3.16L12.7 8.47a.74.74 0 0 0 1.04 1.05l3.17-3.16a3.73 3.73 0 0 0 0-5.27h.03zM9.54 7.4a.74.74 0 0 0 0 1.06c1.16 1.15.76 2.39 0 3.16l-4.22 4.22c-.42.42-.99.65-1.59.65a2.23 2.23 0 0 1-1.58-3.82l3.17-3.16A.73.73 0 0 0 5.54 9a.78.78 0 0 0-.22-.52.77.77 0 0 0-1.05 0L1.1 11.64A3.72 3.72 0 0 0 3.74 18c1 0 1.94-.39 2.65-1.1l4.23-4.2c.21-.22.94-1.02 1.13-2.2.18-1.12-.2-2.15-1.12-3.07-.27-.27-.78-.27-1.06 0l-.02-.02z" clip-rule="evenodd" fill-rule="evenodd"></path></svg></a>
+        </div>
+    </div>
+    <div class='alert' style='font-size:.6em;color:var(--accent);text-align:center;'></div>
+</div>
+</aside>
+
+        <aside class="toc">
+  <nav class="toc-nav">
+    <li class="toc-title">
+      <svg aria-hidden="true" focusable="false" data-prefix="fad" data-icon="align-left" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-align-left fa-w-14 fa-2x"><g class="fa-group"><path fill="currentColor" d="M12.83 352h262.34A12.82 12.82 0 0 0 288 339.17v-38.34A12.82 12.82 0 0 0 275.17 288H12.83A12.82 12.82 0 0 0 0 300.83v38.34A12.82 12.82 0 0 0 12.83 352zm0-256h262.34A12.82 12.82 0 0 0 288 83.17V44.83A12.82 12.82 0 0 0 275.17 32H12.83A12.82 12.82 0 0 0 0 44.83v38.34A12.82 12.82 0 0 0 12.83 96z" class="fa-secondary"></path><path fill="currentColor" d="M432 160H16a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm0 256H16a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16z" class="fa-primary"></path></g></svg>
+    </li>
+    <ul class="toc-content" id="toc-content"><li class="toc-item-1"><a href="#闭包的应用场景">闭包的应用场景</a></li><li class="toc-item-1"><a href="#闭包的语法">闭包的语法</a></li><li class="toc-item-1"><a href="#闭包的类型">闭包的类型</a></li><li class="toc-item-1"><a href="#闭包的应用与实践">闭包的应用与实践</a></li><li class="toc-item-1"><a href="#总结">总结</a></li><li class="toc-item-1"><a href="#参考资料">参考资料</a></li></ul>
+  </nav>
+</aside>
+
+        
+        <p><img src="/images/2023-03/rust_tutorial_logo.png" alt="" /></p>
+
+<p>Rust语言的闭包是一种可以捕获外部变量并在需要时执行的匿名函数。闭包在Rust中是一等公民，它们可以像其他变量一样传递、存储和使用。闭包可以捕获其定义范围内的变量，并在必要时访问它们。这使得闭包在许多场景下非常有用，例如迭代器、异步编程和并发编程。</p>
+
+<p>闭包与函数的区别在于，闭包可以捕获它所定义的环境中的变量。这意味着，当闭包中使用变量时，它可以访问该变量的值。在Rust中，闭包被设计为可以自动推断变量的类型，因此可以方便地使用。</p>
+
+<blockquote>
+  <p>Rust闭包概念和python中Lambda表达式，Java的Lambda表达式很类似，可以帮助理解和应用。</p>
+</blockquote>
+
+<h2 id="闭包的应用场景">闭包的应用场景</h2>
+
+<p>闭包在Rust语言中被广泛应于许多场景。例如，在多线程编程中，闭包可以用来定义线程任务。在Web开发中，闭包可以用来定义路由处理函数。在数据处理领域，闭包可以用来定义数据转换和过滤函数等等。
+下面，我们以<code>Animal</code>为例，演示如何使用闭包实现一些常见的数据处理和转换操作。</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+</pre></td><td class="rouge-code"><pre><span class="k">use</span> <span class="nn">std</span><span class="p">::</span><span class="nn">collections</span><span class="p">::</span><span class="n">HashMap</span><span class="p">;</span>
+
+<span class="nd">#[derive(Debug)]</span>
+<span class="k">struct</span> <span class="n">Animal</span> <span class="p">{</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span>
+    <span class="n">species</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span>
+    <span class="n">age</span><span class="p">:</span> <span class="nb">i32</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="k">impl</span> <span class="n">Animal</span> <span class="p">{</span>
+    <span class="k">fn</span> <span class="nf">new</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="o">&amp;</span><span class="nb">str</span><span class="p">,</span> <span class="n">species</span><span class="p">:</span> <span class="o">&amp;</span><span class="nb">str</span><span class="p">,</span> <span class="n">age</span><span class="p">:</span> <span class="nb">i32</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="k">Self</span> <span class="p">{</span>
+        <span class="n">Animal</span> <span class="p">{</span>
+            <span class="n">name</span><span class="p">:</span> <span class="n">name</span><span class="nf">.to_owned</span><span class="p">(),</span>
+            <span class="n">species</span><span class="p">:</span> <span class="n">species</span><span class="nf">.to_owned</span><span class="p">(),</span>
+            <span class="n">age</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">impl</span> <span class="n">Display</span> <span class="k">for</span> <span class="n">Animal</span> <span class="p">{</span>
+    <span class="k">fn</span> <span class="nf">fmt</span><span class="p">(</span><span class="o">&amp;</span><span class="k">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">Formatter</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="nb">Result</span> <span class="p">{</span>
+        <span class="nd">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s">"Animal info name {}, species:{}, age:{}"</span><span class="p">,</span> <span class="k">self</span><span class="py">.name</span><span class="p">,</span> <span class="k">self</span><span class="py">.species</span><span class="p">,</span> <span class="k">self</span><span class="py">.age</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">fn</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="n">animals</span> <span class="o">=</span> <span class="nd">vec!</span><span class="p">[</span>
+        <span class="nn">Animal</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="s">"Tom"</span><span class="p">,</span> <span class="s">"Cat"</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="nn">Animal</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="s">"Jerry"</span><span class="p">,</span> <span class="s">"Mouse"</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="nn">Animal</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="s">"Spike"</span><span class="p">,</span> <span class="s">"Dog"</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">];</span>
+
+    <span class="c1">// 计算所有动物的平均年龄</span>
+    <span class="k">let</span> <span class="n">total_age</span> <span class="o">=</span> <span class="n">animals</span><span class="nf">.iter</span><span class="p">()</span><span class="nf">.map</span><span class="p">(|</span><span class="n">a</span><span class="p">|</span> <span class="n">a</span><span class="py">.age</span><span class="p">)</span><span class="py">.sum</span><span class="p">::</span><span class="o">&lt;</span><span class="nb">i32</span><span class="o">&gt;</span><span class="p">();</span>
+    <span class="k">let</span> <span class="n">average_age</span> <span class="o">=</span> <span class="n">total_age</span> <span class="k">as</span> <span class="nb">f32</span> <span class="o">/</span> <span class="n">animals</span><span class="nf">.len</span><span class="p">()</span> <span class="k">as</span> <span class="nb">f32</span><span class="p">;</span>
+    <span class="nd">println!</span><span class="p">(</span><span class="s">"Average age: {:.2}"</span><span class="p">,</span> <span class="n">average_age</span><span class="p">);</span>
+
+    <span class="c1">// 统计每个物种的数量</span>
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">species_count</span> <span class="o">=</span> <span class="nn">HashMap</span><span class="p">::</span><span class="nf">new</span><span class="p">();</span>
+    <span class="k">for</span> <span class="n">animal</span> <span class="n">in</span> <span class="o">&amp;</span><span class="n">animals</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="n">count</span> <span class="o">=</span> <span class="n">species_count</span><span class="nf">.entry</span><span class="p">(</span><span class="n">animal</span><span class="py">.species</span><span class="nf">.clone</span><span class="p">())</span><span class="nf">.or_insert</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+        <span class="o">*</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nd">println!</span><span class="p">(</span><span class="s">"Species count: {:?}"</span><span class="p">,</span> <span class="n">species_count</span><span class="p">);</span>
+
+    <span class="c1">// 找出所有年龄大于2岁的动物</span>
+    <span class="k">let</span> <span class="n">old_animals</span><span class="p">:</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">_</span><span class="o">&gt;</span> <span class="o">=</span> <span class="n">animals</span><span class="nf">.iter</span><span class="p">()</span><span class="nf">.filter</span><span class="p">(|</span><span class="n">a</span><span class="p">|</span> <span class="n">a</span><span class="py">.age</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span><span class="nf">.collect</span><span class="p">();</span>
+    <span class="nd">println!</span><span class="p">(</span><span class="s">"Old animals: {:?}"</span><span class="p">,</span> <span class="n">old_animals</span><span class="p">);</span>
+
+    <span class="c1">// 将所有动物的名字转换成大写</span>
+    <span class="k">let</span> <span class="n">upper_names</span><span class="p">:</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">_</span><span class="o">&gt;</span> <span class="o">=</span> <span class="n">animals</span><span class="nf">.iter</span><span class="p">()</span><span class="nf">.map</span><span class="p">(|</span><span class="n">a</span><span class="p">|</span> <span class="n">a</span><span class="py">.name</span><span class="nf">.to_uppercase</span><span class="p">())</span><span class="nf">.collect</span><span class="p">();</span> 
+    <span class="nd">println!</span><span class="p">(</span><span class="s">"Upper case names {:?}"</span><span class="p">,</span> <span class="n">upper_names</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">//    输出结果：</span>
+<span class="c1">// Average age: 2.00</span>
+<span class="c1">// Species count: {"Dog": 1, "Cat": 1, "Mouse": 1}</span>
+<span class="c1">// Old animals: [Animal { name: "Spike", species: "Dog", age: 3 }]</span>
+<span class="c1">// Upper case names ["TOM", "JERRY", "SPIKE"]</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>在上面的代码中，我们定义了一个<code>Animal</code>结构体，其中包含了动物的名称、物种和年龄信息。我们使用<code>Vec</code>类型来存储所有动物的信息。接下来，我们使用包对这些动物进行了一些常见的数据处理和转换操作。</p>
+
+<p>首先，我们计算了所有动物的平均年龄。我们使用<code>iter()</code>方法对<code>Vec</code>进行迭代，并使用<code>map()</code>方法将每个动物的年龄提取出来。然后，我们使用<code>sum()</code>方法将所有的年龄相加，并将其转换为<code>i32</code>类型。最后，我们将总年龄除以动物数量，得到平均年龄。</p>
+
+<p>接下来，我们统计了每个物种的数量。我们使用<code>HashMap</code>类型来存储物种和数量的映射关系。我们使用<code>entry</code>方法获取每个物种的数量，如果该物种不存在，则插入一个新的映射关系，并将数量初始化为0。最后，我们使用<code>filter()</code>方法和闭包找出了所有年龄大于2岁的动物。我们使用<code>map()</code>方法和闭包将所有动物的名字转换成大写，然后使用<code>collect()</code>方法将它们收集到一个新的<code>Vec</code>中。最后，我们使用<code>map()</code>方法和闭包将所有动物的名字转换成大写。</p>
+
+<p>在上面的示例中，我们可以看到闭包的强大之处。使用闭包，我们可以轻松地对数据进行转换和处理，而不必定义大量的函数。此外，闭包还可以捕获外部环境中的变量，使得代码更加灵活和可读。</p>
+
+<h2 id="闭包的语法">闭包的语法</h2>
+
+<p>包的语法形式如下：</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="p">|</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="o">...</span><span class="p">|</span> <span class="n">body</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>其中，<code>arg1</code>、<code>arg2</code>…表示闭包参数，<code>body</code>表示闭包函数体。闭包可以有多个参数，也可以没有参数。如果闭包没有参数，则可以省略<code>|</code>和<code>|</code>之间的内容。</p>
+
+<p>无参数闭包示例：</p>
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="n">greet</span> <span class="o">=</span> <span class="p">||</span> <span class="nd">println!</span><span class="p">(</span><span class="s">"Hello, World!"</span><span class="p">);</span>
+    <span class="nf">greet</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="c1">//    输出结果:</span>
+<span class="c1">//    Hello, World!</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>闭包的函数体可以是任意有效的Rust代码，包括表达式、语句和控制流结构等。在闭包中，我们可以使用外部作用域中的变量。这些变量被称为闭包的自由变量，因为它们不是闭包参数，但是在闭包中被引用了。</p>
+
+<p>闭包的自由变量示例如下：</p>
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="rouge-code"><pre><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+    <span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+    <span class="c1">//  在这里y，就是闭包的自由变量  </span>
+    <span class="k">let</span> <span class="n">add</span> <span class="o">=</span> <span class="p">|</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">|</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">y</span><span class="p">;</span>
+    
+    <span class="nd">println!</span><span class="p">(</span><span class="s">"add_once_fn: {}"</span><span class="p">,</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">));</span>
+<span class="p">}</span>
+<span class="c1">//    输出结果:</span>
+<span class="c1">//    13</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>在上面的示例中，我们定义了一个闭包<code>add</code>，没用指定参数的具体类型，这里是使用到了Rust语言的闭包类型推导特性，编译器会在调用的地方进行类型推导。这里值得注意的几点小技巧<strong>定义的闭包必须要有使用，否则编译器缺少类型推导的上下文。当编译器推导出一种类型后，它就会一直使用该类型，和泛型有本质的区别。</strong></p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+</pre></td><td class="rouge-code"><pre><span class="c1">//    1. 将上面例子的pringln!注释掉， 相当于add闭包没用任何引用，编译报错</span>
+<span class="n">error</span><span class="p">[</span><span class="n">E0282</span><span class="p">]:</span> <span class="k">type</span> <span class="n">annotations</span> <span class="n">needed</span>
+  <span class="o">-</span><span class="k">-&gt;</span> <span class="n">src</span><span class="o">/</span><span class="n">main</span><span class="py">.rs</span><span class="p">:</span><span class="mi">13</span><span class="p">:</span><span class="mi">16</span>
+   <span class="p">|</span>
+<span class="mi">13</span> <span class="p">|</span>     <span class="k">let</span> <span class="n">add</span> <span class="o">=</span> <span class="p">|</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">|</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">y</span><span class="p">;</span>
+   <span class="p">|</span>                <span class="o">^</span>
+   <span class="p">|</span>
+<span class="n">help</span><span class="p">:</span> <span class="n">consider</span> <span class="n">giving</span> <span class="n">this</span> <span class="n">closure</span> <span class="n">parameter</span> <span class="n">an</span> <span class="n">explicit</span> <span class="k">type</span>
+   <span class="p">|</span>
+<span class="mi">13</span> <span class="p">|</span>     <span class="k">let</span> <span class="n">add</span> <span class="o">=</span> <span class="p">|</span><span class="n">a</span><span class="p">:</span> <span class="cm">/* Type */</span><span class="p">,</span> <span class="n">b</span><span class="p">|</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">y</span><span class="p">;</span>
+   <span class="p">|</span>                 <span class="o">++++++++++++</span>
+<span class="c1">//    2. 新增打印 println!("add_once_fn: {}", add(0.5,0.6));</span>
+
+<span class="n">error</span><span class="p">[</span><span class="n">E0308</span><span class="p">]:</span> <span class="n">arguments</span> <span class="n">to</span> <span class="n">this</span> <span class="n">function</span> <span class="n">are</span> <span class="n">incorrect</span>
+  <span class="o">-</span><span class="k">-&gt;</span> <span class="n">src</span><span class="o">/</span><span class="n">main</span><span class="py">.rs</span><span class="p">:</span><span class="mi">16</span><span class="p">:</span><span class="mi">33</span>
+   <span class="p">|</span>
+<span class="mi">16</span> <span class="p">|</span>     <span class="nd">println!</span><span class="p">(</span><span class="s">"add_once_fn: {}"</span><span class="p">,</span> <span class="nf">add</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.6</span><span class="p">));</span>
+   <span class="p">|</span>                                 <span class="o">^^^</span> <span class="o">---</span> <span class="o">---</span> <span class="n">expected</span> <span class="n">integer</span><span class="p">,</span> <span class="n">found</span> <span class="n">floating</span><span class="o">-</span><span class="n">point</span> <span class="n">number</span>
+   <span class="p">|</span>                                     <span class="p">|</span>
+   <span class="p">|</span>                                     <span class="n">expected</span> <span class="n">integer</span><span class="p">,</span> <span class="n">found</span> <span class="n">floating</span><span class="o">-</span><span class="n">point</span> <span class="n">number</span>
+   <span class="p">|</span>
+<span class="n">note</span><span class="p">:</span> <span class="n">closure</span> <span class="n">defined</span> <span class="n">here</span>
+  <span class="o">-</span><span class="k">-&gt;</span> <span class="n">src</span><span class="o">/</span><span class="n">main</span><span class="py">.rs</span><span class="p">:</span><span class="mi">13</span><span class="p">:</span><span class="mi">15</span>
+   <span class="p">|</span>
+<span class="mi">13</span> <span class="p">|</span>     <span class="k">let</span> <span class="n">add</span> <span class="o">=</span> <span class="p">|</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">|</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">y</span><span class="p">;</span>
+   <span class="p">|</span>               <span class="o">^^^^^^</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>闭包可以使用三种方式之一来捕获自由变量：</p>
+
+<ul>
+  <li><code>move</code>关键字：将自由变量移动到闭包内部，使得闭包拥有自由变量的所有权。这意味着，一旦自由变量被移动，部作用域将无法再次使用它。</li>
+  <li><code>&amp;</code>引用：使用引用来访问自由变量。这意味着，外部作用域仍然拥有自由变量的所有权，并且可以在闭包之后继续使用它。</li>
+  <li><code>&amp;mut</code>可变引用：使用可变引用来访问自由变量。这意味着，外部作用域仍然拥有自由变量的所有权，并且可以在闭包之后继续使用它。但是，只有一个可变引用可以存在于任意给定的时间。如果闭包中有多个可变引用，编译器将无法通过。</li>
+</ul>
+
+<p>下面是具有不同捕获方式的闭包示例：</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+</pre></td><td class="rouge-code"><pre><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
+    
+    <span class="c1">// 使用move关键字捕获自由变量</span>
+    <span class="k">let</span> <span class="n">add</span> <span class="o">=</span> <span class="k">move</span> <span class="p">|</span><span class="n">a</span><span class="p">:</span><span class="nb">i32</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span><span class="nb">i32</span><span class="p">|</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">x</span><span class="p">;</span>
+    
+    <span class="c1">// 使用引用捕获自由变量</span>
+    <span class="k">let</span> <span class="n">sub</span> <span class="o">=</span> <span class="p">|</span><span class="n">a</span><span class="p">:</span><span class="nb">i32</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span><span class="nb">i32</span><span class="p">|</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span> <span class="o">-</span> <span class="n">y</span><span class="p">;</span>
+    
+    <span class="c1">// 使用可变引用捕获自由变量</span>
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">z</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">mul</span> <span class="o">=</span> <span class="p">|</span><span class="n">a</span><span class="p">:</span><span class="nb">i32</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span><span class="nb">i32</span><span class="p">|</span> <span class="p">{</span>
+        <span class="n">z</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="o">*</span> <span class="n">z</span>
+    <span class="p">};</span>
+    <span class="nd">println!</span><span class="p">(</span><span class="s">"add {}"</span><span class="p">,</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+    <span class="nd">println!</span><span class="p">(</span><span class="s">"sub {}"</span><span class="p">,</span> <span class="nf">sub</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+    <span class="nd">println!</span><span class="p">(</span><span class="s">"mul {}"</span><span class="p">,</span> <span class="nf">mul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="p">}</span>
+<span class="c1">//    输出结果:</span>
+<span class="c1">// add 40</span>
+<span class="c1">// sub -30</span>
+<span class="c1">// mul 6200</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>在上面的示例中，我们定义了三个闭包：<code>add</code>、<code>sub</code>和<code>mul</code>。</p>
+<ul>
+  <li><code>add</code>使用<code>move</code>关键字捕获了自由变量<code>x</code>，因此它拥有<code>x</code>的所有权。</li>
+  <li><code>sub</code>使用引用捕获了自由变量<code>y</code>，因此它只能访问<code>y</code>的值，而不能修改它。</li>
+  <li><code>mul</code>使用可变引用捕获了自由变量<code>z</code>，因此它可以修改<code>z</code>的值。在这种情况下，我们需要使用<code>mut</code>关键字来声明可变引用。</li>
+</ul>
+
+<h2 id="闭包的类型">闭包的类型</h2>
+
+<p>在Rust语言中，闭包是一种特殊的类型，被称为<code>Fn</code>、<code>FnMut</code>和<code>FnOnce</code>。这些类型用于区分闭包的捕获方式和参数类型。</p>
+
+<ul>
+  <li><code>Fn</code>：表示闭包只是借用了自由变量，不会修改它们的值。这意味着，闭包可以在不拥有自由变量所有权的情况下访问它们。</li>
+  <li><code>FnMut</code>：表示闭包拥有自由变量的可变引用，并且可能会修改它们的值。这意味着，闭包必须拥有自由变量的所有权，并且只能存在一个可变引用。</li>
+  <li><code>FnOnce</code>：表示闭包拥有自由变量的所有权，并且只能被调用一次。这意味着，闭包必须拥有自由变量的所有权，并且只能在调用之后使用它们。</li>
+</ul>
+
+<p>在闭包类型之间进行转换是非常简单的。只需要在闭包的参数列表中添加相应的trait限定，即可将闭包转换为特定的类型。例如，如果我们有一个<code>Fn</code>类型的闭包，但是需要将它转换为<code>FnMut</code>类型，只需要在参数列表中添加<code>mut</code>关键字，如下所示：</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+</pre></td><td class="rouge-code"><pre><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+    <span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+    <span class="k">let</span> <span class="n">add</span> <span class="o">=</span> <span class="p">|</span><span class="n">a</span><span class="p">:</span><span class="nb">i32</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span><span class="nb">i32</span><span class="p">|</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">;</span>
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">add_mut</span> <span class="o">=</span> <span class="p">|</span><span class="n">a</span><span class="p">:</span><span class="nb">i32</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span><span class="nb">i32</span><span class="p">|</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="n">result</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">;</span>
+        <span class="nd">println!</span><span class="p">(</span><span class="s">"Result: {}"</span><span class="p">,</span> <span class="n">result</span><span class="p">);</span>
+        <span class="n">result</span>
+    <span class="p">};</span>
+    
+    <span class="k">let</span> <span class="n">add_fn</span><span class="p">:</span> <span class="k">fn</span><span class="p">(</span><span class="nb">i32</span><span class="p">,</span> <span class="nb">i32</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="nb">i32</span> <span class="o">=</span> <span class="n">add</span><span class="p">;</span>
+    <span class="k">let</span> <span class="n">add_mut_fn</span><span class="p">:</span> <span class="k">fn</span><span class="p">(</span><span class="nb">i32</span><span class="p">,</span> <span class="nb">i32</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="nb">i32</span> <span class="o">=</span> <span class="n">add_mut</span><span class="p">;</span>
+    <span class="k">let</span> <span class="n">add_once_fn</span><span class="p">:</span> <span class="k">fn</span><span class="p">(</span><span class="nb">i32</span><span class="p">,</span> <span class="nb">i32</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="nb">i32</span> <span class="o">=</span> <span class="p">|</span><span class="n">a</span><span class="p">:</span><span class="nb">i32</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span><span class="nb">i32</span><span class="p">|</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="nd">println!</span><span class="p">(</span><span class="s">"add_fn: {}"</span><span class="p">,</span> <span class="nf">add_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">));</span>
+    <span class="nd">println!</span><span class="p">(</span><span class="s">"add_mut_fn: {}"</span><span class="p">,</span> <span class="nf">add_mut_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">));</span>
+    <span class="nd">println!</span><span class="p">(</span><span class="s">"add_once_fn: {}"</span><span class="p">,</span> <span class="nf">add_once_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">));</span>
+<span class="p">}</span>
+<span class="c1">//    输出结果：</span>
+<span class="c1">// add_fn: 8</span>
+<span class="c1">// Result: 8</span>
+<span class="c1">// add_mut_fn: 8</span>
+<span class="c1">// add_once_fn: 18</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>在上面的示例中，我们定义了三个闭包：<code>add</code>、<code>add_mut</code>和<code>add_once</code>。<code>add</code>和<code>add_mut</code>都是<code>Fn</code>类型的闭包，但是<code>add_mut</code>使用了可变引用，因此它也是<code>FnMut</code>类型闭包。我们使用<code>fn</code>关键字将闭包转换为函数类型，并指定参数和返回值的类型。在这种情况下，我们使用<code>i32</code>作为参数和返回值的类型。</p>
+
+<h2 id="闭包的应用与实践">闭包的应用与实践</h2>
+
+<p>闭包在Rust语言中广泛应用于函数式编程、迭代器和多线程等领域。在函数式编程中，闭包常常用于实现高阶函数，如<code>map()</code>、<code>filter()</code>和<code>reduce()</code>等。这些函数可以接受一个闭包作为参数，然后对集合中的每个元素进行转换、过滤和归约等操作。</p>
+
+<p>以下是一个使用闭包实现<code>map()</code>和<code>filter()</code>函数的示例：</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+</pre></td><td class="rouge-code"><pre><span class="k">fn</span> <span class="n">map</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">F</span><span class="o">&gt;</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span> <span class="k">mut</span> <span class="n">f</span><span class="p">:</span> <span class="n">F</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="nb">Vec</span><span class="o">&gt;</span>
+<span class="k">where</span>
+    <span class="n">F</span><span class="p">:</span><span class="nf">Mut</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="n">T</span><span class="p">,</span>
+<span class="p">{</span>
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">result</span> <span class="o">=</span> <span class="nn">Vec</span><span class="p">::</span><span class="nf">new</span><span class="p">();</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="n">in</span> <span class="n">source</span> <span class="p">{</span>
+        <span class="n">result</span><span class="nf">.push</span><span class="p">(</span><span class="nf">f</span><span class="p">(</span><span class="n">item</span><span class="p">));</span>
+    <span class="p">}</span>
+    <span class="n">result</span>
+<span class="p">}</span>
+
+<span class="k">fn</span> <span class="n">filter</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">F</span><span class="o">&gt;</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span> <span class="k">mut</span> <span class="n">f</span><span class="p">:</span> <span class="n">F</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span>
+<span class="k">where</span>
+    <span class="n">F</span><span class="p">:</span> <span class="nf">FnMut</span><span class="p">(</span><span class="o">&amp;</span><span class="n">T</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="nb">bool</span><span class="p">,</span>
+<span class="p">{</span>
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">result</span> <span class="o">=</span> <span class="nn">Vec</span><span class="p">::</span><span class="nf">new</span><span class="p">();</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="n">in</span> <span class="n">source</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="nf">f</span><span class="p">(</span><span class="o">&amp;</span><span class="n">item</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">result</span><span class="nf">.push</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">result</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>在上面的示例中，我们定义了<code>map()</code>和<code>filter()</code>函数，它们接受一个闭包作为参数，并对集合中的每个元素进行转换和过滤操作。<code>map()</code>函数将集合中的每个元素传递给闭包进行转换，并将转换后的结果收集到一个新的<code>Vec</code>中。<code>filter()</code>函数将集合中的每个元素传递给闭包进行过滤，并将通过过滤的元素收集到一个新的<code>Vec</code>中。</p>
+
+<p>以下是一个使用闭包实现多线程的示例：</p>
+
+<div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+</pre></td><td class="rouge-code"><pre><span class="k">use</span> <span class="nn">std</span><span class="p">::</span><span class="n">thread</span><span class="p">;</span>
+
+<span class="k">fn</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">handles</span> <span class="o">=</span> <span class="nn">Vec</span><span class="p">::</span><span class="nf">new</span><span class="p">();</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="n">in</span> <span class="mi">0</span><span class="o">..</span><span class="mi">10</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="n">handle</span> <span class="o">=</span> <span class="nn">thread</span><span class="p">::</span><span class="nf">spawn</span><span class="p">(</span><span class="k">move</span> <span class="p">||</span> <span class="p">{</span>
+            <span class="nd">println!</span><span class="p">(</span><span class="s">"Thread {}: Hello, world!"</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+        <span class="p">});</span>
+        <span class="n">handles</span><span class="nf">.push</span><span class="p">(</span><span class="n">handle</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="n">handle</span> <span class="n">in</span> <span class="n">handles</span> <span class="p">{</span>
+        <span class="n">handle</span><span class="nf">.join</span><span class="p">()</span><span class="nf">.unwrap</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">//    输出结果：</span>
+<span class="c1">// Thread 1: Hello, world!</span>
+<span class="c1">// Thread 7: Hello, world!</span>
+<span class="c1">// Thread 8: Hello, world!</span>
+<span class="c1">// Thread 9: Hello, world!</span>
+<span class="c1">// Thread 6: Hello, world!</span>
+<span class="c1">// Thread 5: Hello, world!</span>
+<span class="c1">// Thread 4: Hello, world!</span>
+<span class="c1">// Thread 3: Hello, world!</span>
+<span class="c1">// Thread 2: Hello, world!</span>
+<span class="c1">// Thread 0: Hello, world!</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>在上面的示例中，我们使用<code>thread::spawn()</code>函数创建了10个新线程，并使用闭包将每个线程的编号传递给它们。在闭包中，我们使用<code>move</code>关键字将<code>i</code>移动到闭包内部，以便在创建线程之后，<code>i</code>的所有权被转移
+给了闭包。然后，我们将每个线程的句柄存储在一个<code>Vec</code>中，并使用<code>join()</code>函数等待每个线程完成。</p>
+
+<h2 id="总结">总结</h2>
+
+<p>Rust语言中的闭包是一种非常强大的特性，可以用于实现高阶函数、函数式编程、迭代器和多线程等领域。闭包具有捕获自由变量的能力，并且可以在闭包后继续使用它们。在Rust语言中，闭包是一种特殊的类型，被称为<code>Fn</code>、<code>FnMut</code>和<code>Once</code>，用于区闭包的捕获方式和参数类型。闭包可以通过实现这些trait来进行类型转换。</p>
+
+<p>尽管闭包在Rust语言中非常强大和灵活，但是使用它们时需要谨慎。闭包的捕获方式和参数类型可能会导致所有权和可变性的问题，尤其是在多线程环境中。因此，我们应该在使用闭包时仔细思考，并遵循Rust语言的所有权和可变性规则。</p>
+
+<p>总之，闭包是一种非常有用的特性，可以帮助我们编写更加灵活和高效的代码。如果您还没有使用过闭包，请尝试在您的项目中使用它们，并体验闭包带来的便利和效率。</p>
+
+<h2 id="参考资料">参考资料</h2>
+
+<ul>
+  <li><a href="https://doc.rust-lang.org/book/ch13-01-closures.html">The Rust Programming Language</a></li>
+  <li><a href="https://doc.rust-lang.org/stable/rust-by-example/fn/closures.html">Rust by Example</a></li>
+  <li><a href="https://doc.rust-lang.org/nomicon/closures.html">Rustonomicon</a></li>
+  <li><a href="https://doc.rust-lang.org/reference/expressions/closure-expr.html">Rust Reference</a></li>
+</ul>
+
+        <p>
+  <a rel="知识共享许可协议" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="img-link">
+    <img alt="知识共享许可协议" src="../../../../assets/img/by-nc-sa.svg">
+  </a>
+</p>
+
+<p>
+  本作品采用 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>
+  进行许可。欢迎转载、使用、重新发布，但务必保留文章署名 <strong>TinyZ Zzh</strong> （包含链接： <a
+    href="https://tinyzzh.github.io">https://tinyzzh.github.io</a>
+  ），不得用于商业目的，基于本文修改后的作品务必以相同的许可发布。
+   如有任何疑问，请 <a href="mailto:tinyzzh815@gmail.com">与我联系 (tinyzzh815@gmail.com)</a> 。
+</p>
+
+        <aside class="sidebar inline" id="post-end">
+    
+
+
+
+<div class="tag-cloud">
+    
+        <ul class="tags inline">
+            
+                <li><a href="../../../../tag.html?tag=Rust" class="tag inline">Rust</a></li>
+            
+                <li><a href="../../../../tag.html?tag=%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A" class="tag inline">从入门到精通</a></li>
+            
+                <li><a href="../../../../tag.html?tag=Closure" class="tag inline">Closure</a></li>
+            
+    
+        </ul>
+</div>
+    <div class="share-options inline">
+    <div class="share-hover inline">
+        <span class="share-button inline"><svg fill="currentColor" width="25" height="25" class="inline"><g fill-rule="evenodd"><path d="M15.6 5a.42.42 0 0 0 .17-.3.42.42 0 0 0-.12-.33l-2.8-2.79a.5.5 0 0 0-.7 0l-2.8 2.8a.4.4 0 0 0-.1.32c0 .12.07.23.16.3h.02a.45.45 0 0 0 .57-.04l2-2V10c0 .28.23.5.5.5s.5-.22.5-.5V2.93l2.02 2.02c.08.07.18.12.3.13.11.01.21-.02.3-.08v.01"></path><path d="M18 7h-1.5a.5.5 0 0 0 0 1h1.6c.5 0 .9.4.9.9v10.2c0 .5-.4.9-.9.9H6.9a.9.9 0 0 1-.9-.9V8.9c0-.5.4-.9.9-.9h1.6a.5.5 0 0 0 .35-.15A.5.5 0 0 0 9 7.5a.5.5 0 0 0-.15-.35A.5.5 0 0 0 8.5 7H7a2 2 0 0 0-2 2v10c0 1.1.9 2 2 2h11a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2"></path></g></svg></span>
+        <div class="share-icons inline" id="post-end-icons">
+            <a class="twitter" href="https://twitter.com/intent/tweet?text=Rust语言从入门到精通系列 - Closure 闭包&url=https://tinyzzh.github.io/rust/2023/03/16/rust_lang_tutorial_100_Closure.html" title="Share on Twitter" rel="nofollow" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+            <a class="facebook" href="https://facebook.com/sharer.php?u=https://tinyzzh.github.io/rust/2023/03/16/rust_lang_tutorial_100_Closure.html" title="Share on Facebook" rel="nofollow" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+            <a class="reddit" href="http://www.reddit.com/submit?url=https://tinyzzh.github.io/rust/2023/03/16/rust_lang_tutorial_100_Closure.html&title=Rust语言从入门到精通系列 - Closure 闭包" title="Submit to Reddit" rel="nofollow" target="_blank"><i class="fa fa-reddit" aria-hidden="true"></i></a>
+            <a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https://tinyzzh.github.io/rust/2023/03/16/rust_lang_tutorial_100_Closure.html&title=Rust语言从入门到精通系列 - Closure 闭包&summary=&source=https://tinyzzh.github.io/rust/2023/03/16/rust_lang_tutorial_100_Closure.html" title="Share on LinkedIn" rel="nofollow" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+            <a class="email" href="mailto:?subject=Rust语言从入门到精通系列 - Closure 闭包&body=%0A%0ARead more here: https://tinyzzh.github.io/rust/2023/03/16/rust_lang_tutorial_100_Closure.html" title="Share via e-mail" rel="nofollow" target="_blank"><i class="fa fa-envelope" aria-hidden="true"></i></a>
+            <a class="copy-link" onclick="copyToClipboard()" title="Copy to clipboard" rel="nofollow" target="_blank"><svg width="20px" fill="currentColor" class="inline" viewBox="0 0 18 18"><path d="M16.94 1.1A3.7 3.7 0 0 0 14.3 0c-1 0-1.94.39-2.64 1.1L7.43 5.3c-.91.92-2.09 3.2 0 5.27a.75.75 0 0 0 .82.16c.09-.03.17-.09.24-.15a.74.74 0 0 0 0-1.06c-1.16-1.15-.77-2.39-.02-3.16l4.24-4.22a2.2 2.2 0 0 1 1.58-.65c.6 0 1.16.23 1.58.65.86.87.86 2.29 0 3.16L12.7 8.47a.74.74 0 0 0 1.04 1.05l3.17-3.16a3.73 3.73 0 0 0 0-5.27h.03zM9.54 7.4a.74.74 0 0 0 0 1.06c1.16 1.15.76 2.39 0 3.16l-4.22 4.22c-.42.42-.99.65-1.59.65a2.23 2.23 0 0 1-1.58-3.82l3.17-3.16A.73.73 0 0 0 5.54 9a.78.78 0 0 0-.22-.52.77.77 0 0 0-1.05 0L1.1 11.64A3.72 3.72 0 0 0 3.74 18c1 0 1.94-.39 2.65-1.1l4.23-4.2c.21-.22.94-1.02 1.13-2.2.18-1.12-.2-2.15-1.12-3.07-.27-.27-.78-.27-1.06 0l-.02-.02z" clip-rule="evenodd" fill-rule="evenodd"></path></svg></a>
+        </div>
+    </div>
+    <div class='alert' style='font-size:.6em;color:var(--accent);text-align:center;'></div>
+</div>
+</aside>
+
+        <div class="separator"></div>
+        
+
+
+
+<section class="author-box">
+  <div class="narrow-column">
+    <a href='https://tinyzzh.github.io'><img src="../../../../assets/img/author_pic.jpg" alt="TinyZ Zzh" class="author-img"></a>
+    <ul class="contact-icons">
+      
+      
+      <li class="linkedin"><a class="linkedin" href="https://in.linkedin.com/in/灼华-周-79326a116" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+      
+      
+      <li class="github"><a class="github" href="http://github.com/TinyZzh" target="_blank"><i class="fa fa-github"></i></a></li>
+      
+      
+      <li class="email"><a class="email" href="mailto:tinyzzh815@gmail.com"><i class="fa fa-envelope-o"></i></a></li>
+      
+      
+      <li class="stackoverflow"><a class="stackoverflow" href="https://stackoverflow.com/users/stackoverflow"><i class="fa fa-stack-overflow"></i></a></li>
+      
+    </ul>
+  </div>
+  <div class="author-desc">
+    <h3>TinyZ Zzh</h3>
+    <p>专注于高并发服务器、网络游戏相关(Java、PHP、Unity3D、Unreal Engine等)技术，热爱游戏事业, 正在努力实现自我价值当中。</p>
+    
+    </div>
+</section>
+
+        
+
+
+
+<div class="recent-box">
+  <h3 class="page-subtitle">最 新 文 章</h3>
+  <div class="recent-list">
+    
+      
+        <div class="recent-item">
+          
+          
+
+          <a href="../../../../rust/2023/05/30/rust_SeaORM_002_Basic_MySQL.html" class="recent-item-img" style="background: url('../../../../images/2023-03/rust_tutorial_logo.png') center no-repeat; background-size: cover;">
+            <div class="recent-item-title">
+              <span>Rust语言从入门到精通系列 - SeaORM框架实践(基础篇)</span>
+              
+
+  <span class = "recent-item-meta">
+  
+  
+  
+  
+    
+    
+    <p class="page_meta-readtime">
+      
+        1 分钟阅读
+      
+    </p>
+  
+  
+  </span>
+
+            </div>
+          </a>
+        </div>
+      
+    
+      
+        <div class="recent-item">
+          
+          
+
+          <a href="../../../../rust/2023/05/30/rust_SeaORM_001_DML.html" class="recent-item-img" style="background: url('../../../../images/2023-03/rust_tutorial_logo.png') center no-repeat; background-size: cover;">
+            <div class="recent-item-title">
+              <span>Rust语言从入门到精通系列 - SeaORM框架实战(数据库DML篇)</span>
+              
+
+  <span class = "recent-item-meta">
+  
+  
+  
+  
+    
+    
+    <p class="page_meta-readtime">
+      
+        1 分钟阅读
+      
+    </p>
+  
+  
+  </span>
+
+            </div>
+          </a>
+        </div>
+      
+    
+      
+        <div class="recent-item">
+          
+          
+
+          <a href="../../../../rust/2023/05/30/rust_SQLx_003_Basic_SQLite.html" class="recent-item-img" style="background: url('../../../../images/2023-03/rust_tutorial_logo.png') center no-repeat; background-size: cover;">
+            <div class="recent-item-title">
+              <span>Rust语言从入门到精通系列 - SQLx模块SQLite入门</span>
+              
+
+  <span class = "recent-item-meta">
+  
+  
+  
+  
+    
+    
+    <p class="page_meta-readtime">
+      
+        1 分钟阅读
+      
+    </p>
+  
+  
+  </span>
+
+            </div>
+          </a>
+        </div>
+      
+    
+      
+        <div class="recent-item">
+          
+          
+
+          <a href="../../../../rust/2023/05/30/rust_SQLx_002_Basic_PostgreSQL.html" class="recent-item-img" style="background: url('../../../../images/2023-03/rust_tutorial_logo.png') center no-repeat; background-size: cover;">
+            <div class="recent-item-title">
+              <span>Rust语言从入门到精通系列 - SQLx模块PostgreSQL入门</span>
+              
+
+  <span class = "recent-item-meta">
+  
+  
+  
+  
+    
+    
+    <p class="page_meta-readtime">
+      
+        1 分钟阅读
+      
+    </p>
+  
+  
+  </span>
+
+            </div>
+          </a>
+        </div>
+      
+    
+  </div>
+</div> <!-- End Recent-Box -->
+
+        <div class="newsletter" id="mc_embed_signup">
+  <h2 class="page-subtitle">Newsletter</h2>
+  <div class="form-container">
+    <p>Subscribe here to get our latest updates</p>
+    <form action="" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+      <label class="screen-reader-text" for="mce-EMAIL">Email Address</label>
+      <div class="newsletter-box" id="mc_embed_signup_scroll">
+        <input type="email" name="EMAIL" placeholder="Email address" class="email-input" id="mce-EMAIL" required>
+        <input type="submit" value="Subscribe" name="subscribe" class="subscribe-btn" id="mc-embedded-subscribe">
+      </div>
+    </form>
+  </div>
+</div> <!-- End Newsletter -->
+
+        <section class="comment-area">
+    <div class="comment-wrapper">
+        
+        <div class="row" id="comment-curtain">
+            <div class="col-lg-8 col-sm-10 mr-auto ml-auto">
+                <h2 class="page-subtitle">评论</h2>
+                <div class="comments-trigger" onClick="toggle_comments()">
+                    <i class="fa fa-comments"></i>&nbsp;&nbsp;点击开始评论...
+                </div>
+            </div>
+        </div>
+        
+
+        
+            
+            <!-- TODO: TINYZ remove the remote js file dep -->
+            <div id="comment-layout">
+                <script src="https://utteranc.es/client.js" repo="TinyZzh/TinyZzh.github.io"
+                    issue-term="title"
+                    label="comments" theme="github-dark"
+                    crossorigin="anonymous" async>
+                </script>
+            </div>
+            
+        
+    </div>
+</section> <!-- End Comment Area -->
+      </div>
+    </div> <!-- End Wrapper -->
+  </article>
+  <div class="search-box">
+  <div class="wrapper">
+    <div class="search-grid">
+      <form class="search-form">
+        <div id="search-container">
+          <input type="text" id="search-input" class="search" placeholder="搜索">
+        </div>
+      </form>
+      <ul id="results-container" class="results-search"></ul>
+      <div class="icon-close-container">
+        <span class="search-icon-close"><i class="fa fa-times" aria-hidden="true"></i></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+
+<footer class="main-footer">
+    <div class="footer-wrapper">
+        <div class="logo-symbol">
+            <a class="logo-link" title="TinyZ's Blog" href="../../../../">
+                <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 851 835">
+                    <path
+                        d="M831.1 404.6c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zM60.6 587.7c-.6 1.4-.5 1.5.5.6.7-.7 1-1.5.7-1.8-.3-.3-.9.2-1.2 1.2zM140 697.4c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm270.3 126.3c.9.2 2.3.2 3 0 .6-.3-.1-.5-1.8-.5-1.6 0-2.2.2-1.2.5zm23 0c.9.2 2.3.2 3 0 .6-.3-.1-.5-1.8-.5-1.6 0-2.2.2-1.2.5z"
+                        fill="#060" />
+                    <path
+                        d="M49.9 595.7c-1.3 1.6-1.2 1.7.4.4.9-.7 1.7-1.5 1.7-1.7 0-.8-.8-.3-2.1 1.3zM143 700.4c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm-35.7 11.3c.9.2 2.5.2 3.5 0 .9-.3.1-.5-1.8-.5-1.9 0-2.7.2-1.7.5zm308 112c.9.2 2.3.2 3 0 .6-.3-.1-.5-1.8-.5-1.6 0-2.2.2-1.2.5zm13.5 0c.6.2 1.8.2 2.5 0 .6-.3.1-.5-1.3-.5-1.4 0-1.9.2-1.2.5z"
+                        fill="#090" />
+                    <path
+                        d="M416.8 7.7c3.9.2 10.5.2 14.5 0 3.9-.1.7-.3-7.3-.3s-11.2.2-7.2.3zm-22.5 1c.9.2 2.3.2 3 0 .6-.3-.1-.5-1.8-.5-1.6 0-2.2.2-1.2.5zm58 0c.9.2 2.3.2 3 0 .6-.3-.1-.5-1.8-.5-1.6 0-2.2.2-1.2.5zm-70.5 1c.6.2 1.8.2 2.5 0 .6-.3.1-.5-1.3-.5-1.4 0-1.9.2-1.2.5zm-17 2c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm115 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm-63 4c3.9.2 10.5.2 14.5 0 3.9-.1.7-.3-7.3-.3s-11.2.2-7.2.3zm-21.5 1c1.5.2 3.7.2 5 0 1.2-.2 0-.4-2.8-.4-2.7 0-3.8.2-2.2.4zm53.5 0c1.2.2 3.2.2 4.5 0 1.2-.2.2-.4-2.3-.4s-3.5.2-2.2.4zm-66 1c1.2.2 3 .2 4 0 .9-.3-.1-.5-2.3-.4-2.2 0-3 .2-1.7.4zm79.5 0c.9.2 2.3.2 3 0 .6-.3-.1-.5-1.8-.5-1.6 0-2.2.2-1.2.5zm-88.5 1c.6.2 1.8.2 2.5 0 .6-.3.1-.5-1.3-.5-1.4 0-1.9.2-1.2.5zm96 0c.6.2 1.8.2 2.5 0 .6-.3.1-.5-1.3-.5-1.4 0-1.9.2-1.2.5zm-104 1c.6.2 1.8.2 2.5 0 .6-.3.1-.5-1.3-.5-1.4 0-1.9.2-1.2.5zm112 0c.6.2 1.8.2 2.5 0 .6-.3.1-.5-1.3-.5-1.4 0-1.9.2-1.2.5zm-118 1c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm125 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm-131 1c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm137 0c.6.2 1.8.2 2.5 0 .6-.3.1-.5-1.3-.5-1.4 0-1.9.2-1.2.5zm-143 1c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm150 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm-155 1c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm160 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm-169 2c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm178 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zM600 56.4c0 .3.9 1 2 1.6 1.1.6 2 .8 2 .6 0-.3-.9-1-2-1.6-1.1-.6-2-.8-2-.6zM171.8 70.7c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm-45.8 18-6.5 6.8 6.8-6.5c3.7-3.5 6.7-6.6 6.7-6.7 0-.8-1 .2-7 6.4zm35.8-6c1.7.2 4.7.2 6.5 0 1.7-.2.3-.4-3.3-.4-3.6 0-5 .2-3.2.4zm-8 1c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm21 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zM663 95.4c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm-497.1 3.3c-1.3 1.6-1.2 1.7.4.4.9-.7 1.7-1.5 1.7-1.7 0-.8-.8-.3-2.1 1.3zm514.1-.3c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm-520.1 5.3c-1.3 1.6-1.2 1.7.4.4 1.6-1.3 2.1-2.1 1.3-2.1-.2 0-1 .8-1.7 1.7zm512.1-1.3c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm-500.1 2.3c-1.3 1.6-1.2 1.7.4.4.9-.7 1.7-1.5 1.7-1.7 0-.8-.8-.3-2.1 1.3zm516.1.8c1.3 1.4 2.6 2.5 2.8 2.5.3 0-.5-1.1-1.8-2.5s-2.6-2.5-2.8-2.5c-.3 0 .5 1.1 1.8 2.5zm-535.1 4.2-2.4 2.8 2.8-2.4c2.5-2.3 3.2-3.1 2.4-3.1-.2 0-1.4 1.2-2.8 2.7zm14-1c-1.3 1.6-1.2 1.7.4.4.9-.7 1.7-1.5 1.7-1.7 0-.8-.8-.3-2.1 1.3zm512.6.3c1 1.1 2 2 2.3 2 .3 0-.3-.9-1.3-2s-2-2-2.3-2c-.3 0 .3.9 1.3 2zm14.5 1.3c0 .2 1.5 1.6 3.3 3.3l3.2 2.9-2.9-3.3c-2.8-3-3.6-3.7-3.6-2.9zm-569.9 3.3c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm561.9.9c1.3 1.4 2.6 2.5 2.8 2.5.3 0-.5-1.1-1.8-2.5s-2.6-2.5-2.8-2.5c-.3 0 .5 1.1 1.8 2.5zm-527.1 1.2-2.4 2.8 2.8-2.4c2.5-2.3 3.2-3.1 2.4-3.1-.2 0-1.4 1.2-2.8 2.7zm570.9 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm15 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm-609.9 10.8c-4.7 4.7-8.3 8.5-8 8.5.4 0 4.4-3.8 9.1-8.5 4.7-4.7 8.2-8.5 8-8.5-.3 0-4.4 3.8-9.1 8.5zm622.1-7.1c0 .2.7.7 1.6 1 .8.3 1.2.2.9-.4-.6-1-2.5-1.4-2.5-.6zm-60.5 4.6c2.1 2.2 4.1 4 4.4 4 .3 0-1.3-1.8-3.4-4-2.1-2.2-4.1-4-4.4-4-.3 0 1.3 1.8 3.4 4zM141 132.7l-10.5 10.8 10.8-10.5c9.9-9.7 11.2-11 10.4-11-.1 0-5 4.8-10.7 10.7zm565.4-4.5-2.9 3.3 3.3-2.9c3-2.8 3.7-3.6 2.9-3.6-.2 0-1.6 1.5-3.3 3.2zm-582.3-.6c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm654.9-1.2c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm-9 3c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm-663.8 3.1c0 1.6.2 2.2.5 1.2.2-.9.2-2.3 0-3-.3-.6-.5.1-.5 1.8zm8.8-.9c0 .8.5 1.2 1 .9.6-.4.8-1.1.5-1.6-.9-1.4-1.5-1.1-1.5.7zm627.3 1.1c.9.2 2.3.2 3 0 .6-.3-.1-.5-1.8-.5-1.6 0-2.2.2-1.2.5zm-27.9 3.5-1.9 2.3 2.3-1.9c2.1-1.8 2.7-2.6 1.9-2.6-.2 0-1.2 1-2.3 2.2zm55.6-.8c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zM115.2 138c0 1.4.2 1.9.5 1.2.2-.6.2-1.8 0-2.5-.3-.6-.5-.1-.5 1.3zm645.8.4c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm-47 3.1c1.3 1.4 2.6 2.5 2.8 2.5.3 0-.5-1.1-1.8-2.5s-2.6-2.5-2.8-2.5c-.3 0 .5 1.1 1.8 2.5zm13 2c1.3 1.4 2.6 2.5 2.8 2.5.3 0-.5-1.1-1.8-2.5s-2.6-2.5-2.8-2.5c-.3 0 .5 1.1 1.8 2.5zm39.5.5c1 1.1 2 2 2.3 2 .3 0-.3-.9-1.3-2s-2-2-2.3-2c-.3 0 .3.9 1.3 2zm12.3 4.9c.3.9.8 2 1.2 2.6.5.5 1 1.9 1.3 3 .4 1.6.5 1.4.6-.7 0-1.5-.4-3-1-3.3-.6-.4-.8-1.3-.6-1.9.3-.7-.1-1.3-.8-1.3-.8 0-1.1.7-.7 1.6zm-56.8 1.6c1.3 1.4 2.6 2.5 2.8 2.5.3 0-.5-1.1-1.8-2.5s-2.6-2.5-2.8-2.5c-.3 0 .5 1.1 1.8 2.5zm68.2.5c0 1.4.2 1.9.5 1.2.2-.6.2-1.8 0-2.5-.3-.6-.5-.1-.5 1.3zm-57.2-.6c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm5.5 6.6c1 1.1 2 2 2.3 2 .3 0-.3-.9-1.3-2s-2-2-2.3-2c-.3 0 .3.9 1.3 2zm-620.6.7c-1.3 1.6-1.2 1.7.4.4 1.6-1.3 2.1-2.1 1.3-2.1-.2 0-1 .8-1.7 1.7zm610.1-.3c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm63.2 2.1c0 1.6.2 2.2.5 1.2.2-.9.2-2.3 0-3-.3-.6-.5.1-.5 1.8zm-49.2 1.9c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm-9 2c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm12 2c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm45.1 3.2c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm-53.1-.2c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm27.1 17.6c-1.3 1.1-1.9 2-1.4 2 .6 0 1.8-.9 2.8-2 2.3-2.5 1.7-2.5-1.4 0zm14.8 6.7c-1.3 1.6-1.2 1.7.4.4 1.6-1.3 2.1-2.1 1.3-2.1-.2 0-1 .8-1.7 1.7zm14.1 50.8c0 .5.5 1.7 1 2.5s1 1 1 .5c0-.6-.5-1.7-1-2.5s-1-1.1-1-.5zm-628.2 5.2c.6.2 1.8.2 2.5 0 .6-.3.1-.5-1.3-.5-1.4 0-1.9.2-1.2.5zm5 0c.6.2 1.8.2 2.5 0 .6-.3.1-.5-1.3-.5-1.4 0-1.9.2-1.2.5zm-19.9 7c-1.3 1.6-1.2 1.7.4.4.9-.7 1.7-1.5 1.7-1.7 0-.8-.8-.3-2.1 1.3zm43.3 14.3c0 1.4.2 1.9.5 1.2.2-.6.2-1.8 0-2.5-.3-.6-.5-.1-.5 1.3zm-.1 8.6c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm-7.7 13.6-2.9 3.3 3.3-2.9c1.7-1.7 3.2-3.1 3.2-3.3 0-.8-.8-.1-3.6 2.9zm-29.7 3.9c.7.7 1.5 1 1.8.7.3-.3-.2-.9-1.2-1.2-1.4-.6-1.5-.5-.6.5zm6.1 2.6c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm659.3 27.9c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm-788 2c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm-1 5c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm792 8c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm1.1 5.4c0 1.4.2 1.9.5 1.2.2-.6.2-1.8 0-2.5-.3-.6-.5-.1-.5 1.3zm-796.1 1.6c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm797.1 4.4c0 1.4.2 1.9.5 1.2.2-.6.2-1.8 0-2.5-.3-.6-.5-.1-.5 1.3zm-798 2c0 1.4.2 1.9.5 1.2.2-.6.2-1.8 0-2.5-.3-.6-.5-.1-.5 1.3zm-9.1 2.6c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm808.1 2.4c0 1.4.2 1.9.5 1.2.2-.6.2-1.8 0-2.5-.3-.6-.5-.1-.5 1.3zm-8.1.6c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm-792 1c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm-9 3c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm810.1 3.4c0 1.4.2 1.9.5 1.2.2-.6.2-1.8 0-2.5-.3-.6-.5-.1-.5 1.3zm-802 2c0 1.4.2 1.9.5 1.2.2-.6.2-1.8 0-2.5-.3-.6-.5-.1-.5 1.3zm-9.1 3.6c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm812.2 3.9c0 2.2.2 3 .4 1.7.2-1.2.2-3 0-4-.3-.9-.5.1-.4 2.3zm-804.1 2c0 1.6.2 2.2.5 1.2.2-.9.2-2.3 0-3-.3-.6-.5.1-.5 1.8zm795.9-.9c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm-804.9 5.9c0 1.6.2 2.2.5 1.2.2-.9.2-2.3 0-3-.3-.6-.5.1-.5 1.8zm814.1 6.5c0 3 .2 4.3.4 2.7.2-1.5.2-3.9 0-5.5-.2-1.5-.4-.2-.4 2.8zm-806 2c0 2.5.2 3.5.4 2.2.2-1.2.2-3.2 0-4.5-.2-1.2-.4-.2-.4 2.3zm797.9-1.5c0 1.6.2 2.2.5 1.2.2-.9.2-2.3 0-3-.3-.6-.5.1-.5 1.8zm-806.8 20c0 7.7.2 10.7.3 6.7.2-4 .2-10.3 0-14-.2-3.7-.3-.4-.3 7.3zm816 6c0 5.5.1 7.6.3 4.7.2-2.9.2-7.4 0-10-.2-2.6-.3-.2-.3 5.3zm-807.1 19c0 3.3.2 4.5.4 2.7.2-1.8.2-4.5 0-6s-.4 0-.4 3.3zm797.9 4c0 1.6.2 2.2.5 1.2.2-.9.2-2.3 0-3-.3-.6-.5.1-.5 1.8zm8.1 2c0 2.7.2 3.8.4 2.2.2-1.5.2-3.7 0-5-.2-1.2-.4 0-.4 2.8zm-814.1 1c0 1.6.2 2.2.5 1.2.2-.9.2-2.3 0-3-.3-.6-.5.1-.5 1.8zm9 8c0 1.6.2 2.2.5 1.2.2-.9.2-2.3 0-3-.3-.6-.5.1-.5 1.8zm795.9 2.1c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm8.1 1.4c0 1.9.2 2.7.5 1.7.2-.9.2-2.5 0-3.5-.3-.9-.5-.1-.5 1.8zm-812.1.6c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm9.2 6.9c0 2.2.2 3 .4 1.7.2-1.2.2-3 0-4-.3-.9-.5.1-.4 2.3zm793.8.1c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm8.1.9c0 1.6.2 2.2.5 1.2.2-.9.2-2.3 0-3-.3-.6-.5.1-.5 1.8zm-801 8.5c0 1.4.2 1.9.5 1.2.2-.6.2-1.8 0-2.5-.3-.6-.5-.1-.5 1.3zm800 0c0 1.4.2 1.9.5 1.2.2-.6.2-1.8 0-2.5-.3-.6-.5-.1-.5 1.3zm-808.1.6c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm9 6c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm798 0c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm-797 6c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm796 0c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm-795 6c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm1 5c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm792 0c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm-180.8 3.1c.9.2 2.5.2 3.5 0 .9-.3.1-.5-1.8-.5-1.9 0-2.7.2-1.7.5zm11.7 3.7c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm-620.9 2.2c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm788 0c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm-194 10c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm4.4 11.4c1 1.1 2 2 2.3 2 .3 0-.3-.9-1.3-2s-2-2-2.3-2c-.3 0 .3.9 1.3 2zM59.9 586.7c-1.3 1.6-1.2 1.7.4.4.9-.7 1.7-1.5 1.7-1.7 0-.8-.8-.3-2.1 1.3zm-15.5 2.5-2.9 3.3 3.3-2.9c1.7-1.7 3.2-3.1 3.2-3.3 0-.8-.8-.1-3.6 2.9zm9.5 2.5-2.4 2.8 2.8-2.4c2.5-2.3 3.2-3.1 2.4-3.1-.2 0-1.4 1.2-2.8 2.7zm-7.5 7.5-1.9 2.3 2.3-1.9c2.1-1.8 2.7-2.6 1.9-2.6-.2 0-1.2 1-2.3 2.2zm11.5 4.5c-1.3 1.6-1.2 1.7.3.5.9-.8 2.3-1 2.9-.6.8.4.9.3.5-.4-1-1.7-2.1-1.5-3.7.5zm207.4 10c1.5.2 3.7.2 5 0 1.2-.2 0-.4-2.8-.4-2.7 0-3.8.2-2.2.4zm259 2c1.5.2 3.7.2 5 0 1.2-.2 0-.4-2.8-.4-2.7 0-3.8.2-2.2.4zm-283.9 3.5-1.9 2.3 2.3-1.9c2.1-1.8 2.7-2.6 1.9-2.6-.2 0-1.2 1-2.3 2.2zm364.4 3.5c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm-257 5c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm255.1 1c-1.3 1.6-1.2 1.7.4.4 1.6-1.3 2.1-2.1 1.3-2.1-.2 0-1 .8-1.7 1.7zm-573.8 4.9c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm462.1 3.9c0 1.6.2 2.2.5 1.2.2-.9.2-2.3 0-3-.3-.6-.5.1-.5 1.8zm4 .5c0 1.9.2 2.7.5 1.7.2-.9.2-2.5 0-3.5-.3-.9-.5-.1-.5 1.8zm-475.1-.4c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm16.1.9c0 1.6.2 2.2.5 1.2.2-.9.2-2.3 0-3-.3-.6-.5.1-.5 1.8zm-8 .5c0 1.4.2 1.9.5 1.2.2-.6.2-1.8 0-2.5-.3-.6-.5-.1-.5 1.3zm16.1 5.5c0 4.4.2 6.1.4 3.7.2-2.3.2-5.9 0-8-.2-2-.4-.1-.4 4.3zm-17 6c0 3.3.2 4.5.4 2.7.2-1.8.2-4.5 0-6s-.4 0-.4 3.3zm-8 .5c0 2.5.2 3.5.4 2.2.2-1.2.2-3.2 0-4.5-.2-1.2-.4-.2-.4 2.3zm16.9-1.5c0 1.6.2 2.2.5 1.2.2-.9.2-2.3 0-3-.3-.6-.5.1-.5 1.8zm292.9 1.1c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm-55.2 1.1c-1.3 1.6-1.2 1.7.4.4 1.6-1.3 2.1-2.1 1.3-2.1-.2 0-1 .8-1.7 1.7zm59.3.8c0 1.6.2 2.2.5 1.2.2-.9.2-2.3 0-3-.3-.6-.5.1-.5 1.8zm420.7 1.2c-1.3 1.6-1.2 1.7.4.4 1.6-1.3 2.1-2.1 1.3-2.1-.2 0-1 .8-1.7 1.7zm-708.8 2.9c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm320 2c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm-259.1.8c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zM28.2 662c0 1.4.2 1.9.5 1.2.2-.6.2-1.8 0-2.5-.3-.6-.5-.1-.5 1.3zm69.8.4c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm11 1c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm-79.9 4.2c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm85.4 2.4c1 1.1 2 2 2.3 2 .3 0-.3-.9-1.3-2s-2-2-2.3-2c-.3 0 .3.9 1.3 2zm213.8 2.5c0 2.7.2 3.8.4 2.2.2-1.5.2-3.7 0-5-.2-1.2-.4 0-.4 2.8zm412.6-1.8c-1.3 1.6-1.2 1.7.4.4 1.6-1.3 2.1-2.1 1.3-2.1-.2 0-1 .8-1.7 1.7zM106 672.4c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm630.9 3.3c-1.3 1.6-1.2 1.7.4.4 1.6-1.3 2.1-2.1 1.3-2.1-.2 0-1 .8-1.7 1.7zM120.5 677c1 1.1 2 2 2.3 2 .3 0-.3-.9-1.3-2s-2-2-2.3-2c-.3 0 .3.9 1.3 2zm-9.5 1.4c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm221.2 1.6c0 1.4.2 1.9.5 1.2.2-.6.2-1.8 0-2.5-.3-.6-.5-.1-.5 1.3zm390.2.2-1.9 2.3 2.3-1.9c2.1-1.8 2.7-2.6 1.9-2.6-.2 0-1.2 1-2.3 2.2zm-366.3 1.4c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm374.8 1.1-2.4 2.8 2.8-2.4c1.5-1.4 2.7-2.6 2.7-2.8 0-.8-.8-.1-3.1 2.4zm-370.7.3c0 1.4.2 1.9.5 1.2.2-.6.2-1.8 0-2.5-.3-.6-.5-.1-.5 1.3zm-304.2.4c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm73 3.1c1.9 1.9 3.6 3.5 3.9 3.5.3 0-1-1.6-2.9-3.5s-3.6-3.5-3.9-3.5c-.3 0 1 1.6 2.9 3.5zm-11 0c1.3 1.4 2.6 2.5 2.8 2.5.3 0-.5-1.1-1.8-2.5s-2.6-2.5-2.8-2.5c-.3 0 .5 1.1 1.8 2.5zm355.2-.5c0 1.4.2 1.9.5 1.2.2-.6.2-1.8 0-2.5-.3-.6-.5-.1-.5 1.3zM63 691.2c4.1 4.5 5 5.3 5 4.5 0-.2-2.1-2.3-4.7-4.7l-4.8-4.5 4.5 4.7zm359.1-1.6c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm283.4 8.6-9 9.3 9.3-9c8.5-8.3 9.7-9.5 8.9-9.5-.1 0-4.3 4.2-9.2 9.2zm15.5-4.7c-2.4 2.5-4.2 4.5-3.9 4.5.3 0 2.5-2 4.9-4.5 2.4-2.5 4.2-4.5 3.9-4.5-.3 0-2.5 2-4.9 4.5zm-190.1-1.8c-1.3 1.6-1.2 1.7.4.4 1.6-1.3 2.1-2.1 1.3-2.1-.2 0-1 .8-1.7 1.7zM52 691.4c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm78 8.1c3.6 3.9 6.7 6.9 7 6.7.2-.1-2.7-3.3-6.5-7l-6.9-6.7 6.4 7zm390.4-4.3-1.9 2.3 2.3-1.9c2.1-1.8 2.7-2.6 1.9-2.6-.2 0-1.2 1-2.3 2.2zM355.2 697c0 1.9.2 2.7.5 1.7.2-.9.2-2.5 0-3.5-.3-.9-.5-.1-.5 1.8zm4 .5c0 1.6.2 2.2.5 1.2.2-.9.2-2.3 0-3-.3-.6-.5.1-.5 1.8zm39.9-.9c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm51.2 2.4c0 2.5.2 3.5.4 2.2.2-1.2.2-3.2 0-4.5-.2-1.2-.4-.2-.4 2.3zm21.8-2.4c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm-76.9 1.4c0 1.4.2 1.9.5 1.2.2-.6.2-1.8 0-2.5-.3-.6-.5-.1-.5 1.3zm-332.7 4c1 1.1 2 2 2.3 2 .3 0-.3-.9-1.3-2s-2-2-2.3-2c-.3 0 .3.9 1.3 2zm383 0c.3.5.8 1 1.1 1 .2 0 .4-.5.4-1 0-.6-.5-1-1.1-1-.5 0-.7.4-.4 1zM50 706.2c2.4 2.7 4.5 4.8 4.7 4.8.8 0 0-.9-4.4-5l-4.8-4.5 4.5 4.7zm268.9-2.5c-1.3 1.6-1.2 1.7.4.4.9-.7 1.7-1.5 1.7-1.7 0-.8-.8-.3-2.1 1.3zM148 705.5c1.3 1.4 2.6 2.5 2.8 2.5.3 0-.5-1.1-1.8-2.5s-2.6-2.5-2.8-2.5c-.3 0 .5 1.1 1.8 2.5zm366.7.3c-2.9 3.1-3.3 4.2-1.5 4.2.6 0 .8-.3.5-.7-.4-.4.5-1.9 2-3.5 1.5-1.5 2.4-2.8 2.2-2.8-.3 0-1.7 1.3-3.2 2.8zm-139.8-.1c-1.3 1.6-1.2 1.7.4.4 1.6-1.3 2.1-2.1 1.3-2.1-.2 0-1 .8-1.7 1.7zM39.5 707c1 1.1 2 2 2.3 2 .3 0-.3-.9-1.3-2s-2-2-2.3-2c-.3 0 .3.9 1.3 2zm506.3-1.3c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm36 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zM471.2 709c0 1.9.2 2.7.5 1.7.2-.9.2-2.5 0-3.5-.3-.9-.5-.1-.5 1.8zm-77.1-.4c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm73.1 1.4c0 1.9.2 2.7.5 1.7.2-.9.2-2.5 0-3.5-.3-.9-.5-.1-.5 1.8zm13.7-.3-2.4 2.8 2.8-2.4c1.5-1.4 2.7-2.6 2.7-2.8 0-.8-.8-.1-3.1 2.4zm-18 0c-1.3 1.6-1.2 1.7.4.4 1.6-1.3 2.1-2.1 1.3-2.1-.2 0-1 .8-1.7 1.7zm97.4 0c2.6.2 6.8.2 9.5 0 2.6-.2.4-.3-4.8-.3s-7.4.1-4.7.3zm-485.3.7c0 .3.9 1 2 1.6 1.1.6 2 .8 2 .6 0-.3-.9-1-2-1.6-1.1-.6-2-.8-2-.6zm38.8 1.3c1.2.2 3 .2 4 0 .9-.3-.1-.5-2.3-.4-2.2 0-3 .2-1.7.4zm574.6 2.5-1.9 2.3 2.3-1.9c1.2-1.1 2.2-2.1 2.2-2.3 0-.8-.8-.2-2.6 1.9zm10 2-2.9 3.3 3.3-2.9c1.7-1.7 3.2-3.1 3.2-3.3 0-.8-.8-.1-3.6 2.9zm-537.9.8c1 1.1 2 2 2.3 2 .3 0-.3-.9-1.3-2s-2-2-2.3-2c-.3 0 .3.9 1.3 2zm-63.7 1.7c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm28 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm-20 1c1.2.2 3.2.2 4.5 0 1.2-.2.2-.4-2.3-.4s-3.5.2-2.2.4zm12.5 0c.9.2 2.3.2 3 0 .6-.3-.1-.5-1.8-.5-1.6 0-2.2.2-1.2.5zm563.6 1c-1.3 1.6-1.2 1.7.4.4.9-.7 1.7-1.5 1.7-1.7 0-.8-.8-.3-2.1 1.3zm-514.9.7c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm523.4 2.8-1.9 2.3 2.3-1.9c1.2-1.1 2.2-2.1 2.2-2.3 0-.8-.8-.2-2.6 1.9zM158.5 726c1 1.1 2 2 2.3 2 .3 0-.3-.9-1.3-2s-2-2-2.3-2c-.3 0 .3.9 1.3 2zm-90.1 3.4c1.1.9 2.4 1.6 3 1.6 1.2 0 .7-.5-2.4-1.9-2.4-1.1-2.4-1.1-.6.3zm614.5.3c-1.3 1.6-1.2 1.7.4.4.9-.7 1.7-1.5 1.7-1.7 0-.8-.8-.3-2.1 1.3zm-587.1 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm18 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm50.7 1.3c1 1.1 2 2 2.3 2 .3 0-.3-.9-1.3-2s-2-2-2.3-2c-.3 0 .3.9 1.3 2zm11.5-1.6c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm501.9 4.3c-1.3 1.6-1.2 1.7.4.4.9-.7 1.7-1.5 1.7-1.7 0-.8-.8-.3-2.1 1.3zm-508.9.7c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm-47.2 2.3c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm-26.5 1c.9.2 2.3.2 3 0 .6-.3-.1-.5-1.8-.5-1.6 0-2.2.2-1.2.5zm19 0c.9.2 2.3.2 3 0 .6-.3-.1-.5-1.8-.5-1.6 0-2.2.2-1.2.5zm58.7-.3c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm495.9 3.3c-1.3 1.6-1.2 1.7.4.4 1.6-1.3 2.1-2.1 1.3-2.1-.2 0-1 .8-1.7 1.7zm-491.9-.3c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm487.9 3.3c-1.3 1.6-1.2 1.7.4.4.9-.7 1.7-1.5 1.7-1.7 0-.8-.8-.3-2.1 1.3zm-483.9-.3c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm289.1 11.2c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zm-7.2 19.1c-1.3 1.6-1.2 1.7.4.4 1.6-1.3 2.1-2.1 1.3-2.1-.2 0-1 .8-1.7 1.7zm58.9 3c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm20.2 5.7c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm-41.7 19.1c0 2.2.2 3 .4 1.7.2-1.2.2-3 0-4-.3-.9-.5.1-.4 2.3zm-124.5 11.2c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm95 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm-138 1c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm52 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm76 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm51 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm-174 1c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm60 0c.6.2 1.8.2 2.5 0 .6-.3.1-.5-1.3-.5-1.4 0-1.9.2-1.2.5zm51.5 0c.9.2 2.5.2 3.5 0 .9-.3.1-.5-1.8-.5-1.9 0-2.7.2-1.7.5zm57.5 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm-164 1c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm81 0c2.3.2 5.9.2 8 0 2-.2.1-.4-4.3-.4-4.4 0-6.1.2-3.7.4zm78 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm-5 1c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm-143 1c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm137 0c.6.2 1.8.2 2.5 0 .6-.3.1-.5-1.3-.5-1.4 0-1.9.2-1.2.5zm-131 1c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm125 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm-119 1c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm113 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zm-105.5 1c.9.2 2.3.2 3 0 .6-.3-.1-.5-1.8-.5-1.6 0-2.2.2-1.2.5zm97 0c.9.2 2.3.2 3 0 .6-.3-.1-.5-1.8-.5-1.6 0-2.2.2-1.2.5zm-87.5 1c.6.2 1.8.2 2.5 0 .6-.3.1-.5-1.3-.5-1.4 0-1.9.2-1.2.5zm77.5 0c.9.2 2.3.2 3 0 .6-.3-.1-.5-1.8-.5-1.6 0-2.2.2-1.2.5zm-65.5 1c1.2.2 3.2.2 4.5 0 1.2-.2.2-.4-2.3-.4s-3.5.2-2.2.4zm52 0c1.2.2 3 .2 4 0 .9-.3-.1-.5-2.3-.4-2.2 0-3 .2-1.7.4zm-25.5 1c1.5.2 3.7.2 5 0 1.2-.2 0-.4-2.8-.4-2.7 0-3.8.2-2.2.4z"
+                        fill="#0C0" />
+                    <path
+                        d="M405.8 823.7c.6.2 1.8.2 2.5 0 .6-.3.1-.5-1.3-.5-1.4 0-1.9.2-1.2.5zm32 0c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6z"
+                        fill="#030" />
+                    <path
+                        d="M780 154.9c0 .6.4 1.3 1 1.6.6.3.7-.1.4-.9-.7-1.8-1.4-2.1-1.4-.7zM55.9 593.7c-1.3 1.6-1.2 1.7.4.4.9-.7 1.7-1.5 1.7-1.7 0-.8-.8-.3-2.1 1.3zM36.2 644c0 1.4.2 1.9.5 1.2.2-.6.2-1.8 0-2.5-.3-.6-.5-.1-.5 1.3zm100.3 51c2.1 2.2 4.1 4 4.4 4 .3 0-1.3-1.8-3.4-4-2.1-2.2-4.1-4-4.4-4-.3 0 1.3 1.8 3.4 4zm-79 2c1 1.1 2 2 2.3 2 .3 0-.3-.9-1.3-2s-2-2-2.3-2c-.3 0 .3.9 1.3 2zM45 712.4c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm55.8 25.3c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6z"
+                        fill="#0C6" />
+                    <g fill="#0C9" stroke-width="0">
+                        <path
+                            d="M385.5 9.5C353.3 12.4 327 18 293 29.2c-32.6 10.7-64.5 26-90.8 43.6l-8.2 5.5-6.8-3.1c-14.2-6.6-29.5-6.4-43.5.5-5.6 2.8-9.4 5.8-17.2 13.7-10.8 10.8-15 17.6-18 29.1-1.9 7.5-1.9 20.3 0 27.5.8 3 1.5 6.2 1.5 7 0 .8-3.4 5.8-7.5 11-46.6 58.9-75.1 128.7-84.7 207.5-1.8 14.7-1.8 69.8 0 86 4.3 39 14.5 79.2 28.6 112.9 2.5 6 4.6 11.5 4.6 12.2 0 .8-2 3.2-4.5 5.5-16.3 15-26.5 39.1-26.5 62.5 0 22.7 8 43 23.4 59.1 19.7 20.9 44.9 30.3 72.5 27.2 11.8-1.3 20.3-3.9 31.3-9.6l8.8-4.5 5.7 4.9c18 15.5 46.2 34.5 69.3 46.8 47.7 25.3 94.3 39.8 148.4 46.2 17.7 2.1 64.5 2.4 82.6.5 17.2-1.8 44.8-6.6 61.4-10.8 48-12.1 95.6-34.2 136.3-63.4 26.3-18.8 57.4-47.7 77.5-72 51.1-61.9 81.9-134.5 91.4-215.5 2.4-20.4 2.5-64.9.1-86-6.5-57.9-23.7-111.7-50.6-158.4-3.9-6.9-7.1-13-7.1-13.6 0-.6 1.9-2.9 4.1-5 5.3-5.1 10-12.3 12.9-20 3.3-8.5 3.4-24.1.1-33.5-6-17.5-20.9-30.8-39-35-11.8-2.8-28.1.4-38.8 7.5-2.9 1.9-5.7 3.5-6.3 3.5-.6 0-5.9-4.3-11.8-9.6C628.1 52.1 545.4 16.8 457 9c-15.4-1.3-54.2-1.1-71.5.5zm64 6.5c78 5.3 150.5 32 213 78.7 13.6 10.1 24.9 19.6 34.7 29.1l6.7 6.5 4.8-4.3c13.4-11.9 32.7-14.7 48.8-7 11.8 5.7 22.5 20.1 24.1 32.9.8 6.4-1 6.5-2.1.1-1.5-8.8-11.1-19.3-22.1-24.1-13.1-5.8-32.5-1.9-42.3 8.5l-2.3 2.5 8.2 9.3C779.3 214 812.3 289 821.5 376.5c2.1 19.9 2.1 57.1.1 77.7-8.7 85.7-42.5 162.8-99.6 227.3-34.4 38.7-80.4 73.3-126.6 95.1-9.6 4.5-43.3 18.4-44.7 18.4-.3 0-1.9-2.4-3.6-5.4-6.8-12.1-20.1-16.3-32.6-10.2-8.7 4.3-13.5 12.3-13.5 22.5 0 6.9.8 6.4-13 8.5-31.6 5-67.6 6.3-98.5 3.7-57.7-5-115.7-23.2-166.5-52.4-19.3-11.1-43.3-28.1-58.9-41.6l-7.4-6.5-3.6 2.3c-6.6 4.1-19.7 10-25.7 11.6-3.2.9-11.3 1.9-17.9 2.2-12.8.6-20.5-.7-33.6-5.6-12.5-4.7-26.8-16.5-34.9-28.8-8.6-13-14-30.1-14-44.5 0-23 10.8-45.7 29.3-61.3l4.7-4.1-5.1-11.4c-6-13.3-17.6-47.8-21.3-63-8.3-34.3-11-62.4-10.3-104 .7-35 2.9-53.3 10.2-83.5 4.9-20.2 9.8-35.7 17.2-54.5 14.8-37.3 35.6-73.2 60.5-104.1l7.7-9.6-2.1-5.9c-2.3-6.6-3.7-19.4-2.1-19.4.6 0 1.3 1.7 1.7 3.8.3 2.1 2 6.6 3.7 10.1l3.1 6.2 10.8-11.4c52.2-54.9 124.4-96.2 198-113.2 18.3-4.2 36.8-7.1 53.5-8.5 7.2-.5 14.8-1.2 17-1.3 9.2-.8 32-.6 46 .3zM178.8 84c1.7.7 3.2 1.5 3.2 1.9 0 .4-6 5.5-13.3 11.3-7.4 5.8-19.8 16.8-27.6 24.4-11.1 10.7-14.5 13.5-15.2 12.3-1.6-2.5-2.2-7.9-1.7-16.4 1-18.4 11.7-30.3 31.3-34.5 5.1-1.2 19-.5 23.3 1zm577.3 51.1c6.5 2.8 14.2 11.2 16.4 17.9 2 6 2.2 14.9.5 20.7-1.4 4.7-7.8 13.6-10 14.1-.9.1-3.5-2.7-6.4-6.9-5.8-8.4-18.6-24.7-26.8-34-3.2-3.7-5.8-7.1-5.8-7.6 0-1.3 7-5.1 11.6-6.2 5.5-1.4 14.6-.5 20.5 2z" />
+                        <path
+                            d="M163.7 249.1c-12.4 1.9-21.9 14.7-20.2 27.3 1.1 8.8 6 15.7 14 19.9 5.5 3 16.4 2.9 22 0 12.6-6.6 17.3-20.9 11.1-33.7-5-10.3-14.9-15.3-26.9-13.5zm472.2 252.1c-12.3 7.1-9.7 25.1 4.2 28.8 11 3 21.8-8 18.9-19.1-2.8-10.4-13.9-15.1-23.1-9.7zm-580.7 94c-12.5 14.5-18.2 30-18.2 49.2 0 13.9 1.8 21.5 7.7 33.6 4 8 6.1 10.9 13.8 18.5 15.4 15.4 29 21.4 50 22.2 14.6.6 23.4-1.1 34.7-6.4l7.9-3.6-10.8-10.6c-27.2-26.6-50.4-57.9-70.3-94.9-4.5-8.3-8.3-15.2-8.4-15.2-.1 0-3 3.2-6.4 7.2zm13.3 20.5c16.9 29.9 36.9 56.8 60.3 81.4 4.6 4.9 8.1 9.2 7.8 9.8-1.3 2.1-15.3 4.6-26.1 4.6-9.4 0-12.3-.4-19.8-2.9-20.5-6.7-36.7-22.7-43.4-43-2.3-7.1-2.7-9.7-2.7-21.1 0-11.7.3-13.8 2.8-21C50.3 615 57.7 602 59.6 602c.6 0 4.7 6.2 8.9 13.7zm189.2-5.7c-11.2 2.9-20.5 11.2-23.3 20.8-6.1 20.9 11.5 37.6 32.2 30.5 8.1-2.8 19.8-16.3 18-20.9-.8-2.1-2.3-.9-4.7 3.7-8.4 16.6-31.2 20-40 6-2.4-3.8-2.9-5.6-2.9-11 0-14.4 9.4-23.5 26.5-25.7 7.1-.9 20.4 1.7 40.1 7.7 9.3 2.9 20.4 6.1 24.6 7.1l7.7 2-1.9 3.8c-3.2 6.2-4 11.5-5 31.9-1 21.5-2.3 27.3-7.2 34.7-5 7.3-10.8 9.9-22.3 9.9s-18-2.8-24.6-10.4c-6.4-7.4-9.6-6.6-4.3 1.1 3.8 5.4 13.2 11.4 20.1 12.8 8.7 1.8 18 .8 24.3-2.6 13.2-7.2 17.9-19.5 18-47.9 0-12.9 1.8-23.8 4.7-28.8l1.8-3.1 14-.1c15.1-.1 19.4-1.1 26.8-6.2 4.4-3 5.9-5.3 4.8-7.2-.6-1-1.7-.5-4.4 1.9-2 1.8-5.9 4-8.6 5.1-5.8 2.1-19.1 3.5-24.7 2.4l-3.9-.7 3.8-3.5c2.4-2.1 3.6-4 3.3-4.9-.7-1.9-3.2-.6-8.8 4.4l-4 3.6-6.1-1.3c-3.4-.7-12.7-3.3-20.7-5.8s-18.3-5.6-23-6.9c-9.5-2.7-24.4-3.9-30.3-2.4zm257.5 2.6c-15 4-23.2 13-23.2 25.4 0 17.9 18.8 26.9 36.9 17.7 4.5-2.2 7.1-5 5.9-6.3-.4-.3-3.5.8-6.9 2.5-11.1 5.5-25 3.6-29.8-4.2-4.9-8-3.5-16.7 3.8-23.7 10.1-9.8 22.4-10.7 57.1-4.1 11.8 2.3 27 4.9 33.8 5.8 9.7 1.3 12 1.9 11 2.8-.7.7-11.2 9-23.3 18.5-53.1 41.7-73.5 59.4-73.5 63.6 0 1.4.6 2.7 1.4 3 .8.3 6.3-.2 12.3-1 26.7-3.9 52.8-4.2 77.8-1 8.5 1.1 11.1 1.1 11.7.1 1.3-2.1-.9-3-9.9-4.3-22-3.2-56.2-2.7-79.6 1-4.5.8-8.4 1.2-8.7.9-1.3-1.3 36.3-32.6 81.5-67.8 10.5-8.1 19.1-15.5 19.3-16.5.3-1.6-.8-1.9-9-2.5-8.6-.6-21.7-2.7-57.3-9-15.8-2.8-23.6-3-31.3-.9z" />
+                        <path
+                            d="M355.5 655.4c-3.5 5.3 3.4 11.5 7.9 7 1.9-1.8 2.1-6.5.4-8.2-2.1-2.1-6.6-1.4-8.3 1.2zm7 3.1c0 3.1-4.9 2.8-5.3-.3-.3-2 0-2.3 2.5-2 2 .2 2.8.8 2.8 2.3zm-5.1 19.7c-1.4 2.2-1.7 23.2-.5 27.1 1.6 4.8 6.3 8.7 10.4 8.7 6.7 0 14.9-8.6 20.8-21.7 3.2-7 5.5-10.3 7.2-10.3.7 0 .8 5 .3 14.4-.5 11.7-.4 14.5.7 15.5 2.5 2 4.5.1 9.7-9.6 5.7-10.5 11.2-17.3 14.1-17.3 2.2 0 2.3.5 2 12-.2 10 1.7 14.3 6.8 15.5 4.2.9 11.2-3.2 14.9-8.7l2.7-4.1.8 4.1c1 5 4.6 8.2 9.3 8.2 2.5 0 4.5-1 7.5-3.8l4.2-3.7-.7 7.4c-.6 6.2-1.3 8.2-4.6 13-9.5 13.9-16.3 33.6-14.6 42.5 1.6 8.6 9.1 11.3 15.1 5.3 5.3-5.3 6.7-11.4 7.2-33.2l.5-18.9 8.8-9.8c12-13.3 16.2-20.9 11.7-20.8-.7 0-2.7 2.7-4.5 5.9-3.5 6-14.7 18-15.8 16.9-.3-.4-.1-5.5.5-11.4 1.5-14.5 1.4-17.4-.3-17.4-.9 0-1.8 1.9-2.5 5.2-1.4 6.5-4.6 13.6-7.3 16.5-2.4 2.6-6.5 3-9.4.9-2.8-2.1-2.5-13.2.5-20.3 2.2-4.9 2.1-8.1 0-6.7-.5.3-2.9 4.7-5.3 9.9-5.4 11.5-11.4 18.5-16 18.5-5 0-5.6-1.3-5.6-12.5 0-11.7-1.2-14.5-6.2-14.5-4.1 0-8.2 4.4-14.9 16-2.8 4.9-5.4 9-5.6 9-.2 0-.1-5.5.2-12.3.7-11.4.6-12.4-1.3-14.7-2-2.4-2.2-2.4-4.9-1-2 1.1-4.3 4.5-7.8 11.6-2.7 5.5-6.5 11.8-8.2 14.1-5.5 6.9-11.9 8.1-15.7 3-1.9-2.5-2.1-3.9-1.8-13.5.2-5.9.4-11.8.5-13.1.2-2.7-1.7-3.9-2.9-1.9zM467 740.7c0 19.8-2.7 29.4-8.6 30.9-5.8 1.5-8-5.8-5.3-17.4 1.3-5.5 11.6-27.2 13-27.2.5 0 .9 6 .9 13.7z" />
+                    </g>
+                    <path
+                        d="M823.1 415.6c0 1.1.3 1.4.6.6.3-.7.2-1.6-.1-1.9-.3-.4-.6.2-.5 1.3zM714.4 700.2l-1.9 2.3 2.3-1.9c2.1-1.8 2.7-2.6 1.9-2.6-.2 0-1.2 1-2.3 2.2zm-8.4 8.3c-2.4 2.5-4.2 4.5-3.9 4.5.3 0 2.5-2 4.9-4.5 2.4-2.5 4.2-4.5 3.9-4.5-.3 0-2.5 2-4.9 4.5zm-664 .9c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3zm70.3 10.3c.9.2 2.3.2 3 0 .6-.3-.1-.5-1.8-.5-1.6 0-2.2.2-1.2.5z"
+                        fill="#0C3" />
+                    <path
+                        d="M472.2 296.7c29.1.2 76.5.2 105.5 0 29.1-.1 5.3-.2-52.7-.2s-81.8.1-52.8.2zM398 335.2c0 .5 34.8.7 77.3.6 42.4-.2 64.8-.4 49.7-.5-71.7-.7-127-.7-127-.1zm82 19.5c0 .5 6.9.7 15.2.5 27.9-.4 30.6-.8 7.6-1-12.6-.1-22.8.1-22.8.5zM284 496.2c0 .5 36.8.7 81.8.6 44.9-.2 68.7-.4 52.7-.5-75.7-.7-134.5-.7-134.5-.1zm258.3.5c3.7.2 9.7.2 13.5 0 3.7-.2.6-.3-6.8-.3-7.4 0-10.5.1-6.7.3zm-120.7 79.5c.3.5 1 .6 1.5.3 1.3-.9 1.1-1.2-.6-1.2-.8 0-1.2.4-.9.9z"
+                        fill="#0F0" />
+                    <g fill="#0FF" stroke-width="0">
+                        <path
+                            d="M416.4 187.7c-3 5.4-26.2 45.7-51.5 89.5-25.2 43.9-46 80.2-46.1 80.7-.2.5 4.7 9.5 10.7 19.9 8.2 14.2 11.3 18.8 12.1 17.9.6-.7 17.9-30.5 38.4-66.2 20.5-35.8 38.5-67 40-69.4l2.8-4.4 6.4 10.9 6.5 10.9 22.6.3 22.6.2-13.6-23.2c-7.4-12.8-17.4-30.1-22.1-38.3-14.7-25.6-22.3-38.5-22.7-38.5-.3 0-3 4.4-6.1 9.7z" />
+                        <path
+                            d="M217.5 300c.9 1.6 3 5.4 4.7 8.2 1.7 2.9 24.2 42 50 86.8s47.3 81.8 47.7 82.3c.4.4 10.7.6 22.8.5l22.1-.3-40.4-70c-22.2-38.4-40.4-70.3-40.4-70.7 0-.4 5.7-.9 12.6-1l12.6-.3 7-12c3.8-6.6 8.8-15.2 11-19.2l4-7.3H215.9l1.6 3zm192.1 15.5c-5.8 10.2-10.6 18.8-10.6 19 0 .3 34.4.5 76.4.5 72.7 0 85.6.3 85.6 2 0 .4-2.5 5-5.5 10.1-3 5.2-5.5 10.1-5.5 10.9 0 .8 4.9 9.9 10.9 20.2l10.8 18.8 13.4-23.3c7.3-12.7 20.2-35.1 28.6-49.6 8.4-14.5 15.3-26.6 15.3-26.8 0-.2-47-.3-104.4-.3H420.3l-10.7 18.5z" />
+                        <path
+                            d="M481 355.7c.1.5 18.2 32.3 40.4 70.8l40.4 70-13.2.3-13.1.3-10.5 18.5c-5.8 10.2-10.6 19-10.8 19.5-.2.5 22.1.9 57.3.9 50 0 57.6-.2 57.2-1.5-.3-.8-17.2-30.1-37.5-65.2-20.2-35.1-43.3-75.1-51.3-89l-14.4-25.2-22.2-.1c-12.3 0-22.3.3-22.3.7zM248 480.2c-14 24.3-27 46.8-28.8 50l-3.3 5.8h208.9l11.1-19.3 11-19.2-81.5-.3c-44.8-.1-81.4-.4-81.4-.7 0-.2 2.8-5.4 6.1-11.5l6.1-11-6.8-11.8c-3.7-6.4-8.6-15-10.8-18.9-2.3-4-4.3-7.3-4.6-7.3-.3 0-12 19.9-26 44.2z" />
+                        <path
+                            d="M464 506.2c-22.1 38.1-40.6 69.7-41 70.1-.4.5-3.6-4.1-7.1-10.2l-6.3-11.1h-22.3c-12.3 0-22.3.2-22.3.4 0 .4 56.9 98.7 57.5 99.4.6.7 104.7-179.8 104.3-180.8-1.1-2.6-21.4-37-21.9-37-.4 0-18.8 31.2-40.9 69.2z" />
+                    </g>
+                </svg>
+            </a>
+        </div>
+        <div class="copyright">
+          <p>2023 &copy; TinyZ Zzh</p>
+        </div>
+        <div class="footer-nav">
+            <div>
+                <a href="../../../../archive.html">归档</a>
+            </div>
+            <div>
+                <a href="../../../../tags.html">标签</a>
+            </div>
+            <div>
+                <a href="../../../../about.html">关于</a>
+            </div>
+        </div>
+    </div>
+</footer> <!-- End Footer -->
+
+</div>
+
+    <div class="top" title="Top">
+      <svg aria-hidden="true" focusable="false" data-prefix="fal" data-icon="angle-up" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" class="svg-inline--fa fa-angle-up fa-w-8 fa-2x"><path fill="currentColor" d="M136.5 185.1l116 117.8c4.7 4.7 4.7 12.3 0 17l-7.1 7.1c-4.7 4.7-12.3 4.7-17 0L128 224.7 27.6 326.9c-4.7 4.7-12.3 4.7-17 0l-7.1-7.1c-4.7-4.7-4.7-12.3 0-17l116-117.8c4.7-4.6 12.3-4.6 17 .1z" class=""></path></svg>
+    </div>
+    
+
+
+
+
+
+
+<style>@import url('../../../../assets/css/clickable-image.css');</style>
+
+<div id="image-cover-modal" class="image-cover-modal">
+    <img id="image-cover-image" class="image-cover-modal-content">
+    <div id="image-cover-caption"></div>
+</div>
+<script>
+    // Get the DOM
+    var modal = document.getElementById('image-cover-modal');
+    var modalImg = document.getElementById("image-cover-image");
+    var captionText = document.getElementById("image-cover-caption");
+    var span = document.getElementsByClassName("image-cover-close")[0];
+
+    // When the user clicks on <span> (x), close the modal
+    modal.onclick = function () {
+        this.classList.remove("model-shown");
+    }
+
+    var imgaes = document.getElementsByClassName("image-click-scaling");
+    if (imgaes) {
+        Array.from(imgaes).forEach((img) => {
+            img.onclick = function () {
+                modal.classList.add("model-shown");
+                modalImg.src = this.src;
+                captionText.innerHTML = this.alt;
+            }
+        });
+    }
+</script>
+
+
+
+<!-- JS -->
+
+
+
+
+
+
+
+
+<script>
+(function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var logo = document.getElementById('logo');
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+          data = JSON.parse(data ? data : '');
+      } catch(e) {
+          data = { nightShift: undefined, autoToggleAt: 0 };
+          saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      if (nightShift) {
+          logo.setAttribute("src", "../../../../assets/img/branding/TinyZ-logo.svg");
+      } else {
+          logo.setAttribute("src", "../../../../assets/img/branding/TinyZ-logo.svg");
+      }
+      setTimeout(function() {
+          sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+          if (hours > 7) {
+            toggleAt.setDate(toggleAt.getDate() + 1);
+          }
+          toggleAt.setHours(7);
+      } else {
+          toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+          handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+          nightShift: nightShift,
+          toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+          themeData.autoToggleAt = data.toggleAt;
+          handleThemeToggle(data.nightShift);
+      } else {
+          handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+          nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+})();
+</script>
+
+<script src="../../../../assets/js/jekyll-search.js"></script>
+<script src="../../../../assets/js/jquery-3.6.0.min.js"></script>
+
+
+  <script>
+    function toggle_comments(){
+      var commentCurtain = document.getElementById('comment-curtain')
+      if (commentCurtain) {
+        commentCurtain.classList.toggle('hide')
+      }
+      var disqusThread = document.getElementById('comment-layout')
+      if (disqusThread) {
+        disqusThread.classList.toggle('show')
+      }
+    }
+
+    function copyToClipboard() {
+      navigator.clipboard.writeText('https://tinyzzh.github.io/rust/2023/03/16/rust_lang_tutorial_100_Closure.html').then(function() {
+      alerts = document.getElementsByClassName('alert')
+      for (i=0; i < alerts.length; i++){
+        alerts[i].innerHTML='\u00ABlink copied\u00BB';
+        setTimeout((function(i){ return function(){alerts[i].innerHTML='';}})(i), 1600 );
+      };
+      }, function() {
+        prompt("Unable to copy, please use this link:", "https://tinyzzh.github.io/rust/2023/03/16/rust_lang_tutorial_100_Closure.html");
+      });
+    }
+
+    $(function () {
+      if (document.getElementById('comment-curtain') == null){
+        var disqusThread = document.getElementById('comment-layout')
+        if (disqusThread) {
+          disqusThread.classList.toggle('show')
+        }
+      }
+
+      var tweetTags = document.getElementsByTagName("tweet");
+
+      if (tweetTags != null){
+        for (i=0; i<tweetTags.length; i++){
+          tweetA = document.createElement("a")
+          tweetA.href = 'https://twitter.com/share?text='
+                       + encodeURIComponent(tweetTags[i].textContent)
+                       + '&via=&url='
+                       + window.location.href;
+          tweetA.target = "_blank";
+          tweetA.className = 'twitter';
+          tweetSpanText = document.createElement('span');
+          tweetSpanText.className = 'tweetText';
+          tweetSpanText.appendChild(document.createTextNode(tweetTags[i].textContent));
+          tweetSpanIcon = document.createElement('span');
+          tweetSpanIcon.className = 'tweetIcon';
+          tweetSpanIcon.appendChild(document.createTextNode("click to tweet"));
+          tweetI = document.createElement("i");
+          tweetI.className = 'fa fa-twitter';
+          tweetSpanIcon.appendChild(tweetI);
+          tweetA.appendChild(tweetSpanText);
+          tweetA.appendChild(tweetSpanIcon);
+          tweetTags[i].textContent = "";
+          tweetTags[i].appendChild(tweetA);
+        }
+      }
+
+    });
+
+  </script>
+  <!-- Mailchimp linking -->
+  <script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/8ece198b3eb260e6838461a60/d20d9fb9aad962399025da52e.js");</script>
+
+
+
+  <script src="https://cdn.jsdelivr.net/gh/cferdinandi/gumshoe@5.1.1/dist/gumshoe.polyfills.min.js"></script>
+  <script>
+    var spy = new Gumshoe("#toc-content a", {
+      navClass:"active",
+      contentClass:"underline",
+      nested:0,
+      nestedClass:"active",
+      offset:20,
+      reflow:1,
+      events:1
+    });
+
+    var coll = document.getElementsByClassName("toc-item-1");
+    var i;
+    var chevron_up = "<svg aria-hidden=\"true\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 512\"><path fill=\"currentColor\" d=\"M136.5 185.1l116 117.8c4.7 4.7 4.7 12.3 0 17l-7.1 7.1c-4.7 4.7-12.3 4.7-17 0L128 224.7 27.6 326.9c-4.7 4.7-12.3 4.7-17 0l-7.1-7.1c-4.7-4.7-4.7-12.3 0-17l116-117.8c4.7-4.6 12.3-4.6 17 .1z\"></path></svg>"
+    var chevron_down = "<svg aria-hidden=\"true\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 512\"><path fill=\"currentColor\" d=\"M119.5 326.9L3.5 209.1c-4.7-4.7-4.7-12.3 0-17l7.1-7.1c4.7-4.7 12.3-4.7 17 0L128 287.3l100.4-102.2c4.7-4.7 12.3-4.7 17 0l7.1 7.1c4.7 4.7 4.7 12.3 0 17L136.5 327c-4.7 4.6-12.3 4.6-17-.1z\"></path></svg>"
+    for (i = 0; i < coll.length; i++) {
+      if (coll[i].childElementCount > 1) {
+        sign = document.createElement('div');
+        sign.className = "toc-sign";
+        sign.innerHTML = chevron_down;
+        coll[i].insertBefore(sign, coll[i].firstElementChild.nextSibling);
+        coll[i].addEventListener("click", function() {
+          var content = this.lastElementChild;
+          if (content.style.maxHeight){
+            content.style.maxHeight = null;
+            this.firstElementChild.nextSibling.innerHTML = chevron_down;
+          } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+            this.firstElementChild.nextSibling.innerHTML = chevron_up;
+          }
+        });
+      }
+    }
+  </script>
+
+
+
+
+<script src="../../../../assets/js/main.js"></script>
+<script>
+  SimpleJekyllSearch({
+      searchInput: document.getElementById('search-input'),
+      resultsContainer: document.getElementById('results-container'),
+      json: '../../../../search.json',
+      searchResultTemplate: '<li><a href="{url}" title="{description}">{title}</a><p>{description}</p></li>',
+      noResultsText: 'No results found',
+      fuzzy: false,
+      exclude: ['Welcome']
+    });
+</script>
+
+
+
+<script type="text/javascript" src="../../../..//assets/js/mermaid.min.js"></script>
+  <script type="text/javascript">
+    (function () {
+      var config = {
+        startOnLoad: true,
+        theme: 'forest',
+        darkMode: false
+      };
+      mermaid.initialize(config);
+      window.mermaid.init(undefined, document.querySelectorAll('pre code.language-mermaid'));
+    })();
+  </script><!-- Add header for code snippets -->
+<script type="text/javascript">
+  (function () {
+    var divHgAry = $("div.highlight");
+    if (divHgAry) {
+      Array.from(divHgAry).forEach((divHg) => {
+        var bl = /language-(\w+)/.exec(divHg.parentNode.className);
+        if (divHg.nodeName == 'DIV' && bl) {
+          var d = document.createElement('div');
+          d.innerHTML = '<div class="code-header">'
+            +'<span label-text="' + bl[1].toUpperCase() + '"><i class="fa fa-code small"></i></span>'
+            +'<button aria-label="copy" title-succeed="已复制！" data-original-title="" title=""><i class="fa fa-clipboard"></i></button>'
+            +'</div>'; 
+          divHg.parentNode.insertBefore(d, divHg);
+        }
+      });
+    }
+  })()
+</script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VN305RQQ75"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-VN305RQQ75');
+</script>
+  </body>
+</html>
