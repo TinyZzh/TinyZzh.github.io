@@ -7,7 +7,7 @@
       "key": "dbku_ext",
       "name": "独播库",
       "type": 3,
-      "api": "https://tinyzzh.github.io/assets/js/tv/dbku.js",
+      "api": "https://raw.giteeusercontent.com/tinyzzh/alts_WebSite/raw/master/assets/js/tv/dbku.js",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1,
@@ -24,7 +24,7 @@
       "key": "qmp4_ext",
       "name": "七巧(QWAVI)",
       "type": 3,
-      "api": "https://tinyzzh.github.io/assets/js/tv/qmp4.js",
+      "api": "https://raw.giteeusercontent.com/tinyzzh/alts_WebSite/raw/master/assets/js/tv/qmp4.js",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1,
@@ -47,6 +47,28 @@
           "https://www.qnnull.com",
           "https://www.qnhot.com",
           "https://www.qmp4.com"
+        ]
+      }
+    },
+    {
+      "key": "mxvid_ext",
+      "name": "明星影院",
+      "type": 3,
+      "api": "https://raw.giteeusercontent.com/tinyzzh/alts_WebSite/raw/master/assets/js/tv/mxvid.js",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "changeable": 1,
+      "style": {
+        "type": "rect",
+        "ratio": 0.667
+      },
+      "ext": {
+        "host": "https://mxvid.com",
+        "hosts": [
+          "https://mxvid.com",
+          "https://isvod.com",
+          "https://ucvod.com"
         ]
       }
     }
@@ -142,6 +164,12 @@
     "iqiyi.hbuioo.com", "vip.ffzyad.com", "wan.51img1.com",
     "mimg.0c1q0l.cn", "www.googletagmanager.com", "www.google-analytics.com",
     "mc.usihnbcq.cn", "mg.g1mm3d.cn", "mscs.svaeuzh.cn",
-    "hm.baidu.com", "cdn.bootcss.com"
+    "hm.baidu.com", "cdn.bootcss.com","gg.urlgg.com",
+    "aizhantj.com",
+    "freeob.com",
+    "googletagmanager.com",
+    "google-analytics.com",
+    "mc.yandex.ru",
+    "mc.yandex.com"
   ]
 }
