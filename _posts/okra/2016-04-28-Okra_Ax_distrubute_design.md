@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 简单的分布式服务器设计
-date: 2099-09-28 09:26:00 +0800
+date: 2016-04-28 09:26:00 +0800
 categories: [Okra]
 tags: [Okra框架, 分布式]
 ---
