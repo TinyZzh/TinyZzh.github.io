@@ -1,26 +1,26 @@
 ---
 ---
 
-@use "syntax/light-syntax" as light;
-@use "syntax/dark-syntax" as dark;
+@import "syntax/light-syntax";
+@import "syntax/dark-syntax";
 
 html:not([data-theme]),
 html[data-theme="light"] {
-  @include light.light-syntax;
+  @include light-syntax;
 }
 
 html[data-theme="dark"] {
-  @include dark.dark-syntax;
+  @include dark-syntax;
 }
 
 @media (prefers-color-scheme: dark) {
   html:not([data-theme]),
   html[data-theme="dark"] {
-    @include dark.dark-syntax;
+    @include dark-syntax;
   }
 
   html[data-theme="light"] {
-    @include light.light-syntax;
+    @include light-syntax;
   }
 }
 
