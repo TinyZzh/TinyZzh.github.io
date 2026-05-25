@@ -3,14 +3,19 @@ title: Rust语言从入门到精通系列 - 生命周期
 published: 2023-03-17
 description: ""
 image: ""
-tags: [Rust, 从入门到精通]
+tags: [Rust, 从入门到精通]
+
 category: Rust
 draft: false
 lang: zh_CN
-output:
-word_document:
-path: /pandoc_outputs/rust_lang_tutorial_15_lifetime.docx
-highlight: "zenburn"
+output:
+
+word_document:
+
+path: /pandoc_outputs/rust_lang_tutorial_15_lifetime.docx
+
+highlight: "zenburn"
+
 pandoc_args: ["--toc", "--toc-depth=2"]
 ---
 
@@ -58,7 +63,7 @@ struct Animal<'a> {
 生命周期参数（lifetime parameter）是指在函数或结构定义中声明的生命周期参数。例如：
 
 ```rust
-fn find_oldest<'a>(animals: &'a [Animal]) ->&'a Animal<'a> {
+fn find_oldest<'a>(animals: &'a [Animal<'a>]) -> &'a Animal<'a> {
     let mut oldest = &animals[0];
     for animal in animals {
         if animal.age > oldest.age {
@@ -141,17 +146,17 @@ impl<'a> Foo<'a> {
 例如：
 
 ```rust
-fn foo<'a, 'b>(x: &'a i32, y: &'b i32) -> &i32 {
-    if *x <*y { x } else { y }
+fn foo<'a>(x: &'a i32, y: &'a i32) -> &'a i32 {
+    if *x < *y { x } else { y }
 }
 ```
 
-这里定义了一个名为`foo`的函数，它有两个输入生命周期参数`'a`和`'b`。根据生命周期省略规则，当存在多个输入生命周期参数时，编译器会尝试寻找一条最短的路径来使所有引用的生命周期参数保持有效，而这一路径就是将引用的生命周期参数设为交集，即对于两个输入生命周期参数`'a`和`'b`，取它们的交集`'a & 'b`作为函数返回值的生命周期参数，因此，上述代码可以简化为：
+这里定义了一个名为`foo`的函数，它有两个输入生命周期参数`'a`和`'b`。由于函数返回值可能来自`x`或`y`，编译器无法自动推断返回值的生命周期，因此必须显式标注。一种常见做法是将两个参数的生命周期统一为`'a`，表示返回值的生命周期不超过任一参数的生命周期。注意：当存在多个不同生命周期参数时，不能省略返回值的生命周期标注：
 
 ```rust
-// 省略了生命周期参数'a'和'b'
-fn foo(x: &i32, y: &i32) -> &i32 {  
-    if *x <*y { x } else { y }
+// 必须显式标注生命周期，不能省略
+fn foo<'a>(x: &'a i32, y: &'a i32) -> &'a i32 {
+    if *x < *y { x } else { y }
 }
 ```
 

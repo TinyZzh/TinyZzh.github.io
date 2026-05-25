@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - Hash特征
 published: 2023-04-10
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, Hash]
+tags: [Rust, 从入门到精通, Hash]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -168,7 +169,7 @@ fn main() {
 ```rust
 use std::collections::HashMap;
 
-#[derive(PartialEq, Eq, Hash)]
+#[derive(Debug, PartialEq, Eq, Hash)]
 struct Person {
     name: String,
     age: u32,

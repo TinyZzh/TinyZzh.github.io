@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - SQLx模块SQLite入门
 published: 2023-05-30
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, SQLx]
+tags: [Rust, 从入门到精通, SQLx]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -199,10 +200,13 @@ async fn main() -> Result<(), sqlx::Error> {
         ("Bob", "bob@example.com"),
         ("Charlie", "charlie@example.com"),
     ];
-    query("INSERT INTO users (name, email) VALUES (?, ?)")
-        .bind_all(users)
-        .execute(&pool)
-        .await?;
+    for (name, email) in users {
+        query("INSERT INTO users (name, email) VALUES (?, ?)")
+            .bind(name)
+            .bind(email)
+            .execute(&pool)
+            .await?;
+    }
     Ok(())
 }
 ```

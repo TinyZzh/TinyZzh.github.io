@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - Any 特征
 published: 2023-03-20
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, Any, 特征]
+tags: [Rust, 从入门到精通, Any, 特征]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -181,7 +182,7 @@ impl<T: Any + AddMetadata + 'static> AddMetadata for Box<T> {
     fn set_metadata(&mut self, metadata: String) {
         let any_self: &mut dyn Any = self.as_mut();
         let metadata_box = Box::new(metadata);
-        any_self.downcast_mut::<T>().unwrap().set_metadata(metadata_box);
+        any_self.downcast_mut::<T>().unwrap().set_metadata(*metadata_box);
     }
 
     fn get_metadata(&self) -> Option<&String> {
@@ -214,13 +215,15 @@ fn main() {
     vec.push(Box::new(42));
     vec.push(Box::new(3.14));
 
+    let mut to_push: Vec<Box<dyn Any>> = Vec::new();
     for i in &vec {
         if let Some(x) = i.downcast_ref::<Box<MyType>>() {
             let mut x = *x;
             x.set_metadata("test metadata".to_string());
-            vec.push(x);
+            to_push.push(x);
         }
     }
+    vec.extend(to_push);
 }
 ```
 

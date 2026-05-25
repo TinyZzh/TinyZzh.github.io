@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - Clone特征
 published: 2023-04-03
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, Clone]
+tags: [Rust, 从入门到精通, Clone]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -238,8 +239,8 @@ println!("{}", b(2));
 我们也可以使用 clone 方法来克隆一个迭代器。下面是一个示例：
 
 ```rust
-let a = vec![1, 2, 3].into_iter();
-let b = a.clone();
+let a = vec![1, 2, 3];
+let b = a.iter().cloned().collect::<Vec<_>>();
 
 for x in a {
     println!("{}", x);

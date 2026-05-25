@@ -3,14 +3,19 @@ title: Rust语言从入门到精通系列 - 日志库
 published: 2023-03-14
 description: ""
 image: ""
-tags: [Rust, 从入门到精通]
+tags: [Rust, 从入门到精通]
+
 category: Rust
 draft: false
 lang: zh_CN
-output:
-word_document:
-path: /pandoc_outputs/rust_lang_tutorial_12_log.docx
-highlight: "zenburn"
+output:
+
+word_document:
+
+path: /pandoc_outputs/rust_lang_tutorial_12_log.docx
+
+highlight: "zenburn"
+
 pandoc_args: ["--toc", "--toc-depth=2"]
 ---
 
@@ -41,15 +46,11 @@ env_logger = "0.9.0"
 下面是通过简单的示例：
 
 ```rust
+/* [dependencies] log = "*" env_logger = "*" */
 use log::{info, LevelFilter};
-use std::io::Write;
 
 fn main() {
-    //    使用env_logger日志库，详细的时候后续会深入讲解
-    env_logger::init();
-
-    log::set_logger(&LOGGER).unwrap();
-    log::set_max_level(LevelFilter::Info);
+    env_logger::builder().filter_level(LevelFilter::Info).init();
 
     info!("Hello, world!");
 }
@@ -78,19 +79,14 @@ log::set_max_level(LevelFilter::Warn);
 Rust的Log库还提供了一种过滤器机制，可以根据日志记录器的名称和日志级别来过滤日志消息。过滤器可以通过调用 `log::set_logger()` 函数时传递给日志记录器。例如，如果您只想记录名为 `myapp::database` 的记录器的 `info` 级别及以上的日志消息，可以使用以下代码：
 
 ```rust
+/* [dependencies] log = "*" env_logger = "*" */
 use log::{info, LevelFilter};
-use std::io::Write;
 
 fn main() {
-    env_logger::init();
-
-    let filter = log::FilterBuilder::new()
-        .target("myapp::database")
-        .level(LevelFilter::Info)
-        .build();
-
-    log::set_logger(&LOGGER).unwrap();
-    log::set_max_level(LevelFilter::Info);
+    env_logger::builder()
+        .filter_level(LevelFilter::Info)
+        .filter_module("myapp::database", LevelFilter::Info)
+        .init();
 
     info!("Hello, world!");
 }
@@ -103,20 +99,17 @@ fn main() {
 Rust的Log库允许您自定义日志消息的格式。默认情况下，Log库将使用 `{level} {message}` 格式化日志消息。您可以通过调用 `log::set_logger()` 函数时传递一个自定义的格式字符串来自定义日志消息的格式。例如，以下代码将使用自定义的格式字符串来格式化日志消息：
 
 ```rust
+/* [dependencies] log = "*" env_logger = "*" */
 use log::{info, LevelFilter};
 use std::io::Write;
 
 fn main() {
-    env_logger::init();
-
-    let format = log::FormatBuilder::new()
+    env_logger::builder()
+        .filter_level(LevelFilter::Info)
         .format(|buf, record| {
             writeln!(buf, "{} [{}] - {}", chrono::Local::now().format("%Y-%m-%d %H:%M:%S"), record.level(), record.args())
         })
-        .build();
-
-    log::set_logger(&LOGGER).unwrap();
-    log::set_max_level(LevelFilter::Info);
+        .init();
 
     info!("Hello, world!");
 }

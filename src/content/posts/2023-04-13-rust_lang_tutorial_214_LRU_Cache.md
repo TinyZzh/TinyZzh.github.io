@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - 零基础lru缓存模块实战
 published: 2023-04-13
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, lru, Cache]
+tags: [Rust, 从入门到精通, lru, Cache]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -25,9 +26,10 @@ lru = "0.10.0"
 
 ```rust
 use lru::LruCache;
+use std::num::NonZeroUsize;
 
 fn main() {
-    let mut cache = LruCache::new(2);
+    let mut cache = LruCache::new(NonZeroUsize::new(2).unwrap());
     cache.put("key1", "value1");
     cache.put("key2", "value2");
     assert_eq!(cache.get(&"key1"), Some(&"value1"));
@@ -41,9 +43,10 @@ fn main() {
 
 ```rust
 use lru::LruCache;
+use std::num::NonZeroUsize;
 
 fn main() {
-    let mut cache = LruCache::new(2);
+    let mut cache = LruCache::new(NonZeroUsize::new(2).unwrap());
     cache.put("key1", "value1");
     assert_eq!(cache.get(&"key2"), None);
 }
@@ -55,9 +58,10 @@ fn main() {
 
 ```rust
 use lru::LruCache;
+use std::num::NonZeroUsize;
 
 fn main() {
-    let mut cache = LruCache::new(2);
+    let mut cache = LruCache::new(NonZeroUsize::new(2).unwrap());
     cache.put("key1", "value1");
     cache.put("key2", "value2");
     cache.put("key1", "new_value");
@@ -71,9 +75,10 @@ fn main() {
 
 ```rust
 use lru::LruCache;
+use std::num::NonZeroUsize;
 
 fn main() {
-    let mut cache = LruCache::new(2);
+    let mut cache = LruCache::new(NonZeroUsize::new(2).unwrap());
     cache.put("key1", "value1");
     cache.put("key2", "value2");
     cache.pop(&"key1");
@@ -87,9 +92,10 @@ fn main() {
 
 ```rust
 use lru::LruCache;
+use std::num::NonZeroUsize;
 
 fn main() {
-    let mut cache = LruCache::new(2);
+    let mut cache = LruCache::new(NonZeroUsize::new(2).unwrap());
     assert_eq!(cache.capacity(), 2);
 }
 ```
@@ -100,9 +106,10 @@ fn main() {
 
 ```rust
 use lru::LruCache;
+use std::num::NonZeroUsize;
 
 fn main() {
-    let mut cache = LruCache::new(2);
+    let mut cache = LruCache::new(NonZeroUsize::new(2).unwrap());
     cache.put("key1", "value1");
     assert_eq!(cache.len(), 1);
 }
@@ -114,9 +121,10 @@ fn main() {
 
 ```rust
 use lru::LruCache;
+use std::num::NonZeroUsize;
 
 fn main() {
-    let mut cache = LruCache::new(2);
+    let mut cache = LruCache::new(NonZeroUsize::new(2).unwrap());
     cache.put("key1", "value1");
     cache.clear();
     assert_eq!(cache.len(), 0);
@@ -129,9 +137,10 @@ fn main() {
 
 ```rust
 use lru::LruCache;
+use std::num::NonZeroUsize;
 
 fn main() {
-    let mut cache = LruCache::new(2);
+    let mut cache = LruCache::new(NonZeroUsize::new(2).unwrap());
     cache.put("key1", "value1");
     cache.put("key2", "value2");
     for (key, value) in cache.iter() {
@@ -147,10 +156,11 @@ fn main() {
 ### 自定义缓存替换策略
 
 ```rust
-use lru::{LruCache, DefaultCachePolicy};
+use lru::LruCache;
+use std::num::NonZeroUsize;
 
 fn main() {
-    let mut cache = LruCache::with_policy(DefaultCachePolicy::new().max_capacity(2));
+    let mut cache = LruCache::new(NonZeroUsize::new(2).unwrap());
     cache.put("key1", "value1");
     cache.put("key2", "value2");
     cache.put("key3", "value3");
@@ -163,7 +173,8 @@ fn main() {
 ### 自定义缓存等效性判断
 
 ```rust
-use lru::{LruCache, DefaultCachePolicy};
+use lru::LruCache;
+use std::num::NonZeroUsize;
 
 #[derive(PartialEq, Eq, Hash)]
 struct CustomKey {
@@ -172,7 +183,7 @@ struct CustomKey {
 }
 
 fn main() {
-    let mut cache = LruCache::with_policy(DefaultCachePolicy::new().max_capacity(2));
+    let mut cache = LruCache::new(NonZeroUsize::new(2).unwrap());
     let key1 = CustomKey {
         key1: "123".to_string(),
         key2: "456".to_string(),
@@ -187,7 +198,8 @@ fn main() {
 ### 自定义缓存值类型
 
 ```rust
-use lru::{LruCache, DefaultCachePolicy};
+use lru::LruCache;
+use std::num::NonZeroUsize;
 
 struct CustomValue {
     value1: String,
@@ -195,7 +207,7 @@ struct CustomValue {
 }
 
 fn main() {
-    let mut cache = LruCache::with_policy(DefaultCachePolicy::new().max_capacity(2));
+    let mut cache = LruCache::new(NonZeroUsize::new(2).unwrap());
     let value1 = CustomValue {
         value1: "123".to_string(),
         value2: "456".to_string(),
@@ -210,7 +222,8 @@ fn main() {
 ### 使用LRU缓存实现Fibonacci数列
 
 ```rust
-use lru::{LruCache, DefaultCachePolicy};
+use lru::LruCache;
+use std::num::NonZeroUsize;
 
 fn fibonacci(n: u32, cache: &mut LruCache<u32, u32>) -> u32 {
     if let Some(&result) = cache.get(&n) {
@@ -226,7 +239,7 @@ fn fibonacci(n: u32, cache: &mut LruCache<u32, u32>) -> u32 {
 }
 
 fn main() {
-    let mut cache = LruCache::with_policy(DefaultCachePolicy::new().max_capacity(10));
+    let mut cache = LruCache::new(NonZeroUsize::new(10).unwrap());
     for i in 0..20 {
         println!("fibonacci({}) = {}", i, fibonacci(i, &mut cache));
     }

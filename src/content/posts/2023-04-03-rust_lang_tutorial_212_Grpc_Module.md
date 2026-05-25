@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - GRPC框架入门指北
 published: 2023-04-03
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, grpc]
+tags: [Rust, 从入门到精通, grpc]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -13,6 +14,8 @@ lang: zh_CN
 
 gRPC 是 Google 开源的高性能、通用的 RPC 框架，它采用了基于 HTTP/2 协议的二进制传输协议，支持多种语言，包括 Rust。Rust 语言 GRPC 模块是一个用于 Rust 语言的 gRPC 客户端和服务器实现，它提供了一个简单易用的 API，可以方便地创建和使用 gRPC 服务。
 
+> **重要提示**: 以下示例使用的 `grpc` crate（grpc-rs）已废弃且不再维护。现代 Rust gRPC 开发推荐使用 [tonic](https://docs.rs/tonic/latest/tonic/)，它是基于 Hyper 1.x 和 prost 的高性能 gRPC 框架。下方保留旧 API 示例仅供参考，并附带 tonic 替代代码。
+
 ## 基础用法
 
 ### 创建 gRPC 服务器
@@ -20,6 +23,7 @@ gRPC 是 Google 开源的高性能、通用的 RPC 框架，它采用了基于 H
 在 Rust 语言 GRPC 模块中，可以使用`ServerBuilder`结构体来创建 gRPC 服务器。下面是一个简单的示例：
 
 ```rust
+// ⚠️ 以下使用已废弃的 grpc crate (grpc-rs)，仅作参考
 use grpc::{Server, ServerBuilder};
 
 fn main() {
@@ -42,6 +46,46 @@ impl proto::greeter_server::Greeter for GreeterImpl {
 }
 ```
 
+**tonic 替代代码**：
+
+```rust
+use tonic::{transport::Server, Request, Response, Status};
+
+pub mod greeter {
+    tonic::include_proto!("greeter");
+}
+
+use greeter::greeter_server::{Greeter, GreeterServer};
+use greeter::{HelloReply, HelloRequest};
+
+#[derive(Default)]
+pub struct GreeterImpl {}
+
+#[tonic::async_trait]
+impl Greeter for GreeterImpl {
+    async fn say_hello(
+        &self,
+        request: Request<HelloRequest>,
+    ) -> Result<Response<HelloReply>, Status> {
+        let reply = HelloReply {
+            message: format!("Hello, {}!", request.into_inner().name),
+        };
+        Ok(Response::new(reply))
+    }
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let addr = "[::1]:50051".parse()?;
+    let greeter = GreeterImpl::default();
+    Server::builder()
+        .add_service(GreeterServer::new(greeter))
+        .serve(addr)
+        .await?;
+    Ok(())
+}
+```
+
 这个示例中，我们创建了一个`ServerBuilder`对象，并通过`http`字段设置了服务器的端口号。然后我们使用`add_service`方法将我们实现的`Greeter`服务添加到服务器中。最后，我们通过`build`方法构建了服务器，并通过`start`方法启动了服务器。服务器启动后，我们通过`wait`方法等待客户端连接。
 
 ### 创建 gRPC 客户端
@@ -49,6 +93,7 @@ impl proto::greeter_server::Greeter for GreeterImpl {
 在 Rust 语言 GRPC 模块中，可以使用`Client`结构体来创建 gRPC 客户端。下面是一个简单的示例：
 
 ```rust
+// ⚠️ 以下使用已废弃的 grpc crate (grpc-rs)，仅作参考
 use grpc::{ChannelBuilder, Client};
 
 fn main() {
@@ -61,6 +106,31 @@ fn main() {
 }
 ```
 
+**tonic 替代代码**：
+
+```rust
+use tonic::transport::Channel;
+
+pub mod greeter {
+    tonic::include_proto!("greeter");
+}
+
+use greeter::greeter_client::GreeterClient;
+use greeter::HelloRequest;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let channel = Channel::from_static("http://[::1]:50051").connect().await?;
+    let mut client = GreeterClient::new(channel);
+    let request = tonic::Request::new(HelloRequest {
+        name: "world".into(),
+    });
+    let response = client.say_hello(request).await?;
+    println!("{}", response.into_inner().message);
+    Ok(())
+}
+```
+
 这个示例中，我们创建了一个`ChannelBuilder`对象，并使用`Client`结构体创建了一个 gRPC 客户端。然后我们创建了一个`HelloRequest`对象，并设置了它的`name`字段。最后，我们使用`say_hello`方法向服务器发送请求，并通过`wait`方法等待响应。响应对象是一个`SingleResponse`对象，我们通过`unwrap`方法获取了它的值，并打印了它的`message`字段。
 
 ### 使用流式 RPC
@@ -68,6 +138,7 @@ fn main() {
 在 Rust 语言 GRPC 模块中，可以使用流式 RPC 来传输流数据。下面是一个简单的示例：
 
 ```rust
+// ⚠️ 以下使用已废弃的 grpc crate (grpc-rs)，仅作参考
 use grpc::{Client, ClientStreamingSink, Server, ServerBuilder, ServerStreamingSink, WriteFlags};
 
 fn main() {
@@ -115,6 +186,8 @@ impl proto::streaming::Greeter for GreeterImpl {
 }
 ```
 
+> **提示**: 流式 RPC 在 tonic 中使用 `tonic::Streaming` 和 `tokio::sync::mpsc` 实现更为简洁，参考 [tonic 流式示例](https://github.com/hyperium/tonic/tree/master/examples/src/streaming)。
+
 这个示例中，我们创建了一个`Greeter`服务，并实现了一个`say_hello_stream`方法，该方法接收一个`StreamingRequest`对象，并返回一个`StreamingResponse`对象。在该方法中，我们使用`mpsc::channel`方法创建了一个通道，用于传输流数据。然后我们使用`std::thread::spawn`方法创建了一个线程，该线程会将接收到的请求转换成响应，并通过通道发送给客户端。最后，我们使用`StreamingResponse::new`方法将通道包装成一个`StreamingResponse`对象，并将其返回给客户端。
 
 在客户端中，我们创建了一个`say_hello_stream`方法，并使用`send`方法向服务器发送请求。然后我们通过`wait`方法等待响应，并打印了响应的`message`字段。
@@ -124,6 +197,7 @@ impl proto::streaming::Greeter for GreeterImpl {
 在 Rust 语言 GRPC 模块中，可以使用双向流式 RPC 来传输双向流数据。下面是一个简单的示例：
 
 ```rust
+// ⚠️ 以下使用已废弃的 grpc crate (grpc-rs)，仅作参考
 use grpc::{Client, ClientStreamingSink, Server, ServerBuilder, ServerStreamingSink, StreamingSink, WriteFlags};
 
 fn main() {
@@ -170,6 +244,8 @@ impl proto::streaming::Greeter for GreeterImpl {
 }
 ```
 
+> **提示**: 双向流式 RPC 在 tonic 中通过 `Request<Streaming<T>>` 和 `Response<Streaming<T>>` 实现，参考 [tonic 双向流示例](https://github.com/hyperium/tonic/tree/master/examples/src/streaming)。
+
 这个示例中，我们创建了一个`Greeter`服务，并实现了一个`say_hello_bidi`方法，该方法接收一个`StreamingRequest`对象，并返回一个`StreamingResponse`对象。在该方法中，我们使用`mpsc::channel`方法创建了一个通道，用于传输流数据。然后我们使用`std::thread::spawn`方法创建了一个线程，该线程会将接收到的请求转换成响应，并通过通道发送给客户端。最后，我们使用`StreamingResponse::new`方法将通道包装成一个`StreamingResponse`对象，并将其返回给客户端。
 
 在客户端中，我们使用`say_hello_bidi`方法向服务器发送请求，并通过`into_future`方法获取响应。然后我们通过`println`方法打印了响应的`message`字段。
@@ -181,6 +257,7 @@ impl proto::streaming::Greeter for GreeterImpl {
 在 Rust 语言 GRPC 模块中，可以使用 tokio 来实现异步 RPC。下面是一个简单的示例：
 
 ```rust
+// ⚠️ 以下使用已废弃的 grpc crate (grpc-rs)，仅作参考
 use grpc::{Client, ClientStreamingSink, Server, ServerBuilder, ServerStreamingSink, StreamingSink, WriteFlags};
 
 #[tokio::main]
@@ -211,6 +288,8 @@ impl proto::greeter_server::Greeter for GreeterImpl {
 }
 ```
 
+> **提示**: tonic 本身就是基于 tokio 的异步框架，无需额外配置即可使用 `#[tokio::main]`。
+
 这个示例中，我们使用`tokio::main`宏来创建异步运行时。在服务器和客户端中，我们使用`async`关键字来定义异步函数。在客户端中，我们使用`await`关键字来等待异步响应。
 
 ### tokio 使用流式 RPC
@@ -218,6 +297,7 @@ impl proto::greeter_server::Greeter for GreeterImpl {
 下面是一个使用 tokio 和流式 RPC 的示例：
 
 ```rust
+// ⚠️ 以下使用已废弃的 grpc crate (grpc-rs)，仅作参考
 use grpc::{Client, ClientStreamingSink, Server, ServerBuilder, ServerStreamingSink, StreamingSink, WriteFlags};
 use tokio::sync::mpsc;
 
@@ -273,6 +353,8 @@ impl proto::streaming::Greeter for GreeterImpl {
 }
 ```
 
+> **提示**: tonic 的流式 RPC 原生支持 tokio 异步，无需手动管理 `WriteFlags`。
+
 这个示例中，我们使用`tokio::sync::mpsc`库来创建一个通道，用于传输流数据。在客户端中，我们使用`say_hello_streaming`方法向服务器发送请求，并将请求通过通道发送给异步任务。在异步任务中，我们使用`into_async_iter`方法将请求流转换成异步迭代器，并将响应通过通道发送给客户端。在客户端中，我们使用`into_stream`方法将响应流转换成异步流，并等待响应。
 
 ### 使用 TLS 加密
@@ -280,6 +362,8 @@ impl proto::streaming::Greeter for GreeterImpl {
 在 Rust 语言 GRPC 模块中，可以使用 TLS 加密来保护通信安全。下面是一个简单的示例：
 
 ```rust
+// ⚠️ 以下使用已废弃的 grpc crate (grpc-rs)，仅作参考
+// ⚠️ rustls::internal::pemfile 和 rustls::NoClientAuth 在新版 rustls 中已移除
 use grpc::{ChannelBuilder, Client};
 use rustls::{Certificate, PrivateKey, ServerConfig};
 use std::fs::File;
@@ -323,6 +407,8 @@ impl proto::greeter_server::Greeter for GreeterImpl {
     }
 }
 ```
+
+> **提示**: tonic 原生支持 TLS，使用 `tonic::transport::Server::builder().tls_config()` 即可配置，无需 `grpc_tls` 或手动操作 `rustls::internal::pemfile`。参考 [tonic TLS 示例](https://github.com/hyperium/tonic/tree/master/examples/src/tls)。
 
 这个示例中，我们使用`rustls`库来创建 TLS 配置，并使用`grpc_tls::ServerBuilder`和`ChannelBuilder::new_tls`方法来创建带有 TLS 加密的服务器和客户端。在服务器中，我们使用`set_single_cert`方法来设置服务器证书和私钥。在客户端中，我们使用`set_single_client_cert`方法来设置客户端证书和私钥。
 

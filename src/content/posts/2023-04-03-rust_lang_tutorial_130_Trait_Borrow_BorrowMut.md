@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - Borrow和BorrowMut特征
 published: 2023-04-03
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, Borrow, BorrowMut]
+tags: [Rust, 从入门到精通, Borrow, BorrowMut]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -50,8 +51,7 @@ fn borrow_mut(&mut self) -> &mut T
 ```rust
 fn main() {
     let mut v = vec![1, 2, 3];
-    let r = v.borrow_mut();
-    r.push(4);
+    v.push(4);
     println!("{:?}", v);
 }
 ```
@@ -75,8 +75,7 @@ fn main() {
 ```rust
 fn main() {
     let mut s = String::from("hello");
-    let r = s.borrow_mut();
-    r.push_str(", world!");
+    s.push_str(", world!");
     println!("{}", s);
 }
 ```
@@ -100,8 +99,10 @@ fn main() {
 ```rust
 fn main() {
     let mut a = [1, 2, 3];
-    let r = a.borrow_mut();
-    r[1] = 4;
+    {
+        let r = a.borrow_mut();
+        r[1] = 4;
+    }
     println!("{:?}", a);
 }
 ```
@@ -111,6 +112,7 @@ fn main() {
 ### 借用一个结构体的不可变引用
 
 ```rust
+#[derive(Debug)]
 struct Point {
     x: i32,
     y: i32,
@@ -128,6 +130,7 @@ fn main() {
 ### 借用一个结构体的可变引用
 
 ```rust
+#[derive(Debug)]
 struct Point {
     x: i32,
     y: i32,
@@ -135,8 +138,10 @@ struct Point {
 
 fn main() {
     let mut p = Point { x: 1, y: 2 };
-    let r = &mut p;
-    r.x = 3;
+    {
+        let r = &mut p;
+        r.x = 3;
+    }
     println!("{:?}", p);
 }
 ```
@@ -164,8 +169,10 @@ fn main() {
 fn main() {
     let mut v1 = vec![1, 2, 3];
     let v2 = vec![4, 5, 6];
-    let r = &mut &mut v1;
-    (*r).push(4);
+    {
+        let r = &mut &mut v1;
+        (*r).push(4);
+    }
     println!("{:?}", v1);
 }
 ```
@@ -176,10 +183,10 @@ fn main() {
 
 ```rust
 fn main() {
-    let v1 = vec![1, 2, 3];
+    let mut v1 = vec![1, 2, 3];
     let v2 = vec![4, 5, 6];
-    let r = &mut &v1;
-    **r = vec![7, 8, 9];
+    let r = &mut v1;
+    *r = vec![7, 8, 9];
     println!("{:?}", v1);
 }
 ```
@@ -192,8 +199,7 @@ fn main() {
 fn main() {
     let mut v1 = vec![1, 2, 3];
     let v2 = vec![4, 5, 6];
-    let r = &v1.borrow_mut();
-    r.push(4);
+    v1.push(4);
     println!("{:?}", v1);
 }
 ```
@@ -218,8 +224,7 @@ fn main() {
 fn main() {
     let mut v = vec![1, 2, 3];
     {
-        let r = v.borrow_mut();
-        r.push(4);
+        v.push(4);
     }
     {
         let r = v.borrow();

@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - 深入理解From和Into特征
 published: 2023-04-03
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, From, Into]
+tags: [Rust, 从入门到精通, From, Into]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -24,7 +25,7 @@ Rust 中的 From 和 Into 是两个重要的 trait，它们可以帮助我们进
 我们可以使用 From trait 将一个字符串转换为数字类型。例如，我们将字符串"123"转换为 i32 类型。
 
 ```rust
-let num: i32 = i32::from("123");
+let num: i32 = "123".parse::<i32>().unwrap();
 ```
 
 ### 从数字转换为字符串
@@ -42,7 +43,7 @@ let str: String = String::from(num.to_string());
 
 ```rust
 let num: i32 = 123;
-let new_num: u32 = u32::from(num);
+let new_num: u32 = num.try_into().unwrap();
 ```
 
 ### 从一个类型转换为另一个类型
@@ -51,7 +52,7 @@ let new_num: u32 = u32::from(num);
 
 ```rust
 let num: i32 = 123;
-let new_num: u32 = num.into();
+let new_num: u32 = num.try_into().unwrap();
 ```
 
 ### 从一个 Option 类型转换为另一个 Option 类型
@@ -60,7 +61,7 @@ let new_num: u32 = num.into();
 
 ```rust
 let num: Option<i32> = Some(123);
-let new_num: Option<u32> = Option::from(num);
+let new_num: Option<u32> = num.map(|n| n as u32);
 ```
 
 ### 从一个 Vec 类型转换为另一个 Vec 类型
@@ -69,7 +70,7 @@ let new_num: Option<u32> = Option::from(num);
 
 ```rust
 let vec: Vec<i32> = vec![1, 2, 3];
-let new_vec: Vec<u32> = Vec::from(vec);
+let new_vec: Vec<u32> = vec.into_iter().map(|x| x as u32).collect::<Vec<u32>>();
 ```
 
 ### 从一个数组类型转换为另一个数组类型
@@ -78,7 +79,7 @@ let new_vec: Vec<u32> = Vec::from(vec);
 
 ```rust
 let arr: [i32; 3] = [1, 2, 3];
-let new_arr: [u32; 3] = <[i32; 3]>::into(arr);
+let new_arr: [u32; 3] = arr.map(|x| x as u32);
 ```
 
 ### 从一个枚举类型转换为另一个枚举类型
@@ -94,6 +95,15 @@ enum OptionInt {
 enum OptionUint {
     Some(u32),
     None,
+}
+
+impl From<OptionInt> for OptionUint {
+    fn from(option_int: OptionInt) -> OptionUint {
+        match option_int {
+            OptionInt::Some(n) => OptionUint::Some(n as u32),
+            OptionInt::None => OptionUint::None,
+        }
+    }
 }
 
 let option_int = OptionInt::Some(123);

@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - 弱引用 Weak
 published: 2023-03-23
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, Weak]
+tags: [Rust, 从入门到精通, Weak]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -151,7 +152,7 @@ fn main() {
 ### 使用Weak类型共享数据
 
 ```rust
-use std::rc::Weak;
+use std::sync::Weak;
 use std::sync::{Arc, Mutex};
 use std::thread;
 

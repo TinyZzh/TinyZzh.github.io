@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - Rust反射实战
 published: 2023-03-20
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, 反射]
+tags: [Rust, 从入门到精通, 反射]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -135,7 +136,7 @@ fn add(a: i32, b: i32) -> i32 {
 }
 
 fn main() {
-    let add_ptr = add as *const u8;
+    let add_ptr = add as usize;
     let add_fn: fn(i32, i32) -> i32 = unsafe { transmute(add_ptr) };
 
     let result = add_fn(1, 2);

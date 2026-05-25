@@ -1,9 +1,9 @@
-﻿---
+---
 title: Rust语言从入门到精通系列 - Tokio结合tracing模块实践
 published: 2023-04-30
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, tokio]
+tags: [Rust, 从入门到精通, tokio]
 category: Rust
 draft: false
 lang: zh_CN
@@ -37,7 +37,7 @@ tracing-attributes = "0.1"
 
 ```rust
 use tokio::net::TcpListener;
-use tokio::prelude::*;
+use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tracing::{debug, error, info, span, Level};
 use tracing_futures::Instrument;
 ```
@@ -65,10 +65,8 @@ async fn handle_client(mut stream: TcpStream) -> Result<(), Box<dyn std::error::
 ```rust
 async fn run_server() -> Result<(), Box<dyn std::error::Error>> {
     let listener = TcpListener::bind("127.0.0.1:8080").await?;
-    let mut incoming = listener.incoming();
-
-    while let Some(stream) = incoming.next().await {
-        let stream = stream?;
+    loop {
+        let (stream, _) = listener.accept().await?;
         let span = span!(Level::INFO, "client", remote_addr = %stream.peer_addr()?);
         let _enter = span.enter();
 
@@ -94,7 +92,7 @@ async fn run_server() -> Result<(), Box<dyn std::error::Error>> {
 
 ```rust
 use tokio::net::TcpListener;
-use tokio::prelude::*;
+use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tracing::{debug, error, info, span, Level};
 use tracing_futures::Instrument;
 
@@ -114,10 +112,8 @@ async fn handle_client(mut stream: TcpStream) -> Result<(), Box<dyn std::error::
 
 async fn run_server() -> Result<(), Box<dyn std::error::Error>> {
     let listener = TcpListener::bind("127.0.0.1:8080").await?;
-    let mut incoming = listener.incoming();
-
-    while let Some(stream) = incoming.next().await {
-        let stream = stream?;
+    loop {
+        let (stream, _) = listener.accept().await?;
         let span = span!(Level::INFO, "client", remote_addr = %stream.peer_addr()?);
         let _enter = span.enter();
 

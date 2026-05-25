@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - Deref特征
 published: 2023-04-03
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, deref]
+tags: [Rust, 从入门到精通, deref]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -18,6 +19,8 @@ lang: zh_CN
 在 Rust 中，Deref 特征是通过实现 Deref trait 来实现的。Deref trait 定义了一个叫做 deref 的方法，它返回一个指向当前类型的引用。下面是一个简单的示例代码：
 
 ```rust
+use std::ops::Deref;
+
 struct MyString {
     s: String,
 }
@@ -55,6 +58,8 @@ fn main() {
 ### 使用 Deref 转换向量类型
 
 ```rust
+use std::ops::Deref;
+
 struct MyVec<T> {
     v: Vec<T>,
 }
@@ -79,6 +84,8 @@ fn main() {
 ### 使用 Deref 转换智能指针类型
 
 ```rust
+use std::ops::Deref;
+
 struct MyBox<T>(T);
 
 impl<T> Deref for MyBox<T> {
@@ -101,6 +108,8 @@ fn main() {
 ### 使用 Deref 转换元组类型
 
 ```rust
+use std::ops::Deref;
+
 struct MyTuple<T>(T);
 
 impl<T> Deref for MyTuple<T> {
@@ -123,6 +132,8 @@ fn main() {
 ### 使用 Deref 转换可变引用类型
 
 ```rust
+use std::ops::Deref;
+
 struct MyString {
     s: String,
 }
@@ -153,6 +164,8 @@ fn main() {
 ### 使用 Deref 转换为裸指针类型
 
 ```rust
+use std::ops::Deref;
+
 struct MyString {
     s: String,
 }
@@ -177,6 +190,7 @@ fn main() {
 ### 使用 Deref 转换为引用计数类型
 
 ```rust
+use std::ops::Deref;
 use std::rc::Rc;
 
 struct MyString {
@@ -205,6 +219,8 @@ fn main() {
 ### 使用 Deref 转换为切片类型
 
 ```rust
+use std::ops::Deref;
+
 struct MyVec<T> {
     v: Vec<T>,
 }
@@ -233,6 +249,8 @@ fn main() {
 ### 使用 Deref 进行方法调用
 
 ```rust
+use std::ops::Deref;
+
 struct MyString {
     s: String,
 }
@@ -267,6 +285,7 @@ fn main() {
 ### 使用 Deref 进行运算符重载
 
 ```rust
+use std::ops::Deref;
 use std::ops::Add;
 
 struct MyString {
@@ -302,6 +321,7 @@ fn main() {
 ### 使用 Deref 进行类型转换
 
 ```rust
+use std::ops::Deref;
 use std::convert::From;
 
 struct MyString {
@@ -334,6 +354,8 @@ fn main() {
 ### 使用 Deref 进行类型推导
 
 ```rust
+use std::ops::Deref;
+
 struct MyString {
     s: String,
 }
