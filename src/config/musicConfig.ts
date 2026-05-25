@@ -50,10 +50,17 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 	local: {
 		playlist: [
 			{
+				name: "天后",
+				artist: "RT, 陈势安",
+				url: "/assets/music/天后-RT,陈势安.mp3",
+				cover: "/assets/music/cover/TinyZ-logo.png",
+				lrc: "",
+			},
+			{
 				name: "空谷幽兰",
 				artist: "许巍",
 				url: "/assets/music/许巍 - 空谷幽兰.m4a",
-				cover: "/assets/music/cover/109951169585655912.webp",
+				cover: "/assets/music/cover/TinyZ-logo.png",
 				lrc: "",
 			},
 		],
