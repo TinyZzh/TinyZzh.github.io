@@ -47,7 +47,7 @@
     "glob": "^11.1.0",
     "gray-matter": "^4.0.3",
     "hastscript": "^9.0.1",
-    "katex": "^0.16.47",
+    "katex": "^0.17.0",
     "l2d-widget": "^0.0.2",
     "marked": "^16.4.2",
     "mdast-util-find-and-replace": "^3.0.2",
