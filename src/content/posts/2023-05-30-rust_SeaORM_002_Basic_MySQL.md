@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - SeaORM框架实践(基础篇)
 published: 2023-05-30
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, SeaORM]
+tags: [Rust, 从入门到精通, SeaORM]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -28,12 +29,11 @@ sea-orm = "0.11.3"
 在使用SeaORM之前，我们需要连接到一个数据库。我们可以使用`DatabaseConnection`结构体来完成这个任务。
 
 ```rust
-use sea_orm::{DatabaseConnection, DatabaseConnectionInfo};
+use sea_orm::Database;
 
 #[async_std::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let db_info = DatabaseConnectionInfo::from_env()?;
-    let db_conn = DatabaseConnection::connect(&db_info).await?;
+    let db_conn = Database::connect("mysql://username:password@hostname:port/database").await?;
     // ...
     Ok(())
 }

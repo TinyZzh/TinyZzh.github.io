@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - Http客户端reqwest模块实战
 published: 2023-04-13
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, reqwest]
+tags: [Rust, 从入门到精通, reqwest]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -111,20 +112,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 ```rust
 use reqwest::blocking::Client;
-use reqwest::cookie::Cookie;
+use reqwest::header::COOKIE;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::new();
-    let cookie = Cookie::new("name", "value");
     let response = client.get("https://httpbin.org/get")
-        .cookie(&cookie)
+        .header(COOKIE, "name=value")
         .send()?;
     println!("{}", response.text()?);
     Ok(())
 }
 ```
 
-这个例子中，我们使用 Cookie 创建了一个 Cookie 对象，然后使用 cookie 方法设置了一个 Cookie，发送了一个 GET 请求。
+这个例子中，我们使用 `header` 方法设置 Cookie 请求头（`reqwest::cookie::Cookie::new()` 在新版中不可用，推荐直接通过 Header 设置 Cookie）。
 
 ### 发送带有代理的请求
 
@@ -222,26 +222,31 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 ```rust
 use reqwest::blocking::Client;
-use reqwest::Url;
 use std::time::Duration;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // reqwest 不内置 retry 方法，需手动实现或使用 reqwest-retry crate
     let client = Client::builder()
-        .retry(|attempt| {
-            let url = Url::parse("https://httpbin.org/get").unwrap();
-            if attempt > 3 {
-                return None;
-            }
-            Some(Duration::from_secs(attempt * 2) + url.host_str().unwrap().len() as u64)
-        })
+        .pool_idle_timeout(Duration::from_secs(30))
         .build()?;
-    let response = client.get("https://httpbin.org/get").send()?;
+    let mut attempts = 0;
+    let response = loop {
+        attempts += 1;
+        match client.get("https://httpbin.org/get").send() {
+            Ok(resp) => break resp,
+            Err(e) if attempts < 3 => {
+                eprintln!("Attempt {} failed: {}, retrying...", attempts, e);
+                std::thread::sleep(Duration::from_secs(attempts * 2));
+            }
+            Err(e) => return Err(e.into()),
+        }
+    };
     println!("{}", response.text()?);
     Ok(())
 }
 ```
 
-这个例子中，我们使用 builder 方法创建了一个 HTTP 客户端，并使用 retry 方法设置了一个自定义的重试策略，发送了一个 GET 请求。
+这个例子中，我们手动实现了重试策略，最多重试 3 次。`Client::builder().retry()` 方法不存在于 reqwest，推荐使用 `reqwest-retry` crate 或手动实现重试逻辑。
 
 ## 最佳实践
 

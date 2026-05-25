@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - paho-mqtt模块实战(入门)
 published: 2023-05-29
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, MQTT]
+tags: [Rust, 从入门到精通, MQTT]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -177,20 +178,23 @@ fn main() {
 
 ```rust
 extern crate paho_mqtt as mqtt;
-extern crate rustls;
 
 use std::fs::File;
 use std::io::BufReader;
 use std::sync::Arc;
+use rustls::ClientConfig;
 
 fn main() {
     let host = "ssl://localhost:8883";
     let cli = mqtt::Client::new(host).unwrap();
 
-    let mut config = rustls::ClientConfig::new();
+    let mut root_store = rustls::RootCertStore::empty();
     let cert_file = &mut BufReader::new(File::open("cert.pem").unwrap());
-    config.root_store.add_pem_file(cert_file).unwrap();
-    let tls = Arc::new(rustls::ClientSession::new(&Arc::new(config), host));
+    root_store.add_pem_file(cert_file).unwrap();
+    let config = ClientConfig::builder()
+        .with_root_certificates(root_store)
+        .with_no_client_auth();
+    let tls = Arc::new(config);
 
     let conn_opts = mqtt::ConnectOptionsBuilder::new()
         .keep_alive_interval(std::time::Duration::from_secs(20))
@@ -205,7 +209,7 @@ fn main() {
 }
 ```
 
-在上面的示例代码中，我们首先创建了一个MQTT客户端对象，并指定了使用SSL/TLS协议连接MQTT服务器的地址。然后，我们创建了一个SSL/TLS配置对象，并从PEM文件中加载证书。接着，我们创建了一个SSL/TLS会话对象，并使用SSL/TLS配置对象和MQTT服务器地址来初始化会话对象。最后，我们创建了一个连接选项对象，并设置了心跳间隔、SSL/TLS选项和会话清除标志。我们使用连接选项对象连接到MQTT服务器，并打印连接响应信息。
+在上面的示例代码中，我们首先创建了一个MQTT客户端对象，并指定了使用SSL/TLS协议连接MQTT服务器的地址。然后，我们使用rustls 0.20+的`ClientConfig::builder()`模式构建TLS配置，通过`with_root_certificates()`加载CA证书，通过`with_no_client_auth()`设置无需客户端认证。最后，我们创建了一个连接选项对象，并设置了心跳间隔、SSL/TLS选项和会话清除标志。我们使用连接选项对象连接到MQTT服务器，并打印连接响应信息。
 
 ### 使用认证机制连接MQTT服务器
 

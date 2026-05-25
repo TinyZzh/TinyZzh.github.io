@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - SQLx模块MySQL入门
 published: 2023-05-30
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, SQLx]
+tags: [Rust, 从入门到精通, SQLx]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -61,11 +62,11 @@ DATABASE_URL=mysql://username:password@hostname:port/database
 use sqlx::mysql::MySqlPoolOptions;
 
 #[tokio::main]
-async fn main() -> Result<(), sqlx::Error> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenv::dotenv().ok();
     let pool = MySqlPoolOptions::new()
         .max_connections(5)
-        .connect_dotenv()
+        .connect(&dotenv::var("DATABASE_URL")?)
         .await?;
     // ...
     Ok(())
@@ -382,16 +383,19 @@ async fn main() -> Result<(), sqlx::Error> {
 使用SQLx连接池时，可以使用`PoolOptions::new()`方法创建连接池，并使用`acquire()`方法获取连接。
 
 ```rust
-use sqlx::{MySqlPool, PoolOptions};
+use sqlx::mysql::MySqlPoolOptions;
 
 #[tokio::main]
 async fn main() -> Result<(), sqlx::Error> {
-    let pool = MySqlPool::connect("mysql://username:password@hostname:port/database").await?;
+    let pool = MySqlPoolOptions::new()
+        .max_connections(5)
+        .connect("mysql://username:password@hostname:port/database")
+        .await?;
     let mut conn = pool.acquire().await?;
 
-    let pool = MySqlPool::builder()
-        .max_size(5)
-        .build("mysql://username:password@hostname:port/database")
+    let pool = MySqlPoolOptions::new()
+        .max_connections(5)
+        .connect("mysql://username:password@hostname:port/database")
         .await?;
 
     let mut conn = pool.acquire().await?;

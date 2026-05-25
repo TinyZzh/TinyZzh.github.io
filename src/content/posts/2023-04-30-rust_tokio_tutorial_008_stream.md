@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - 深入理解Tokio的Stream
 published: 2023-04-30
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, tokio]
+tags: [Rust, 从入门到精通, tokio]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -22,12 +23,13 @@ lang: zh_CN
 首先，我们将从一个 Vec 中创建一个 Stream。假设我们有一个包含数字 1 到 10 的 Vec，我们可以使用`stream::iter`函数来创建一个 Stream。
 
 ```rust
-use tokio::stream::StreamExt;
+/* [dependencies] tokio = { version = "*", features = ["full"] } tokio-stream = "*" */
+use tokio_stream::StreamExt;
 
 #[tokio::main]
 async fn main() {
     let vec = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    let mut stream = tokio::stream::iter(vec);
+    let mut stream = tokio_stream::iter(vec);
 
     while let Some(num) = stream.next().await {
         println!("{}", num);
@@ -63,12 +65,12 @@ async fn main() {
 接下来，我们将介绍如何使用 Stream 的`map`方法来对 Stream 中的元素进行转换。假设我们有一个包含数字 1 到 10 的 Vec，我们可以使用`stream::iter`函数来创建一个 Stream，并使用`map`方法将每个数字乘以 2。
 
 ```rust
-use tokio::stream::StreamExt;
+use tokio_stream::StreamExt;
 
 #[tokio::main]
 async fn main() {
     let vec = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    let mut stream = tokio::stream::iter(vec).map(|x| x * 2);
+    let mut stream = tokio_stream::iter(vec).map(|x| x * 2);
 
     while let Some(num) = stream.next().await {
         println!("{}", num);
@@ -83,12 +85,12 @@ async fn main() {
 接下来，我们将介绍如何使用 Stream 的`filter`方法来过滤 Stream 中的元素。假设我们有一个包含数字 1 到 10 的 Vec，我们可以使用`stream::iter`函数来创建一个 Stream，并使用`filter`方法将大于 5 的数字过滤出来。
 
 ```rust
-use tokio::stream::StreamExt;
+use tokio_stream::StreamExt;
 
 #[tokio::main]
 async fn main() {
     let vec = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    let mut stream = tokio::stream::iter(vec).filter(|x| *x > 5);
+    let mut stream = tokio_stream::iter(vec).filter(|x| *x > 5);
 
     while let Some(num) = stream.next().await {
         println!("{}", num);
@@ -103,12 +105,12 @@ async fn main() {
 接下来，我们将介绍如何使用 Stream 的`take`方法来限制 Stream 中的元素数量。假设我们有一个包含数字 1 到 10 的 Vec，我们可以使用`stream::iter`函数来创建一个 Stream，并使用`take`方法限制只输出前 3 个数字。
 
 ```rust
-use tokio::stream::StreamExt;
+use tokio_stream::StreamExt;
 
 #[tokio::main]
 async fn main() {
     let vec = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    let mut stream = tokio::stream::iter(vec).take(3);
+    let mut stream = tokio_stream::iter(vec).take(3);
 
     while let Some(num) = stream.next().await {
         println!("{}", num);
@@ -123,12 +125,12 @@ async fn main() {
 最后，我们将介绍如何使用 Stream 的`fold`方法来对 Stream 中的元素进行累加。假设我们有一个包含数字 1 到 10 的 Vec，我们可以使用`stream::iter`函数来创建一个 Stream，并使用`fold`方法将每个数字相加。
 
 ```rust
-use tokio::stream::StreamExt;
+use tokio_stream::StreamExt;
 
 #[tokio::main]
 async fn main() {
     let vec = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    let sum = tokio::stream::iter(vec).fold(0, |acc, x| async move { acc + x }).await;
+    let sum = tokio_stream::iter(vec).fold(0, |acc, x| async move { acc + x }).await;
 
     println!("{}", sum);
 }
@@ -145,12 +147,12 @@ async fn main() {
 首先，我们将介绍如何使用 Stream 的`buffer_unordered`方法来并发处理 Stream 中的元素。假设我们有一个包含数字 1 到 10 的 Vec，我们可以使用`stream::iter`函数来创建一个 Stream，并使用`buffer_unordered`方法并发处理每个数字。
 
 ```rust
-use tokio::stream::StreamExt;
+use tokio_stream::StreamExt;
 
 #[tokio::main]
 async fn main() {
     let vec = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    let mut stream = tokio::stream::iter(vec).buffer_unordered(4);
+    let mut stream = tokio_stream::iter(vec).buffer_unordered(4);
 
     while let Some(num) = stream.next().await {
         println!("{}", num);
@@ -165,14 +167,14 @@ async fn main() {
 接下来，我们将介绍如何使用 Stream 的`zip`方法将两个 Stream 合并为一个 Stream。假设我们有两个包含数字 1 到 5 的 Vec，我们可以使用`stream::iter`函数来创建两个 Stream，并使用`zip`方法将它们合并为一个 Stream。
 
 ```rust
-use tokio::stream::StreamExt;
+use tokio_stream::StreamExt;
 
 #[tokio::main]
 async fn main() {
     let vec1 = vec![1, 2, 3, 4, 5];
     let vec2 = vec![6, 7, 8, 9, 10];
-    let mut stream1 = tokio::stream::iter(vec1);
-    let mut stream2 = tokio::stream::iter(vec2);
+    let mut stream1 = tokio_stream::iter(vec1);
+    let mut stream2 = tokio_stream::iter(vec2);
     let mut stream = stream1.zip(stream2);
 
     while let Some((num1, num2)) = stream.next().await {
@@ -190,7 +192,7 @@ async fn main() {
 ```rust
 use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::fs::File;
-use tokio::stream::StreamExt;
+use tokio_stream::StreamExt;
 
 #[tokio::main]
 async fn main() {

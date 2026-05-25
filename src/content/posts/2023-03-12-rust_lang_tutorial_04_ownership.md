@@ -3,14 +3,19 @@ title: Rust语言从入门到精通系列 - 所有权
 published: 2023-03-12
 description: ""
 image: ""
-tags: [Rust, 从入门到精通]
+tags: [Rust, 从入门到精通]
+
 category: Rust
 draft: false
 lang: zh_CN
-output:
-word_document:
-path: /pandoc_outputs/2023-03-12-rust_lang_tutorial_02_cargo.docx
-highlight: "zenburn"
+output:
+
+word_document:
+
+path: /pandoc_outputs/2023-03-12-rust_lang_tutorial_02_cargo.docx
+
+highlight: "zenburn"
+
 pandoc_args: ["--toc", "--toc-depth=2"]
 ---
 
@@ -129,11 +134,26 @@ fn change(s: &mut String) {
 fn main() {
     let mut s = String::from("hello");
     let s_ref = &mut s;
-    println!("{}", s);
+    println!("{}", s_ref);
 }
+//     输出内容：
+// hello
 ```
 
-在这个例子中，我们尝试打印变量s的值，但是由于我们只是可变借用了该值的所有权，所以编译器会报错。这强制我们在编写代码时考虑所有权的可变借用。
+在这个例子中，我们通过可变借用`s_ref`来访问和打印变量`s`的值。注意：当可变借用`s_ref`仍然有效时，不能同时通过`s`来访问该值，因为Rust不允许可变借用和其它借用同时存在。如果需要在可变借用之后再次使用`s`，可以让可变借用的作用域先结束：
+
+```rust
+fn main() {
+    let mut s = String::from("hello");
+    {
+        let s_ref = &mut s;
+        s_ref.push_str(", world");
+    } // s_ref 在这里离开作用域，可变借用结束
+    println!("{}", s); // 现在可以正常使用 s
+}
+//     输出内容：
+// hello, world
+```
 
 ## 所有权和函数
 

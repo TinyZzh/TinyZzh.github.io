@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - 枚举那些事儿
 published: 2023-04-02
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, 元组]
+tags: [Rust, 从入门到精通, 元组]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -296,14 +297,14 @@ enum FilePermission {
     Read = 0b100,
     Write = 0b010,
     Execute = 0b001,
-    ReadWrite = Self::Read.bits() | Self::Write.bits(),
-    ReadExecute = Self::Read.bits() | Self::Execute.bits(),
-    WriteExecute = Self::Write.bits() | Self::Execute.bits(),
-    All = Self::Read.bits() | Self::Write.bits() | Self::Execute.bits(),
-    }
+    ReadWrite = 0b110,
+    ReadExecute = 0b101,
+    WriteExecute = 0b011,
+    All = 0b111,
+}
 
-    impl FilePermission {
-        fn bits(&self) -> u8 {
+impl FilePermission {
+    fn bits(&self) -> u8 {
         *self as u8
     }
 }

@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - 轻量级Http客户端Hyper
 published: 2023-04-23
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, Plotters]
+tags: [Rust, 从入门到精通, Plotters]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -31,120 +32,142 @@ Hyper 的主要特点包括：
 
 使用 Hyper 发送 HTTP 请求非常简单。下面是一个简单的示例，它使用 Hyper 发送一个 GET 请求并打印响应的内容：
 
+> **注意**: 以下示例已更新为 `reqwest`（推荐用于 HTTP 客户端场景）。Hyper 0.10.x 同步 API 已废弃，Hyper 1.x 仅支持异步且 API 完全不同。如需底层 HTTP 控制，请参考 [Hyper 1.x 文档](https://docs.rs/hyper/latest/hyper/)。
+
 ```rust
-use hyper::Client;
+use reqwest::blocking::Client;
 
 fn main() {
     let client = Client::new();
     let res = client.get("http://example.com").send().unwrap();
     println!("{}", res.status());
-    println!("{}", res.headers());
+    println!("{:?}", res.headers());
     println!("{}", res.text().unwrap());
 }
 ```
 
-在这个示例中，我们首先创建了一个 Hyper 客户端。然后，我们使用`get()`方法发送一个 GET 请求，并使用`send()`方法发送请求。最后，我们打印响应的状态码、头和内容。
+在这个示例中，我们使用 `reqwest::blocking::Client` 创建了一个 HTTP 客户端，发送 GET 请求并打印响应的状态码、头和内容。Hyper 0.10.x 的同步 API（`Client::new()`, `client.get().send()`）已不再可用。
 
 ### 发送 POST 请求
 
 Hyper 还支持发送 POST 请求。下面是一个简单的示例，它使用 Hyper 发送一个 POST 请求并打印响应的内容：
 
 ```rust
-use hyper::{Client, Request, Body};
+use reqwest::blocking::Client;
 
 fn main() {
     let client = Client::new();
-    let req = Request::post("http://example.com")
-        .body(Body::from("hello world"))
+    let res = client.post("http://example.com")
+        .body("hello world")
+        .send()
         .unwrap();
-    let res = client.request(req).unwrap();
     println!("{}", res.status());
-    println!("{}", res.headers());
+    println!("{:?}", res.headers());
     println!("{}", res.text().unwrap());
 }
 ```
 
-在这个示例中，我们首先创建了一个 Hyper 客户端。然后，我们使用`Request::post()`方法创建一个 POST 请求，并使用`Body::from()`方法设置请求体。最后，我们使用`request()`方法发送请求，并打印响应的状态码、头和内容。
+在这个示例中，我们使用 `reqwest` 发送 POST 请求。Hyper 0.10.x 的 `Request::post().body()` 同步模式已废弃。
 
 ### 使用代理服务器
 
 Hyper 还支持使用代理服务器发送 HTTP 请求。下面是一个简单的示例，它使用 Hyper 发送一个通过代理服务器的 HTTP 请求并打印响应的内容：
 
 ```rust
-use hyper::{Client, Uri};
+use reqwest::blocking::Client;
 
 fn main() {
     let client = Client::builder()
-        .proxy(Uri::from_static("http://proxy.example.com"))
+        .proxy(reqwest::Proxy::http("http://proxy.example.com").unwrap())
         .build()
         .unwrap();
     let res = client.get("http://example.com").send().unwrap();
     println!("{}", res.status());
-    println!("{}", res.headers());
+    println!("{:?}", res.headers());
     println!("{}", res.text().unwrap());
 }
 ```
 
-在这个示例中，我们使用`Client::builder()`方法创建一个 Hyper 客户端，并使用`proxy()`方法设置代理服务器的地址。然后，我们使用`get()`方法发送一个 GET 请求，并使用`send()`方法发送请求。最后，我们打印响应的状态码、头和内容。
+在这个示例中，我们使用 `reqwest` 设置代理服务器。Hyper 0.10.x 的 `Client::builder().proxy()` 同步模式已废弃。
 
 ### 使用自定义头
 
 Hyper 还支持使用自定义头发送 HTTP 请求。下面是一个简单的示例，它使用 Hyper 发送一个带有自定义头的 HTTP 请求并打印响应的内容：
 
 ```rust
-use hyper::{Client, header};
+use reqwest::blocking::Client;
+use reqwest::header::{USER_AGENT, HeaderValue};
 
 fn main() {
     let client = Client::new();
-    let mut req = client.get("http://example.com").unwrap();
-    req.headers_mut().insert(header::USER_AGENT, header::HeaderValue::from_static("my-user-agent"));
-    let res = client.execute(req).unwrap();
+    let res = client.get("http://example.com")
+        .header(USER_AGENT, HeaderValue::from_static("my-user-agent"))
+        .send()
+        .unwrap();
     println!("{}", res.status());
-    println!("{}", res.headers());
+    println!("{:?}", res.headers());
     println!("{}", res.text().unwrap());
 }
 ```
 
-在这个示例中，我们首先创建了一个 Hyper 客户端。然后，我们使用`get()`方法创建一个 GET 请求，并使用`headers_mut()`方法插入一个自定义头。最后，我们使用`execute()`方法发送请求，并打印响应的状态码、头和内容。
+在这个示例中，我们使用 `reqwest` 设置自定义请求头。Hyper 0.10.x 的同步请求构建模式已废弃。
 
 ### 使用异步 I/O
 
 Hyper 支持异步 I/O，这使得它可以处理大量的并发请求。下面是一个简单的示例，它使用 Hyper 异步发送 HTTP 请求并打印响应的内容：
 
 ```rust
-use hyper::{Client, Uri};
+use reqwest::Client;
 
 #[tokio::main]
 async fn main() {
     let client = Client::new();
-    let uri = Uri::from_static("http://example.com");
-    let res = client.get(uri).await.unwrap();
+    let res = client.get("http://example.com").send().await.unwrap();
     println!("{}", res.status());
-    println!("{}", res.headers());
-    let body = res.into_body();
-    let bytes = hyper::body::to_bytes(body).await.unwrap();
-    println!("{}", String::from_utf8_lossy(&bytes));
+    println!("{:?}", res.headers());
+    println!("{}", res.text().await.unwrap());
 }
 ```
 
-在这个示例中，我们首先创建了一个 Hyper 客户端。然后，我们使用`Uri::from_static()`方法创建一个 URI，并使用`get()`方法发送一个 GET 请求。由于我们使用了`tokio::main`宏，因此我们可以使用`await`关键字等待异步请求的完成。最后，我们打印响应的状态码、头和内容。
+在这个示例中，我们使用 `reqwest` 异步客户端。Hyper 1.x 异步客户端示例（需 `hyper_util` + `http_body_util`）：
+
+```rust
+use hyper_util::client::legacy::Client;
+use hyper_util::rt::TokioExecutor;
+use http_body_util::BodyExt;
+use hyper::Request;
+
+#[tokio::main]
+async fn main() {
+    let client: Client<_, String> = Client::builder(TokioExecutor::new()).build_http();
+    let req = Request::builder()
+        .uri("http://example.com")
+        .body(String::new())
+        .unwrap();
+    let res = client.request(req).await.unwrap();
+    println!("{}", res.status());
+    let body = res.into_body().collect().await.unwrap().to_bytes();
+    println!("{}", String::from_utf8_lossy(&body));
+}
+```
+
+Hyper 0.10.x 的 `client.get(uri).await` 模式已废弃，Hyper 1.x 需通过 `hyper_util::client::legacy::Client` 构建请求。
 
 ### 使用 Cookies
 
 Hyper 还支持使用 Cookies 发送 HTTP 请求。下面是一个简单的示例，它使用 Hyper 发送一个带有 Cookies 的 HTTP 请求并打印响应的内容：
 
 ```rust
-use hyper::{Client, Uri};
-use hyper::header::{COOKIE, SET_COOKIE};
+use reqwest::blocking::Client;
+use reqwest::header::{COOKIE, SET_COOKIE};
 
 fn main() {
     let client = Client::new();
-    let uri = Uri::from_static("http://example.com");
-    let mut req = client.get(uri).unwrap();
-    req.headers_mut().insert(COOKIE, header::HeaderValue::from_static("name=value"));
-    let res = client.execute(req).unwrap();
+    let res = client.get("http://example.com")
+        .header(COOKIE, "name=value")
+        .send()
+        .unwrap();
     println!("{}", res.status());
-    println!("{}", res.headers());
     if let Some(cookie) = res.headers().get(SET_COOKIE) {
         println!("{}", cookie.to_str().unwrap());
     }
@@ -152,28 +175,27 @@ fn main() {
 }
 ```
 
-在这个示例中，我们首先创建了一个 Hyper 客户端。然后，我们使用`Uri::from_static()`方法创建一个 URI，并使用`get()`方法创建一个 GET 请求。然后，我们使用`headers_mut()`方法插入一个 Cookie 头。最后，我们使用`execute()`方法发送请求，并打印响应的状态码、头、设置的 Cookie 和内容。
+在这个示例中，我们使用 `reqwest` 通过 Header 方式发送 Cookie。Hyper 0.10.x 的同步 Cookie 模式已废弃。
 
 ### 处理错误
 
 Hyper 的 API 返回的结果类型是`Result`，因此我们可以使用标准的 Rust 错误处理机制来处理错误。下面是一个简单的示例，它使用 Hyper 发送一个 HTTP 请求并处理错误：
 
 ```rust
-use hyper::{Client, Uri};
+use reqwest::blocking::Client;
 use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let client = Client::new();
-    let uri = Uri::from_static("http://example.com");
-    let res = client.get(uri)?.send()?;
+    let res = client.get("http://example.com").send()?;
     println!("{}", res.status());
-    println!("{}", res.headers());
+    println!("{:?}", res.headers());
     println!("{}", res.text()?);
     Ok(())
 }
 ```
 
-在这个示例中，我们首先创建了一个 Hyper 客户端。然后，我们使用`Uri::from_static()`方法创建一个 URI，并使用`get()`方法创建一个 GET 请求。然后，我们使用`send()`方法发送请求，并使用`?`操作符处理可能的错误。最后，我们打印响应的状态码、头和内容，并返回一个`Result`类型的空值。
+在这个示例中，我们使用 `reqwest` 并通过 `?` 操作符处理错误。Hyper 0.10.x 的同步 `client.get(uri)?.send()?` 模式已废弃。
 
 ## 进阶用法
 
@@ -182,119 +204,92 @@ fn main() -> Result<(), Box<dyn Error>> {
 Hyper 支持使用连接池来提高 HTTP 请求的性能。下面是一个简单的示例，它使用 Hyper 连接池发送 HTTP 请求并打印响应的内容：
 
 ```rust
-use hyper::{Client, Uri};
-use hyper::client::HttpConnector;
-use hyper::rt::{self, Future, Stream};
-use hyper_tls::HttpsConnector;
-use std::sync::Arc;
+use reqwest::blocking::Client;
+use std::time::Duration;
 
 fn main() {
-    let https = HttpsConnector::new(4).unwrap();
     let client = Client::builder()
-        .build::<_, hyper::Body>(https);
-    let uri = Uri::from_static("https://example.com");
-    let req = client.get(uri).and_then(|res| {
-        println!("{}", res.status());
-        println!("{}", res.headers());
-        res.into_body().concat2()
-    }).map(|body| {
-        println!("{}", String::from_utf8_lossy(&body));
-    });
-    rt::run(req);
+        .pool_idle_timeout(Duration::from_secs(30))
+        .build()
+        .unwrap();
+    let res = client.get("https://example.com").send().unwrap();
+    println!("{}", res.status());
+    println!("{}", res.text().unwrap());
 }
 ```
 
-在这个示例中，我们首先创建了一个 Hyper 连接池。然后，我们使用`Client::builder()`方法创建一个 Hyper 客户端，并使用`build()`方法设置连接池。然后，我们使用`get()`方法创建一个 GET 请求，并使用`and_then()`方法处理响应。最后，我们使用`concat2()`方法将响应体连接起来，并使用`map()`方法打印响应的内容。
+在这个示例中，我们使用 `reqwest` 连接池配置。Hyper 0.10.x 的 `HttpConnector`/`HttpsConnector`/`rt::run`/`concat2` 模式已全部废弃，Hyper 1.x 需通过 `hyper_util` 管理。
 
 ### 使用 WebSocket
 
 Hyper 还支持使用 WebSocket 协议。下面是一个简单的示例，它使用 Hyper 创建一个 WebSocket 连接并发送消息：
 
-```rust
-use hyper::{Client, Uri};
-use tokio::runtime::Runtime;
-use tokio_tungstenite::tungstenite::Message;
-use tokio_tungstenite::WebSocketStream;
+> **注意**: Hyper 本身不提供 WebSocket 客户端 API。以下示例使用 `tokio-tungstenite` 直接连接 WebSocket。
 
-fn main() {
-    let mut rt = Runtime::new().unwrap();
-    rt.block_on(async {
-        let client = Client::new();
-        let uri = Uri::from_static("ws://example.com");
-        let (ws_stream, _) = client.websocket(uri).await.unwrap();
-        let (mut write, mut read) = WebSocketStream::new(ws_stream).split();
-        write.send(Message::Text("hello world".to_string())).await.unwrap();
-        while let Some(msg) = read.next().await {
-            let msg = msg.unwrap();
-            println!("{}", msg.to_text().unwrap());
-        }
-    });
+```rust
+use tokio_tungstenite::tungstenite::Message;
+use futures_util::StreamExt;
+use tokio_tungstenite::connect_async;
+
+#[tokio::main]
+async fn main() {
+    let (ws_stream, _) = connect_async("ws://example.com").await.unwrap();
+    let (mut write, mut read) = ws_stream.split();
+    write.send(Message::Text("hello world".into())).await.unwrap();
+    while let Some(msg) = read.next().await {
+        let msg = msg.unwrap();
+        println!("{}", msg.to_text().unwrap());
+    }
 }
 ```
 
-在这个示例中，我们首先创建了一个 Tokio 运行时。然后，我们使用`Client::new()`方法创建一个 Hyper 客户端。然后，我们使用`Uri::from_static()`方法创建一个 URI，并使用`websocket()`方法创建一个 WebSocket 连接。然后，我们使用`split()`方法将 WebSocket 流拆分为读取和写入两个部分。然后，我们使用`send()`方法发送一个文本消息，并使用`next()`方法等待接收消息。最后，我们打印接收到的消息。
+在这个示例中，我们使用 `tokio-tungstenite` 创建 WebSocket 连接。Hyper 0.10.x 的 `client.websocket(uri)` 方法不存在，WebSocket 需使用专用库如 `tokio-tungstenite`。
 
 ### 处理连接超时
 
 Hyper 支持设置连接和请求的超时时间。下面是一个简单的示例，它使用 Hyper 发送一个 HTTP 请求，并设置连接和请求的超时时间：
 
 ```rust
-use hyper::{Client, Uri};
+use reqwest::blocking::Client;
 use std::time::Duration;
 
 fn main() {
     let client = Client::builder()
-        .keep_alive_timeout(Duration::from_secs(30))
+        .timeout(Duration::from_secs(10))
+        .pool_idle_timeout(Duration::from_secs(30))
         .build()
         .unwrap();
-    let uri = Uri::from_static("http://example.com");
-    let req = client.get(uri)
-        .timeout(Duration::from_secs(10))
-        .send()
-        .map(|res| {
-            println!("{}", res.status());
-            println!("{}", res.headers());
-            println!("{}", res.text().unwrap());
-        });
-    tokio::run(req);
+    let res = client.get("http://example.com").send().unwrap();
+    println!("{}", res.status());
+    println!("{}", res.text().unwrap());
 }
 ```
 
-在这个示例中，我们首先使用`Client::builder()`方法创建一个 Hyper 客户端，并使用`keep_alive_timeout()`方法设置连接的超时时间。然后，我们使用`timeout()`方法设置请求的超时时间。最后，我们使用`send()`方法发送请求，并使用`map()`方法处理响应。
+在这个示例中，我们使用 `reqwest` 设置请求超时和连接池超时。Hyper 0.10.x 的 `keep_alive_timeout()`/`timeout().send().map()`/`tokio::run()` 模式已废弃。
 
 ### 使用自定义 TLS 配置
 
 Hyper 支持使用自定义的 TLS 配置来发送 HTTPS 请求。下面是一个简单的示例，它使用 Hyper 发送一个带有自定义 TLS 配置的 HTTPS 请求并打印响应的内容：
 
 ```rust
-use hyper::{Client, Uri};
-use hyper_tls::HttpsConnector;
+use reqwest::blocking::Client;
 use std::error::Error;
-use std::fs::File;
-use std::io::Read;
 use std::path::Path;
-use tokio::runtime::Runtime;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let mut rt = Runtime::new()?;
-    rt.block_on(async {
-        let mut buf = Vec::new();
-        let mut file = File::open(Path::new("cert.pem"))?;
-        file.read_to_end(&mut buf)?;
-        let https = HttpsConnector::with_connector(HttpsConnector::new(4)?, &buf)?;
-        let client = Client::builder()
-            .build::<_, hyper::Body>(https);
-        let uri = Uri::from_static("https://example.com");
-        let res = client.get(uri).await?;
-        println!("{}", res.status());
-        println!("{}", res.headers());
-        println!("{}", res.text().await?);
-        Ok(())
-    })
+    let client = Client::builder()
+        .add_root_certificate(reqwest::Certificate::from_pem(
+            &std::fs::read(Path::new("cert.pem"))?,
+        )?)
+        .build()?;
+    let res = client.get("https://example.com").send()?;
+    println!("{}", res.status());
+    println!("{}", res.text()?);
+    Ok(())
 }
 ```
 
-在这个示例中，我们首先创建了一个 Tokio 运行时。然后，我们使用`File::open()`方法打开一个证书文件，并使用`read_to_end()`方法读取证书内容。然后，我们使用`HttpsConnector::with_connector()`方法创建一个自定义的 HTTPS 连接器，并使用`Client::builder()`方法创建一个 Hyper 客户端。然后，我们使用`get()`方法创建一个 GET 请求，并使用`await`关键字等待异步请求的完成。最后，我们打印响应的状态码、头和内容，并返回一个`Result`类型的空值。
+在这个示例中，我们使用 `reqwest` 加载自定义 TLS 证书。Hyper 0.10.x 的 `hyper_tls::HttpsConnector::with_connector()` 模式已废弃，现代 Rust 推荐使用 `reqwest` 的 `add_root_certificate()` 或 `hyper-rustls`。
 
 ## 最佳实践
 

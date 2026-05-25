@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - 堆对象智能指针Box
 published: 2023-04-03
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, Box]
+tags: [Rust, 从入门到精通, Box]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -137,21 +138,25 @@ let list = List::Cons(1, Box::new(List::Cons(2, Box::new(List::Nil))));
 ### 使用 Box 实现自引用结构体
 
 ```rust
+use std::cell::RefCell;
+use std::rc::Rc;
+
 struct Node {
     value: i32,
-    next: Option<Box<Node>>,
+    next: Option<Rc<RefCell<Node>>>,
 }
 
-let mut n1 = Node {
+let n1 = Rc::new(RefCell::new(Node {
     value: 1,
     next: None,
-};
-let mut n2 = Node {
+}));
+let n2 = Rc::new(RefCell::new(Node {
     value: 2,
     next: None,
-};
-n1.next = Some(Box::new(n2));
-n2.next = Some(Box::new(n1));
+}));
+
+n1.borrow_mut().next = Some(n2.clone());
+n2.borrow_mut().next = Some(n1.clone());
 ```
 
 这个例子定义了一个 Node 结构体，它包含一个整数和一个指向另一个 Node 的 Box。然后，创建两个 Node 并将它们相互引用。

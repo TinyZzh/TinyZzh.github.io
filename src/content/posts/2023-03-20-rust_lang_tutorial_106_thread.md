@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - Thread 线程
 published: 2023-03-20
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, 线程, Thread]
+tags: [Rust, 从入门到精通, 线程, Thread]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -129,15 +130,16 @@ Rust中Thread对象表示的是系统中的一个线程，可以通过thread::Jo
 
 ```rust
 use std::thread;
+use std::time::Duration;
 
 fn main() {
     let handle = thread::spawn(|| {
         // TODO: 执行耗费时间的任务
     });
     while !handle.is_finished() {
-        thread::sleep_ms(100);
+        thread::sleep(Duration::from_millis(100));
     }
-    if thread::panicking() {
+    if handle.join().is_err() {
         println!("线程因panic而结束");
     } else {
         println!("线程正常结束");

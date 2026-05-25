@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - 如何判断对象是否相等？
 published: 2023-04-03
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, Eq, PartialEq]
+tags: [Rust, 从入门到精通, Eq, PartialEq]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -112,7 +113,6 @@ a does not equal b
 ### 自定义比较函数
 
 ```rust
-#[derive(PartialEq, Eq)]
 struct Person {
     name: String,
     age: u8,
@@ -218,7 +218,6 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ### 自定义比较函数
 
 ```rust
-#[derive(PartialEq, Eq)]
 struct Person {
     name: String,
     age: u8,

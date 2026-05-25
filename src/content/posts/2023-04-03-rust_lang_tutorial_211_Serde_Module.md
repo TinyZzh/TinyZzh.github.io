@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - Serde序列化/反序列化模块入
 published: 2023-04-03
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, Serde, 序列化, 反序列化, serde_json]
+tags: [Rust, 从入门到精通, Serde, 序列化, 反序列化, serde_json]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -31,6 +32,8 @@ serde = { version = "1.0", features = ["derive"] }
 使用 Serde 进行序列化，需要先将数据结构实现`serde::Serialize` trait。例如，我们定义一个`Animal`结构体，包含名称和年龄两个字段：
 
 ```rust
+use serde::{Serialize, Deserialize};
+
 #[derive(Serialize)]
 struct Animal {
     name: String,
@@ -56,6 +59,8 @@ println!("{}", json); // {"name":"Tom","age":3}
 使用 Serde 进行反序列化，需要先将数据结构实现`serde::Deserialize` trait。例如，我们定义一个`Animal`结构体，包含名称和年龄两个字段：
 
 ```rust
+use serde::{Serialize, Deserialize};
+
 #[derive(Deserialize)]
 struct Animal {
     name: String,

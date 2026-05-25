@@ -3,14 +3,19 @@ title: Rust语言从入门到精通系列 - Rust泛型
 published: 2023-03-13
 description: ""
 image: ""
-tags: [Rust, 从入门到精通]
+tags: [Rust, 从入门到精通]
+
 category: Rust
 draft: false
 lang: zh_CN
-output:
-word_document:
-path: /pandoc_outputs/rust_lang_tutorial_05_struct_generic.docx
-highlight: "zenburn"
+output:
+
+word_document:
+
+path: /pandoc_outputs/rust_lang_tutorial_05_struct_generic.docx
+
+highlight: "zenburn"
+
 pandoc_args: ["--toc", "--toc-depth=2"]
 ---
 
@@ -24,7 +29,9 @@ pandoc_args: ["--toc", "--toc-depth=2"]
 泛型是一种在编程语言中广泛使用的概念，它允许我们编写可以适用于多种不同类型的代码。在Rust中，我们可以使用泛型来编写更加通用和可重用的代码。
 在Rust中，我们使用尖括号<>来指定泛型类型。下面是一个使用泛型的简单示例：
 ```rust
-fn print<T>(x: T) {
+use std::fmt::Display;
+
+fn print<T: Display>(x: T) {
     println!("{}", x);
 }
 
@@ -275,23 +282,13 @@ let zoo2 = Zoo { animals: vec![elephant, dog, cat] };
 
 接下来，我们定义支持使用泛型特性的print_animals函数，如下所示：
 ```rust
-fn print_animals<T>(zoo: &Zoo<T>) {
+use std::fmt::Display;
+
+fn print_animals<T: Display>(zoo: &Zoo<T>) {
     for animal in &zoo.animals {
-        println!("{} ({}) is {} years old.", animal.name, animal.animal_type, animal.age);
+        println!("{} is {} years old.", animal.name, animal.age);
     }
 }
-fn main() {
-    let cat = Animal { name: "Tommy".to_string(), age: 3, animal_type: "Cat" };
-    let dog = Animal { name: "Buddy".to_string(), age: 5, animal_type: "Dog" };
-    let elephant = Animal { name: "Dumbo".to_string(), age: 10, animal_type: "Elephant" };
-
-    let zoo1 = Zoo { animals: vec![cat, dog, elephant] };
-    let zoo2 = Zoo { animals: vec![elephant, dog, cat] };
-
-    print_animals(zoo1);
-    print_animals(zoo2);
-}
-
 ```
 
 这个函数使用了一个泛型类型T，它表示动物的类型。这个函数可以遍历Zoo中的所有动物，并打印它们的名字、类型和年龄。

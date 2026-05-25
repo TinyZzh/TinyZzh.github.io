@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - Default特征
 published: 2023-04-03
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, Default]
+tags: [Rust, 从入门到精通, Default]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -130,10 +131,17 @@ The default value of (i32, bool, String) is (0, false, '')
 在 Rust 中，枚举类型的默认值是它的第一个成员。例如，以下代码演示了如何获取一个枚举类型的默认值：
 
 ```rust
+#[derive(Debug)]
 enum Color {
     Red,
     Green,
     Blue,
+}
+
+impl Default for Color {
+    fn default() -> Self {
+        Color::Red
+    }
 }
 
 fn main() {
@@ -153,6 +161,7 @@ The default value of Color is Red
 在 Rust 中，结构体类型的默认值是由每个字段的默认值组成的结构体。例如，以下代码演示了如何获取一个结构体类型的默认值：
 
 ```rust
+#[derive(Debug)]
 struct Person {
     name: String,
     age: i32,
@@ -240,12 +249,6 @@ The default value of Color is Red
 在 Rust 中，可以为元组类型实现 Default trait，以便为它们定义默认值。例如，以下代码演示了如何为一个元组类型实现 Default trait：
 
 ```rust
-impl Default for (i32, bool, String) {
-    fn default() -> Self {
-        (0, false, String::default())
-    }
-}
-
 fn main() {
     let tup: (i32, bool, String) = Default::default();
     println!("The default value of (i32, bool, String) is {:?}", tup);

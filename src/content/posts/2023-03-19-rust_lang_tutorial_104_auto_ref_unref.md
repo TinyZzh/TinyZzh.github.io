@@ -3,14 +3,19 @@ title: Rust语言从入门到精通系列 - 自动引用和解引用
 published: 2023-03-19
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, RwLock]
+tags: [Rust, 从入门到精通, RwLock]
+
 category: Rust
 draft: false
 lang: zh_CN
-output:
-word_document:
-path: /pandoc_outputs/rust_lang_tutorial_104_auto_ref_unref.docx
-highlight: "zenburn"
+output:
+
+word_document:
+
+path: /pandoc_outputs/rust_lang_tutorial_104_auto_ref_unref.docx
+
+highlight: "zenburn"
+
 pandoc_args: ["--toc", "--toc-depth=2"]
 ---
 
@@ -156,6 +161,8 @@ fn main() {
 例如，考虑以下代码：
 
 ```rust
+use std::ops::Deref;
+
 struct MyBox<T>(T);
 
 impl<T> MyBox<T> {
@@ -265,12 +272,12 @@ fn main() {
     let p1 = Point::new(0, 0);
     let p2 = Point::new(3, 4);
 
-    // 没有歧义
+    // 没有歧义：直接调用方法
     println!("distance = {}", p1.distance(&p2));
 
-    // 可能的歧义
-    let distance = p1.distance;
-    println!("distance = {}", distance(&p2));
+    // 如果需要保存方法调用的结果，可以先计算
+    let distance = p1.distance(&p2);
+    println!("distance = {}", distance);
 }
 ```
 
@@ -278,9 +285,12 @@ fn main() {
 
 在`main`函数中，我们创建了两个`Point`实例`p1`和`p2`。然后，我们使用`p1`的`distance`方法来计算`p1`和`p2`之间的距离。
 
-在第二个`println!`语句中，我们将`p1.distance`赋值给了`distance`变量。然后，我们使用`distance(&p2)`来调用`distance`方法。这里的`&p2`是一个引用，它传递给`distance`方法作为参数。
+注意：Rust不支持将方法作为值赋给变量（即方法引用语法`p1.distance`是非法的）。如果需要将方法调用保存为值，应该直接调用方法并保存结果。如果需要类似函数引用的效果，可以使用闭包：
 
-在这个例子中，编译器不能确定我们想要自动为哪个对象创建引用或解引用哪个对象。所以，它会报告一个错误，要求我们明确指定使用哪个对象。
+```rust
+let distance = |other: &Point| p1.distance(other);
+println!("distance = {}", distance(&p2));
+```
 
 ### 2. 性能问题
 

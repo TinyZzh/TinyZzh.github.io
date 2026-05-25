@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - Copy特征
 published: 2023-04-03
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, Copy]
+tags: [Rust, 从入门到精通, Copy]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -189,13 +190,11 @@ f1(2, 3) = 5, f2(2, 3) = 5
 我们可以为自定义类型实现 Copy 特征，这需要我们手动实现 Copy trait 并为每个字段实现 Copy 特征。下面是一个示例：
 
 ```rust
-#[derive(Copy, Clone)]
+#[derive(Clone, Debug)]
 struct Person {
     name: String,
     age: i32,
 }
-
-impl Copy for Person {}
 
 impl Clone for Person {
     fn clone(&self) -> Person {
@@ -211,7 +210,7 @@ fn main() {
         name: String::from("Alice"),
         age: 25,
     };
-    let p2 = p1;
+    let p2 = p1.clone();
     println!("p1 = {:?}, p2 = {:?}", p1, p2);
 }
 ```

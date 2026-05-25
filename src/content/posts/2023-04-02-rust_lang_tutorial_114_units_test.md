@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - 单元测试
 published: 2023-04-02
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, 单元测试]
+tags: [Rust, 从入门到精通, 单元测试]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -122,7 +123,7 @@ fn divide(a: i32, b: i32) -> i32 {
 ```rust
 #[test]
 fn test_approx_pi() {
-    assert_approx_eq!(22.0 / 7.0, std::f64::consts::PI, 0.01);
+    assert!((22.0 / 7.0 - std::f64::consts::PI).abs() < 0.01);
 }
 ```
 
@@ -160,7 +161,7 @@ fn test_add() {
 
 #[test]
 fn test_approx_pi() {
-    assert_approx_eq!(22.0 / 7.0, std::f64::consts::PI, 0.01);
+    assert!((22.0 / 7.0 - std::f64::consts::PI).abs() < 0.01);
 }
 
 #[test]

@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - 深入理解Tokio的select!宏(上)
 published: 2023-04-30
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, tokio]
+tags: [Rust, 从入门到精通, tokio]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -328,7 +329,7 @@ async fn main() {
         _ = tokio::time::sleep(Duration::from_secs(3)).fuse() => {
             println!("timeout");
         }
-        _ = futures::future::pending().fuse() => {
+        _ = std::future::pending().fuse() => {
             println!("pending");
         }
         _ = tokio::signal::ctrl_c().fuse() => {

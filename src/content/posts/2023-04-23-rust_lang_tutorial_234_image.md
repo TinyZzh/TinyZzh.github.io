@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - 深入理解image图片处理模块
 published: 2023-04-23
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, image]
+tags: [Rust, 从入门到精通, image]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -120,13 +121,13 @@ use image::{GenericImageView, RgbaImage};
 
 fn main() {
     let img = image::open("test.png").unwrap();
-    let mut pixels = img.to_rgba().pixels_mut();
-    for pixel in pixels {
-        let (r, g, b, a) = pixel.2.channels();
+    let mut rgba_img = img.to_rgba();
+    for (_x, _y, pixel) in rgba_img.enumerate_pixels_mut() {
+        let (r, g, b, a) = pixel.channels();
         let gray = (0.3 * r as f32 + 0.59 * g as f32 + 0.11 * b as f32) as u8;
-        pixel.2 = image::Rgba([gray, gray, gray, a]);
+        *pixel = image::Rgba([gray, gray, gray, a]);
     }
-    let _ = img.save("output.png");
+    let _ = rgba_img.save("output.png");
 }
 ```
 

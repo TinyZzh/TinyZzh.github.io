@@ -3,7 +3,8 @@ title: Rust语言从入门到精通系列 - 互斥锁 Mutex
 published: 2023-03-23
 description: ""
 image: ""
-tags: [Rust, 从入门到精通, Mutex]
+tags: [Rust, 从入门到精通, Mutex]
+
 category: Rust
 draft: false
 lang: zh_CN
@@ -32,7 +33,7 @@ Mutex支持两种操作：lock和unlock。任何试图访问由mutex保护的共
 下面是一些示例代码：
 
 ```rust
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex};
 
 fn main() {
     let counter = Arc::new(Mutex::new(0));
