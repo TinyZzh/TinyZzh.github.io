@@ -99,11 +99,11 @@ importers:
         specifier: ^9.0.1
         version: 9.0.1
       katex:
-        specifier: ^0.16.47
-        version: 0.16.47
+        specifier: ^0.17.0
+        version: 0.17.0
       l2d-widget:
-        specifier: ^0.0.2
-        version: 0.0.2
+        specifier: ^0.1.0
+        version: 0.1.0
       marked:
         specifier: ^16.4.2
         version: 16.4.2
@@ -361,6 +361,9 @@ packages:
 
   '@astrojs/sitemap@3.7.2':
     resolution: {integrity: sha512-PqkzkcZTb5ICiyIR8VoKbIAP/laNRXi5tw616N1Ckk+40oNB8Can1AzVV56lrbC5GKSZFCyJYUVYqVivMisvpA==}
+
+  '@astrojs/sitemap@3.7.3':
+    resolution: {integrity: sha512-f8euLVsyeAmAkSm/1M2Kb8sL8byQmfgbvBNaHFItCheTj/IpiJYSEWVcqDHZ/yEHxiS7+w87mQkzwZaPHmk5GA==}
 
   '@astrojs/starlight@0.37.5':
     resolution: {integrity: sha512-+pC2pgy0iR9Ucl1P4CE0jyfsoNKcUSB2RIoBwm4UnyyhtlaEjoSU7MZwa5IJkzS9sBgIbLbLgYVbkC4tHN8rkQ==}
@@ -3494,6 +3497,10 @@ packages:
     resolution: {integrity: sha512-Eeo8Ys1doU1z+x8AZsPpQu+p/QcZBI5PeOo7QGQdy2x2m0MU/hYagBbGOmXwr5KVbEfVuWv9LpnQWeehogurjg==}
     hasBin: true
 
+  katex@0.17.0:
+    resolution: {integrity: sha512-Vdw0ATsQ9V+LuegM/BTwQqV/6cTl5lbGcIrU+BCgLxyf6bo38ybOr372tuSIxir3CN720flu1meYR6XzNMwQnw==}
+    hasBin: true
+
   kind-of@6.0.3:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
     engines: {node: '>=0.10.0'}
@@ -3509,8 +3516,8 @@ packages:
   kolorist@1.8.0:
     resolution: {integrity: sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==}
 
-  l2d-widget@0.0.2:
-    resolution: {integrity: sha512-1W8PUMer9WUW83wb3yerXdRRZMzz+wRv7Ns3K5Hwy/rqHS8vRZnEV2fSSd9mCx20HTWKRF1mXRCU4+RSDD8pdQ==}
+  l2d-widget@0.1.0:
+    resolution: {integrity: sha512-vnEZeom+u/GlcZJeZt1gsigXIsGCHzW+WAWRqv93gG5MqVSRg749drD34mMXhSr48jvrUW+HvufWxURXg93jXQ==}
 
   launder@1.7.1:
     resolution: {integrity: sha512-mU6WRz5EusL9ZZuiZ5SO4Y6C0P9PAUR9iwdb6bzj4KDihm28DiHFw+/yk9DBH4f+Pv1wuzQ4e2jV3oQ7mkIqvw==}
@@ -5748,11 +5755,17 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 4.3.6
 
+  '@astrojs/sitemap@3.7.3':
+    dependencies:
+      sitemap: 9.0.1
+      stream-replace-string: 2.0.0
+      zod: 4.4.3
+
   '@astrojs/starlight@0.37.5(astro@6.3.5(@types/node@25.9.1)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@2.80.0)(stylus@0.64.0)(terser@5.48.0)(yaml@2.8.3))':
     dependencies:
       '@astrojs/markdown-remark': 6.3.11
       '@astrojs/mdx': 4.3.14(astro@6.3.5(@types/node@25.9.1)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@2.80.0)(stylus@0.64.0)(terser@5.48.0)(yaml@2.8.3))
-      '@astrojs/sitemap': 3.7.2
+      '@astrojs/sitemap': 3.7.3
       '@pagefind/default-ui': 1.5.2
       '@types/hast': 3.0.4
       '@types/js-yaml': 4.0.9
@@ -9412,6 +9425,10 @@ snapshots:
     dependencies:
       commander: 8.3.0
 
+  katex@0.17.0:
+    dependencies:
+      commander: 8.3.0
+
   kind-of@6.0.3: {}
 
   kleur@4.1.5: {}
@@ -9420,7 +9437,7 @@ snapshots:
 
   kolorist@1.8.0: {}
 
-  l2d-widget@0.0.2: {}
+  l2d-widget@0.1.0: {}
 
   launder@1.7.1:
     dependencies:
