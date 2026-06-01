@@ -600,7 +600,7 @@ let user3 = User::decode(buf)?;
 flatbuffers = "25"
 ```
 
-```flatbuffers
+```text
 // schema/user.fbs
 table User {
     id: ulong;

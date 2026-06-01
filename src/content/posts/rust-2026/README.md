@@ -1,3 +1,11 @@
+---
+title: "Rust 2026 经验分享式总结教程规划"
+published: 2026-06-01
+description: "Rust 2026 系列文章规划索引"
+draft: true
+lang: zh_CN
+---
+
 # Rust 2026 经验分享式总结教程规划
 
 > 基于 Rust Edition 2024 / Stable 1.96.0，以实战经验为主线，系统性总结现代 Rust 开发全貌。
