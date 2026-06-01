@@ -16,18 +16,11 @@ export const siteConfig: SiteConfig = {
 	site_url: "https://tinyzzh.github.io",
 
 	// 站点描述
-	description: "专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。",
+	description:
+		"专注于网络游戏前后端技术(JAVA, PHP, Unity3D)。积累技术,记录分享。",
 
 	// 站点关键词
-	keywords: [
-		"TinyZ",
-		"博客",
-		"技术博客",
-		"Java",
-		"PHP",
-		"Unity3D",
-		"游戏开发",
-	],
+	keywords: ["TinyZ", "博客", "技术博客", "Java", "PHP", "Unity3D", "游戏开发"],
 
 	// 主题色
 	themeColor: {
