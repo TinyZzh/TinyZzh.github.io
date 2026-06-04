@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![生态与架构实战](/images/rust-2026/8.jpg)
 
 性能优化不是猜测游戏，而是**测量 → 分析 → 优化 → 验证**的闭环。Rust 在 2024-2026 年间的性能工具链日趋成熟——从 flamegraph 可视化到 dhat 堆分析，从 perf 采样到 SIMD 向量化。本文覆盖性能分析方法论、零拷贝、SIMD、cache 友好设计、inline 策略六大实战主题。
 

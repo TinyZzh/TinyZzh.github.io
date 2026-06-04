@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![Unsafe Rust 与底层交互](/images/rust-2026/7.jpg)
 
 上一篇我们讨论了 Rust 调用 C——用 bindgen 生成绑定、处理布局和回调。本文反过来：让 C 调用 Rust。这不是"把 Rust 代码抄一遍"那么简单——你需要设计 C 友好的 API、用 cbindgen 导出头文件、管理 opaque 类型的生命周期、把 cargo 构建嵌入 CMake 系统。实战中踩坑极多，本文系统总结。
 

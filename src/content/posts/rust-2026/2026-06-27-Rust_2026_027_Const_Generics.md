@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![元编程与宏](/images/rust-2026/6.jpg)
 
 const generics 是 Rust 类型系统的重大扩展——它允许在泛型参数中使用常量值，而非仅类型和生命周期。这让数组泛型化、维度约束、类型级计算成为可能。但 const generics 的能力边界比很多人想象的要窄，`const fn` 也有诸多限制。本文从实战出发，系统梳理 const generics 与编译期计算的现状、限制和典型应用。
 

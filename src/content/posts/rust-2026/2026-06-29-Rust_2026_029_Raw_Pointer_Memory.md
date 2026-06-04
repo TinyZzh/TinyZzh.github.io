@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![Unsafe Rust 与底层交互](/images/rust-2026/7.jpg)
 
 原始指针（`*const T` / `*mut T`）是 Rust 与硬件、操作系统、C 代码交互的桥梁——`Vec` 的内部用它管理堆内存，FFI 用它传递数据，内核开发中它是主要工具。但原始指针绕过了 Rust 的核心安全保证，使用不当就是 UB。本文系统梳理原始指针的操作全貌、内存操作 API、`NonNull`/`MaybeUninit`/`Layout` 的正确用法，以及从 `Vec` 到裸内存缓冲区的实战路径。
 

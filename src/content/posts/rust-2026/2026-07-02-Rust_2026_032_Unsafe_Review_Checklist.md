@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![Unsafe Rust 与底层交互](/images/rust-2026/7.jpg)
 
 unsafe 是 Rust 的"信任边界"——编译器放弃检查，由开发者担保安全性。但担保不是口号，需要系统化的审查和验证。本文从文档规范、工具检测、审查清单三个维度，建立 unsafe 代码的质量保障体系。
 

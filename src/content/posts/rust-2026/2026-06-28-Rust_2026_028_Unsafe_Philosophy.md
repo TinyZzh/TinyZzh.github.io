@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![Unsafe Rust 与底层交互](/images/rust-2026/7.jpg)
 
 `unsafe` 是 Rust 最被误解的关键字——它不是"禁用安全检查"，而是"我手动保证安全不变量，请编译器信任我"。unsafe 的哲学核心是：**unsafe 是安全的基石，安全的边界由 unsafe 划定**。本文深入 unsafe 的语义四件、边界最小化原则、模块级 unsafe 变更，以及 Soundness 概念。
 

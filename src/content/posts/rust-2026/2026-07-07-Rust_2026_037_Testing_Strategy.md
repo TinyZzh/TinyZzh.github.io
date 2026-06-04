@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![生态与架构实战](/images/rust-2026/8.jpg)
 
 测试是工程质量的底线。Rust 的测试体系在 2024-2026 年间已经形成了从单元测试到属性测试、从 mock 到 benchmark 的完整工具链。本文覆盖测试组织、属性测试、参数化、mock、异步测试、benchmark、覆盖率七大主题，给出实战中的踩坑经验。
 

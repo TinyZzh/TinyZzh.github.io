@@ -9,8 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![重新认识 Rust](/images/rust-2026/1.jpg)
-
 Rust 的工具链生态在 2024-2025 年经历了显著进化。如果两年前你对 Rust 工具链的印象还停留在 `rustup` + `cargo` + `rust-analyzer` 三件套，现在是时候更新认知了。本文将全景扫描 2026 年的 Rust 工具链生态，分享我在实际项目中的配置经验和选型建议。
 
 ## rustup：多工具链管理

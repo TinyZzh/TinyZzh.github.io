@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![错误处理与健壮性](/images/rust-2026/3.jpg)
 
 Rust 的类型系统消除了整类 bug（空指针、数据竞争、use-after-free），但这不代表 Rust 程序就不会有 bug。unwrap 滥用、整数溢出、索引越界、死锁——这些仍然是生产事故的常客。本文从真实踩坑经验出发，总结常见 bug 模式和防御性编码策略，让你在 Code Review 时一眼识别这些问题。
 

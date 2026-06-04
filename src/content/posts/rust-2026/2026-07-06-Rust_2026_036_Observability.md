@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![生态与架构实战](/images/rust-2026/8.jpg)
 
 可观测性（Observability）是现代后端服务的生命线。Rust 社区在 2024-2026 年间形成了以 `tracing` 为核心、`metrics` 为指标层、`opentelemetry-rust` 为统一出口的可观测性技术栈。本文从 tracing 三层模型、metrics 集成、OpenTelemetry 接入、结构化日志、生产最佳实践五个方面，给出完整实战经验。
 

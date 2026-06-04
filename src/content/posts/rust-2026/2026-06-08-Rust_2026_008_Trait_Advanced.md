@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![类型系统与所有权深化](/images/rust-2026/2.jpg)
 
 Rust 的 trait 系统是语言中最精妙的部分——它既是编译期泛型的约束机制，又是运行时多态的实现基础，同时还是异步编程、类型推导等特性的基石。2026 年的 Rust trait 系统相比五年前已经有了质的飞跃：`async fn` in trait 稳定、trait upcasting 稳定、async closures 稳定……本文将系统梳理这些进阶特性的实战用法与设计决策。
 

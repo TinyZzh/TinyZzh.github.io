@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![元编程与宏](/images/rust-2026/6.jpg)
 
 过程宏是 Rust 元编程的最高形式——它能读写 Rust 语法树、生成任意代码、提供自定义 DSL。三种过程宏（derive、attribute、function）各有适用场景，而 `syn` + `quote` + `proc-macro2` 工作链是编写过程宏的标配。本文从实现模板到设计模式，系统总结过程宏的实战经验。
 

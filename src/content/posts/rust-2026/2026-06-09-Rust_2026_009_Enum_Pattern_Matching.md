@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![类型系统与所有权深化](/images/rust-2026/2.jpg)
 
 Rust 的枚举和模式匹配是其最独特的语言特性，也是与其他系统级语言拉开差距的核心设计。但模式匹配的"ergonomics"（人体工程学）是一个持续演进的话题——RFC 2008 引入的 match ergonomics 改革、let-else 的稳定、Rust 1.88 的 let chains、以及 2024 Edition 对 irrefutable patterns 规则的收紧，都在改变我们写模式匹配的方式。本文将从实战角度梳理这些变化，并分享枚举作为领域建模利器的经验。
 

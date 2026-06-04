@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![元编程与宏](/images/rust-2026/6.jpg)
 
 Rust 有三种元编程手段：声明宏（`macro_rules!`）、过程宏（derive/attribute/function）和 build script（`build.rs`）。三种工具各有适用边界，但很多项目在选型时凭直觉决定，导致编译慢如蜗牛、错误信息如天书、或者用大炮打蚊子。本文从编译时间、调试难度、表达能力三个维度系统对比，给出清晰的选型决策流程。
 

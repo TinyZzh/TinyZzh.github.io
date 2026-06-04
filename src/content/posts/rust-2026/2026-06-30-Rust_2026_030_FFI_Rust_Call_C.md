@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![Unsafe Rust 与底层交互](/images/rust-2026/7.jpg)
 
 Rust 调用 C 库是系统编程的日常——无论是使用操作系统 API、遗留 C 代码、还是高性能 C 库。FFI（Foreign Function Interface）看似简单（`unsafe extern "C" {}` + `unsafe`），但实战中暗藏大量坑：布局不匹配、回调函数桥接、panic 跨边界、字符串传递、枚举表示……本文从 bindgen 到手动绑定，系统总结 Rust 调用 C 的实战经验。
 

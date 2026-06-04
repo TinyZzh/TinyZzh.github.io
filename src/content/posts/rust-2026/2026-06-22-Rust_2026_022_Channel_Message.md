@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![并发与同步](/images/rust-2026/5.jpg)
 
 "不要通过共享内存来通信，而要通过通信来共享内存。"这句话在 Rust 中有更深的含义——channel 的所有权语义天然防止数据竞争。本文详解 Rust channel 的选型、背压、select 模式，以及与 Go channel 的关键差异。
 

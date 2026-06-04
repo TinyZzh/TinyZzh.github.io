@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![异步 Rust 深度实践](/images/rust-2026/4.jpg)
 
 `async fn` 和 `.await` 在语法层面简洁优雅，但底层是一个编译器生成的状态机——不理解它就无法理解性能特征、Pin 的必要性、以及为什么 async Rust 和其他语言的并发模型根本不同。本文将从 Future trait 的原始接口开始，一层层拆解 async/await 的底层机制。
 

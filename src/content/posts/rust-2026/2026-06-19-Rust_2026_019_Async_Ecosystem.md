@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![异步 Rust 深度实践](/images/rust-2026/4.jpg)
 
 Rust 的异步生态没有"唯一正确选择"。Tokio、async-std、smol、glommio、embassy 各有定位，选错了运行时比选错了算法更痛苦——因为运行时渗透到项目的每一个角落。本文给出 2026 年的选型对比和决策框架。
 

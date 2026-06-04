@@ -9,8 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![重新认识 Rust](/images/rust-2026/1.jpg)
-
 Rust 项目在规模增长时面临的工程化挑战和其他语言有共性也有个性。共性在于模块化、依赖管理、构建配置；个性在于 Cargo 的独到设计（workspace、feature、build script）以及 Rust 的交叉编译生态。本文将分享我在中大型 Rust 项目中积累的工程化实践经验，重点回答"为什么这样做"而非仅仅"怎么做"。
 
 ## Cargo Workspace 深度用法

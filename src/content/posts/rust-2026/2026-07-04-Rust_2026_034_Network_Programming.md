@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![生态与架构实战](/images/rust-2026/8.jpg)
 
 Rust 的网络编程栈从 TCP 到 HTTP 构成了完整的层次：tokio 提供异步 I/O，hyper 构建 HTTP，tower 提供中间件抽象，axum 提供应用框架。本文从底层到上层逐层讲解，并给出 axum 0.8 的实战经验。
 

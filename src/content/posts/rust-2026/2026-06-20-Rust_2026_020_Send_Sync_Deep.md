@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![并发与同步](/images/rust-2026/5.jpg)
 
 Send 和 Sync 是 Rust 并发安全的基石——它们不是标记 trait 那么简单，而是编译器自动推导的"自动 trait"（auto trait），有着独特的语义和约束。深入理解 Send/Sync，是写出正确并发代码的前提，也是排查"future cannot be sent between threads safely"等错误的钥匙。
 

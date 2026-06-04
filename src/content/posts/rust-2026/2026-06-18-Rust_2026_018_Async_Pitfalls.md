@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![异步 Rust 深度实践](/images/rust-2026/4.jpg)
 
 异步 Rust 是一片强大但充满陷阱的领地。编译器会阻止数据竞争，但它不会阻止逻辑错误——比如 cancel safety 违反、在 select! 中丢失数据、或用错 Mutex 导致性能崩溃。本文系统梳理 2026 年最常见的异步陷阱及其调试方法。
 

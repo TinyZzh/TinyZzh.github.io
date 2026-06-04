@@ -9,7 +9,6 @@ draft: false
 lang: zh_CN
 ---
 
-![生态与架构实战](/images/rust-2026/8.jpg)
 
 嵌入式开发是 Rust 最激动人心的前沿阵地之一。从 `no_std` 的裸机启动到 `embassy` 的异步运行时，从 `defmt` 的零成本日志到 `probe-rs` 的现代工具链，嵌入式 Rust 在 2024-2026 年间已经从实验走向生产。本文覆盖 no_std 基础、cortex-m 生态、embassy 异步框架、defmt 日志、probe-rs 工具链、项目模板选型六大主题。
 
