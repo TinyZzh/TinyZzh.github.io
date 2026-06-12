@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>TinyZ&apos;s Blog</title><description>积累技术,记录分享</description><link>https://tinyzzh.github.io/</link><templateTheme>Firefly</templateTheme><templateThemeVersion>6.10.5</templateThemeVersion><templateThemeUrl>https://github.com/CuteLeaf/Firefly</templateThemeUrl><lastBuildDate>2026年6月12日 10:07:26</lastBuildDate><item><title>Rust 2026 经验谈 - 错误处理在库与应用中的分层设计</title><link>https://tinyzzh.github.io/posts/rust-2026/2026-06-12-rust_2026_012_error_layered_design/</link><guid isPermaLink="true">https://tinyzzh.github.io/posts/rust-2026/2026-06-12-rust_2026_012_error_layered_design/</guid><description>库级 error type 设计原则（non-exhaustive 枚举、从低层错误抽象而非透传）、应用级错误聚合与展示、错误与 tracing 的协作、错误转换反模式。</description><pubDate>Fri, 12 Jun 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;错误处理不是一个”选 thiserror 还是 anyhow”的技术选型问题，而是一个架构分层问题。库的错误类型、应用的错误聚合、错误与日志的协作——这三层各司其职，搞混任何一层都会让代码在迭代中快速腐化。本文从实战出发，讲清楚每一层该怎么做、常见的反模式是什么、以及 tracing span 如何让错误变得可追踪。&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>TinyZ&apos;s Blog</title><description>积累技术,记录分享</description><link>https://tinyzzh.github.io/</link><templateTheme>Firefly</templateTheme><templateThemeVersion>7.0.0</templateThemeVersion><templateThemeUrl>https://github.com/CuteLeaf/Firefly</templateThemeUrl><lastBuildDate>2026年6月12日 14:16:38</lastBuildDate><item><title>Rust 2026 经验谈 - 错误处理在库与应用中的分层设计</title><link>https://tinyzzh.github.io/posts/rust-2026/2026-06-12-rust_2026_012_error_layered_design/</link><guid isPermaLink="true">https://tinyzzh.github.io/posts/rust-2026/2026-06-12-rust_2026_012_error_layered_design/</guid><description>库级 error type 设计原则（non-exhaustive 枚举、从低层错误抽象而非透传）、应用级错误聚合与展示、错误与 tracing 的协作、错误转换反模式。</description><pubDate>Fri, 12 Jun 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;错误处理不是一个”选 thiserror 还是 anyhow”的技术选型问题，而是一个架构分层问题。库的错误类型、应用的错误聚合、错误与日志的协作——这三层各司其职，搞混任何一层都会让代码在迭代中快速腐化。本文从实战出发，讲清楚每一层该怎么做、常见的反模式是什么、以及 tracing span 如何让错误变得可追踪。&lt;/p&gt;
 &lt;section&gt;&lt;h2&gt;库级 error type 设计原则&lt;a href=&quot;#库级-error-type-设计原则&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;库的错误类型是公共 API 的一部分——它和公开的函数签名一样重要，甚至更难改。&lt;/p&gt;&lt;section&gt;&lt;h3&gt;原则 1：non-exhaustive 枚举——给未来留退路&lt;a href=&quot;#原则-1non-exhaustive-枚举给未来留退路&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;use&lt;/span&gt;&lt;span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;thiserror&lt;/span&gt;&lt;span&gt;::&lt;/span&gt;&lt;/span&gt;&lt;span&gt;Error&lt;/span&gt;&lt;span&gt;;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;2&lt;/div&gt;&lt;/div&gt;&lt;div&gt;
 &lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;#[derive(&lt;/span&gt;&lt;span&gt;Error&lt;/span&gt;&lt;span&gt;, &lt;/span&gt;&lt;span&gt;Debug&lt;/span&gt;&lt;span&gt;)]&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;4&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;#[non_exhaustive]&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;5&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;pub&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;enum&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;DatabaseError&lt;/span&gt;&lt;span&gt; {&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;6&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;    &lt;/span&gt;&lt;/span&gt;&lt;span&gt;#[error(&lt;/span&gt;&lt;span&gt;&quot;connection failed: {0}&quot;&lt;/span&gt;&lt;span&gt;)]&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;7&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;    &lt;/span&gt;&lt;span&gt;Connection&lt;/span&gt;&lt;span&gt;(&lt;/span&gt;&lt;span&gt;String&lt;/span&gt;&lt;span&gt;),&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;8&lt;/div&gt;&lt;/div&gt;&lt;div&gt;
 &lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;9&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;    &lt;/span&gt;&lt;/span&gt;&lt;span&gt;#[error(&lt;/span&gt;&lt;span&gt;&quot;query execution failed: {0}&quot;&lt;/span&gt;&lt;span&gt;)]&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;10&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;    &lt;/span&gt;&lt;span&gt;Query&lt;/span&gt;&lt;span&gt;(&lt;/span&gt;&lt;span&gt;String&lt;/span&gt;&lt;span&gt;),&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;11&lt;/div&gt;&lt;/div&gt;&lt;div&gt;
@@ -9347,42 +9347,13 @@ Okra 主要依赖如下：&lt;/p&gt;
 &lt;section&gt;&lt;h2&gt;Markdown 和 MDX 的区别&lt;a href=&quot;#markdown-和-mdx-的区别&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;Markdown (MD) 是一种轻量级标记语言，允许用户使用纯文本格式编写文档，然后将其转换为格式化的HTML。它因其简洁易用的语法而广受欢迎，特别适合编写文档和博客文章。&lt;/li&gt;
 &lt;li&gt;MDX 是一种扩展了 Markdown 语法的格式，允许在 Markdown 文档中无缝地插入 JSX 代码。通过 MDX，用户可以在文档中嵌入 React 组件，从而实现更丰富的交互性和动态性。&lt;/li&gt;
-&lt;/ul&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;特性&lt;/th&gt;&lt;th&gt;Markdown&lt;/th&gt;&lt;th&gt;MDX&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;基础语法&lt;/td&gt;&lt;td&gt;支持 (CommonMark)&lt;/td&gt;&lt;td&gt;支持 (CommonMark)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;HTML 标签&lt;/td&gt;&lt;td&gt;支持&lt;/td&gt;&lt;td&gt;支持 (作为 JSX)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;组件导入&lt;/td&gt;&lt;td&gt;不支持&lt;/td&gt;&lt;td&gt;支持 (import)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;动态数据&lt;/td&gt;&lt;td&gt;不支持&lt;/td&gt;&lt;td&gt;支持 (JS 表达式)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;样式定制&lt;/td&gt;&lt;td&gt;有限 (class/style)&lt;/td&gt;&lt;td&gt;灵活 (className/CSS-in-JS)&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/section&gt;
+&lt;/ul&gt;&lt;p&gt;| 特性 | Markdown | MDX |
+| :--- | :--- | :--- |
+| 基础语法 | 支持 (CommonMark) | 支持 (CommonMark) |
+| HTML 标签 | 支持 | 支持 (作为 JSX) |
+| 组件导入 | 不支持 | 支持 (import) |
+| 动态数据 | 不支持 | 支持 (JS 表达式) |
+| 样式定制 | 有限 (class/style) | 灵活 (className/CSS-in-JS) |&lt;/p&gt;&lt;/section&gt;
 &lt;section&gt;&lt;h2&gt;使用组件&lt;a href=&quot;#使用组件&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;这是一个图标组件：&lt;/p&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;import { Icon } from &apos;astro-icon/components&apos;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;2&lt;/div&gt;&lt;/div&gt;&lt;div&gt;
 &lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&amp;lt;div class=&quot;flex items-center gap-2 my-4&quot;&amp;gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;4&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;  &lt;/span&gt;&lt;/span&gt;&lt;span&gt;&amp;lt;Icon name=&quot;fa7-solid:rocket&quot; class=&quot;text-4xl text-red-500&quot; /&amp;gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;5&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;  &lt;/span&gt;&lt;/span&gt;&lt;span&gt;&amp;lt;span&amp;gt;火箭发射！&amp;lt;/span&amp;gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;6&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;div&gt;     &lt;span&gt;火箭发射！&lt;/span&gt;&lt;/div&gt;&lt;/section&gt;
 &lt;section&gt;&lt;h2&gt;使用 JSX&lt;a href=&quot;#使用-jsx&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;你也可以直接写 HTML/JSX：&lt;/p&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&amp;lt;div className=&quot;p-4 bg-blue-100 dark:bg-blue-900 rounded-lg my-4&quot;&amp;gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;2&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;  &lt;/span&gt;&lt;/span&gt;&lt;span&gt;这是一个自定义样式的 div 块，使用了 Tailwind CSS 类。&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;div&gt;&lt;p&gt;这是一个自定义样式的 div 块，使用了 Tailwind CSS 类。&lt;/p&gt;&lt;/div&gt;&lt;/section&gt;
