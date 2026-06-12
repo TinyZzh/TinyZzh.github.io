@@ -1,0 +1,48 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "typescript",
+    "oxc"
+  ],
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "no-control-regex": "off",
+    "no-new": "off",
+    "no-shadow": "off",
+    "no-useless-constructor": "off",
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
+    "typescript/triple-slash-reference": "off"
+  },
+  "env": {
+    "astro": true,
+    "browser": true,
+    "builtin": true,
+    "node": true,
+    "svelte": true
+  },
+  "ignorePatterns": [
+    "**/dist/**/*",
+    "**/node_modules/**/*",
+    "**/src/constants/icons.ts",
+    "**/src/public/**/*"
+  ],
+  "overrides": [
+    {
+      "files": ["**/*.astro", "**/*.svelte", "**/*.vue"],
+      "rules": {
+        "no-unassigned-vars": "off",
+        "no-unused-expressions": "off",
+        "no-unused-vars": "off"
+      }
+    }
+  ]
+}

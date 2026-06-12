@@ -6,11 +6,11 @@ declare global {
 	}
 
 	interface Window {
-		// biome-ignore lint/suspicious/noExplicitAny: External library
+		// External library without types.
 		swup: any;
 		spineModelInitialized?: boolean;
 		floatingTOCListenersInitialized?: boolean;
-		// biome-ignore lint/suspicious/noExplicitAny: External library
+		// External library without types.
 		spinePlayerInstance?: any;
 		pagefind: {
 			search: (query: string) => Promise<{

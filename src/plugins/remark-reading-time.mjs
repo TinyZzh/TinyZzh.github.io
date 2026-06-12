@@ -1,4 +1,4 @@
-// biome-ignore lint/suspicious/noShadowRestrictedNames: <toString from mdast-util-to-string>
+// Use mdast-util's toString helper rather than the global Object method.
 import { toString } from "mdast-util-to-string";
 import getReadingTime from "reading-time";
 
