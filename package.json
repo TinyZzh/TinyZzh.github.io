@@ -11,8 +11,7 @@
     "astro": "astro",
     "type-check": "tsc --noEmit --isolatedDeclarations",
     "new-post": "node scripts/new-post.js",
-    "format": "oxfmt \"src/**/*.{js,mjs,ts,tsx,json,jsonc}\" --no-error-on-unmatched-pattern",
-    "format:ci": "oxfmt --check \"src/**/*.{js,mjs,ts,tsx,json,jsonc}\" --no-error-on-unmatched-pattern",
+    "format": "oxfmt --check \"src/**/*.{js,mjs,ts,tsx,json,jsonc}\" --no-error-on-unmatched-pattern",
     "lint": "oxlint src --format=github --no-error-on-unmatched-pattern",
     "preinstall": "npx only-allow pnpm",
     "icons": "node scripts/generate-icons.js"

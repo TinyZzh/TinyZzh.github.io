@@ -11,7 +11,7 @@
   "arrowParens": "always",
   "bracketSameLine": false,
   "bracketSpacing": true,
-  "endOfLine": "crlf",
+  "endOfLine": "lf",
   "svelte": true,
   "ignorePatterns": [
     "**/src/**/*.css",
